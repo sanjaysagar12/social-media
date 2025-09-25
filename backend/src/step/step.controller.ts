@@ -4,7 +4,7 @@ import { JwtGuard } from '../application/common/guards/jwt.guard';
 import { RolesGuard } from '../application/common/guards/roles.guard';
 import { GetUser } from 'src/application/common/decorator/get-user.decorator';
 import { GetOptionalUser } from 'src/application/common/decorator/get-optional-user.decorator';
-import { EventService } from './event.service';
+import { EventService } from './step.service';
 import { CreateEventDto, CreatePostDto, CreateCommentDto } from './dto';
 
 // Create an optional JWT guard that doesn't throw errors
