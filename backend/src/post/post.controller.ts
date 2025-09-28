@@ -4,8 +4,8 @@ import { JwtGuard } from '../application/common/guards/jwt.guard';
 import { RolesGuard } from '../application/common/guards/roles.guard';
 import { GetUser } from 'src/application/common/decorator/get-user.decorator';
 import { GetOptionalUser } from 'src/application/common/decorator/get-optional-user.decorator';
-import { EventService } from './step.service';
-import { CreateEventDto, CreatePostDto, CreateCommentDto } from './dto';
+import { PostService } from './post.service';
+import { CreateStepDto, CreatePostDto, CreateCommentDto } from './dto';
 
 // Create an optional JWT guard that doesn't throw errors
 class OptionalJwtGuard extends JwtGuard {
@@ -15,21 +15,21 @@ class OptionalJwtGuard extends JwtGuard {
   }
 }
 
-@Controller('api/event')
-export class EventController {
-    private readonly logger = new Logger(EventController.name);
+@Controller('api/step')
+export class PostController {
+    private readonly logger = new Logger(PostController.name);
     
-    constructor(private readonly eventService: EventService) {}
+    constructor(private readonly postService: PostService) {}
 
     @Post()
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async createEvent(
         @GetUser('sub') userId: string,
-        @Body() createEventDto: CreateEventDto,
+        @Body() createEventDto: CreateStepDto,
     ) {
-        this.logger.log(`User ${userId} creating new event`);
-        const data = await this.eventService.createEvent(userId, createEventDto);
+        this.logger.log(`User ${userId} creating new step`);
+        const data = await this.postService.createEvent(userId, createEventDto);
         return {
             status: 'success',
             data: data,
@@ -39,7 +39,7 @@ export class EventController {
     @Get()
     async getAllEvents() {
         this.logger.log('Fetching all events');
-        const data = await this.eventService.getAllEvents();
+        const data = await this.postService.getAllEvents();
         return {
             status: 'success',
             data: data,
@@ -52,7 +52,7 @@ export class EventController {
         @GetOptionalUser('sub') userId?: string,
     ) {
         this.logger.log(`Fetching explore posts ${userId ? `for user ${userId}` : 'for anonymous user'}`);
-        const data = await this.eventService.getExplorePosts(userId);
+        const data = await this.postService.getExplorePosts(userId);
         return {
             status: 'success',
             data: data,
@@ -62,11 +62,11 @@ export class EventController {
     @Get(':id')
     @UseGuards(OptionalJwtGuard)
     async getEventById(
-        @Param('id') eventId: string,
+        @Param('id') stepId: string,
         @GetOptionalUser('sub') userId?: string,
     ) {
-        this.logger.log(`Fetching event details for ID: ${eventId} ${userId ? `for user ${userId}` : 'for anonymous user'}`);
-        const data = await this.eventService.getEventById(eventId, userId);
+        this.logger.log(`Fetching step details for ID: ${stepId} ${userId ? `for user ${userId}` : 'for anonymous user'}`);
+        const data = await this.postService.getEventById(stepId, userId);
         return {
             status: 'success',
             data: data,
@@ -77,11 +77,11 @@ export class EventController {
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async joinEvent(
-        @Param('id') eventId: string,
+        @Param('id') stepId: string,
         @GetUser('sub') userId: string,
     ) {
-        this.logger.log(`User ${userId} attempting to join event ${eventId}`);
-        const data = await this.eventService.joinEvent(eventId, userId);
+        this.logger.log(`User ${userId} attempting to join step ${stepId}`);
+        const data = await this.postService.joinEvent(stepId, userId);
         return {
             status: 'success',
             data: data,
@@ -93,12 +93,29 @@ export class EventController {
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async createPost(
-        @Param('id') eventId: string,
+        @Param('id') stepId: string,
         @GetUser('sub') userId: string,
         @Body() createPostDto: CreatePostDto,
     ) {
-        this.logger.log(`User ${userId} creating post for event ${eventId}`);
-        const data = await this.eventService.createPost(eventId, userId, createPostDto);
+        this.logger.log(`User ${userId} creating post for step ${stepId}`);
+        const data = await this.postService.createPost(stepId, userId, createPostDto);
+        return {
+            status: 'success',
+            data: data,
+            message: 'Post created successfully',
+        };
+    }
+
+    // Create a post without attaching it to any Step
+    @Post('post')
+    @UseGuards(JwtGuard, RolesGuard)
+    @Roles(Role.USER, Role.ADMIN)
+    async createStandalonePost(
+        @GetUser('sub') userId: string,
+        @Body() createPostDto: CreatePostDto,
+    ) {
+        this.logger.log(`User ${userId} creating standalone post`);
+        const data = await this.postService.createPost(undefined, userId, createPostDto);
         return {
             status: 'success',
             data: data,
@@ -115,7 +132,7 @@ export class EventController {
         @Body() createCommentDto: CreateCommentDto,
     ) {
         this.logger.log(`User ${userId} creating comment for post ${postId}`);
-        const data = await this.eventService.createComment(postId, userId, createCommentDto);
+        const data = await this.postService.createComment(postId, userId, createCommentDto);
         return {
             status: 'success',
             data: data,
@@ -132,7 +149,7 @@ export class EventController {
         @Body() createCommentDto: CreateCommentDto,
     ) {
         this.logger.log(`User ${userId} replying to comment ${commentId}`);
-        const data = await this.eventService.replyToComment(commentId, userId, createCommentDto);
+        const data = await this.postService.replyToComment(commentId, userId, createCommentDto);
         return {
             status: 'success',
             data: data,
@@ -144,11 +161,11 @@ export class EventController {
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async likeEvent(
-        @Param('id') eventId: string,
+        @Param('id') stepId: string,
         @GetUser('sub') userId: string,
     ) {
-        this.logger.log(`User ${userId} attempting to like event ${eventId}`);
-        const data = await this.eventService.likeEvent(eventId, userId);
+        this.logger.log(`User ${userId} attempting to like step ${stepId}`);
+        const data = await this.postService.likeEvent(stepId, userId);
         return {
             status: 'success',
             data: data,
@@ -160,11 +177,11 @@ export class EventController {
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async unlikeEvent(
-        @Param('id') eventId: string,
+        @Param('id') stepId: string,
         @GetUser('sub') userId: string,
     ) {
-        this.logger.log(`User ${userId} attempting to unlike event ${eventId}`);
-        const data = await this.eventService.unlikeEvent(eventId, userId);
+        this.logger.log(`User ${userId} attempting to unlike step ${stepId}`);
+        const data = await this.postService.unlikeEvent(stepId, userId);
         return {
             status: 'success',
             data: data,
@@ -180,7 +197,7 @@ export class EventController {
         @GetUser('sub') userId: string,
     ) {
         this.logger.log(`User ${userId} attempting to upvote post ${postId}`);
-        const data = await this.eventService.upvotePost(postId, userId);
+        const data = await this.postService.upvotePost(postId, userId);
         return {
             status: 'success',
             data: data,
@@ -196,7 +213,7 @@ export class EventController {
         @GetUser('sub') userId: string,
     ) {
         this.logger.log(`User ${userId} attempting to remove upvote from post ${postId}`);
-        const data = await this.eventService.removeUpvote(postId, userId);
+        const data = await this.postService.removeUpvote(postId, userId);
         return {
             status: 'success',
             data: data,
@@ -208,11 +225,11 @@ export class EventController {
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async verifyEvent(
-        @Param('id') eventId: string,
+        @Param('id') stepId: string,
         @GetUser('sub') userId: string,
     ) {
-        this.logger.log(`User ${userId} attempting to verify event ${eventId}`);
-        const data = await this.eventService.verifyEvent(eventId, userId);
+        this.logger.log(`User ${userId} attempting to verify step ${stepId}`);
+        const data = await this.postService.verifyEvent(stepId, userId);
         return {
             status: 'success',
             data: data,
@@ -247,7 +264,7 @@ export class EventController {
             this.logger.log(`User ${currentUserId} requesting hosted events for different user ${userId}`);
         }
         
-        const data = await this.eventService.getHostedEvents(userId);
+        const data = await this.postService.getHostedEvents(userId);
         return {
             status: 'success',
             data: data,
@@ -259,11 +276,11 @@ export class EventController {
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async getEventParticipants(
-        @Param('id') eventId: string,
+        @Param('id') stepId: string,
         @GetUser('sub') userId: string,
     ) {
-        this.logger.log(`User ${userId} fetching participants for event ${eventId}`);
-        const data = await this.eventService.getEventParticipants(eventId, userId);
+        this.logger.log(`User ${userId} fetching participants for step ${stepId}`);
+        const data = await this.postService.getEventParticipants(stepId, userId);
         return {
             status: 'success',
             data: data,
@@ -275,37 +292,16 @@ export class EventController {
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.ADMIN)
     async unverifyEvent(
-        @Param('id') eventId: string,
+        @Param('id') stepId: string,
         @GetUser('sub') adminId: string,
     ) {
-        this.logger.log(`Admin ${adminId} attempting to unverify event ${eventId}`);
-        const data = await this.eventService.unverifyEvent(eventId, adminId);
+        this.logger.log(`Admin ${adminId} attempting to unverify step ${stepId}`);
+        const data = await this.postService.unverifyEvent(stepId, adminId);
         return {
             status: 'success',
             data: data,
             message: 'Event unverified successfully',
         };
     }
-
-    @Patch(':id/select-winner')
-    @UseGuards(JwtGuard, RolesGuard)
-    @Roles(Role.USER, Role.ADMIN)
-    async selectWinner(
-        @Param('id') eventId: string,
-        @GetUser('sub') hostId: string,
-        @Body('winnerId') winnerId: string,
-    ) {
-        this.logger.log(`Host ${hostId} selecting winner ${winnerId} for event ${eventId}`);
-        
-        if (!winnerId) {
-            throw new Error('Winner ID is required');
-        }
-
-        const data = await this.eventService.selectWinner(eventId, hostId, winnerId);
-        return {
-            status: 'success',
-            data: data,
-            message: 'Winner selected and prize distributed successfully',
-        };
-    }
+    
 }

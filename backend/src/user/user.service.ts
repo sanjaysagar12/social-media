@@ -19,99 +19,42 @@ export class UserService {
                 createdAt: true,
                 walletAddress: true,
                 
-                // Events created by user (hosted events)
-                createdEvents: {
+                // Steps created by user (hosted steps)
+                createdSteps: {
                     select: {
                         id: true,
                         title: true,
                         description: true,
-                        prize: true,
                         thumbnail: true,
                         verified: true,
                         startDate: true,
                         endDate: true,
                         isActive: true,
                         createdAt: true,
-                        _count: {
-                            select: {
-                                participants: true,
-                                posts: true,
-                                userLikes: true,
-                            },
-                        },
+                        _count: { select: { participants: true, posts: true, userLikes: true } },
                     },
-                    orderBy: {
-                        createdAt: 'desc',
-                    },
+                    orderBy: { createdAt: 'desc' },
                 },
                 
-                // Events joined by user
-                joinedEvents: {
+                // Steps joined by user
+                joinedSteps: {
                     select: {
                         id: true,
                         title: true,
                         description: true,
-                        prize: true,
                         thumbnail: true,
                         verified: true,
                         startDate: true,
                         endDate: true,
                         isActive: true,
                         createdAt: true,
-                        creator: {
-                            select: {
-                                id: true,
-                                name: true,
-                                email: true,
-                                avatar: true,
-                            },
-                        },
-                        _count: {
-                            select: {
-                                participants: true,
-                                posts: true,
-                                userLikes: true,
-                            },
-                        },
+                        creator: { select: { id: true, name: true, email: true, avatar: true } },
+                        _count: { select: { participants: true, posts: true, userLikes: true } },
                     },
-                    orderBy: {
-                        createdAt: 'desc',
-                    },
+                    orderBy: { createdAt: 'desc' },
                 },
                 
-                // Events won by user
-                wonEvents: {
-                    select: {
-                        id: true,
-                        title: true,
-                        description: true,
-                        prize: true,
-                        thumbnail: true,
-                        verified: true,
-                        startDate: true,
-                        endDate: true,
-                        isActive: true,
-                        createdAt: true,
-                        creator: {
-                            select: {
-                                id: true,
-                                name: true,
-                                email: true,
-                                avatar: true,
-                            },
-                        },
-                        _count: {
-                            select: {
-                                participants: true,
-                                posts: true,
-                                userLikes: true,
-                            },
-                        },
-                    },
-                    orderBy: {
-                        createdAt: 'desc',
-                    },
-                },
+                // (No won steps relation in schema)
                 
                 // Posts created by user
                 posts: {
@@ -121,15 +64,7 @@ export class UserService {
                         image: true,
                         upvotes: true,
                         createdAt: true,
-                        event: {
-                            select: {
-                                id: true,
-                                title: true,
-                                thumbnail: true,
-                                verified: true,
-                                isActive: true,
-                            },
-                        },
+                        step: { select: { id: true, title: true, thumbnail: true, verified: true, isActive: true } },
                         _count: {
                             select: {
                                 comments: true,
@@ -153,13 +88,7 @@ export class UserService {
                             select: {
                                 id: true,
                                 content: true,
-                                event: {
-                                    select: {
-                                        id: true,
-                                        title: true,
-                                        isActive: true,
-                                    },
-                                },
+                                step: { select: { id: true, title: true, isActive: true } },
                                 author: {
                                     select: {
                                         id: true,
@@ -204,13 +133,7 @@ export class UserService {
                                         email: true,
                                     },
                                 },
-                                event: {
-                                    select: {
-                                        id: true,
-                                        title: true,
-                                        isActive: true,
-                                    },
-                                },
+                                step: { select: { id: true, title: true, isActive: true } },
                             },
                         },
                     },
@@ -220,116 +143,46 @@ export class UserService {
                     take: 10, // Limit to recent 10 upvotes
                 },
                 
-                // Event likes given by user
-                eventLikes: {
+                // Step likes given by user
+                stepLikes: {
                     select: {
                         id: true,
                         createdAt: true,
-                        event: {
-                            select: {
-                                id: true,
-                                title: true,
-                                thumbnail: true,
-                                verified: true,
-                                isActive: true,
-                                creator: {
-                                    select: {
-                                        id: true,
-                                        name: true,
-                                        email: true,
-                                    },
-                                },
-                            },
-                        },
+                        step: { select: { id: true, title: true, thumbnail: true, verified: true, isActive: true, creator: { select: { id: true, name: true, email: true } } } },
                     },
-                    orderBy: {
-                        createdAt: 'desc',
-                    },
-                    take: 10, // Limit to recent 10 event likes
+                    orderBy: { createdAt: 'desc' },
+                    take: 10,
                 },
                 
-                // User's wallet information
-                wallet: {
-                    select: {
-                        id: true,
-                        balance: true,
-                        lockedBalance: true,
-                        createdAt: true,
-                        updatedAt: true,
-                    },
-                },
-                
-                // User's transaction history
-                transactions: {
-                    select: {
-                        id: true,
-                        amount: true,
-                        type: true,
-                        status: true,
-                        description: true,
-                        txHash: true,
-                        createdAt: true,
-                        confirmedAt: true,
-                        senderWallet: {
-                            select: {
-                                id: true,
-                                user: {
-                                    select: {
-                                        id: true,
-                                        name: true,
-                                        email: true,
-                                    },
-                                },
-                            },
-                        },
-                        receiverWallet: {
-                            select: {
-                                id: true,
-                                user: {
-                                    select: {
-                                        id: true,
-                                        name: true,
-                                        email: true,
-                                    },
-                                },
-                            },
-                        },
-                        event: {
-                            select: {
-                                id: true,
-                                title: true,
-                                verified: true,
-                            },
-                        },
-                    },
-                    orderBy: {
-                        createdAt: 'desc',
-                    },
-                    take: 20, // Limit to recent 20 transactions
-                },
+                // Wallet and transactions removed from schema; skip those fields
             },
         }).then(user => {
             if (!user) {
                 console.error('User not found with ID:', userId);
                 throw new Error('User not found');
             }
-            
-            // Calculate user statistics
+
+            // Normalize fields to expected names
+            const created = (user as any).createdSteps || [];
+            const joined = (user as any).joinedSteps || [];
+            const won = [];
+            const posts = (user as any).posts || [];
+            const comments = (user as any).comments || [];
+            const upvotes = (user as any).upvotes || [];
+            const eventLikes = (user as any).stepLikes || [];
+
             const stats = {
-                totalEventsHosted: user.createdEvents.length,
-                totalEventsJoined: user.joinedEvents.length,
-                totalEventsWon: user.wonEvents.length,
-                totalPosts: user.posts.length,
-                totalComments: user.comments.length,
-                totalUpvotesGiven: user.upvotes.length,
-                totalEventLikes: user.eventLikes.length,
-                totalUpvotesReceived: user.posts.reduce((sum, post) => sum + post._count.userUpvotes, 0),
+                totalEventsHosted: created.length,
+                totalEventsJoined: joined.length,
+                totalEventsWon: won.length,
+                totalPosts: posts.length,
+                totalComments: comments.length,
+                totalUpvotesGiven: upvotes.length,
+                totalEventLikes: eventLikes.length,
+                totalUpvotesReceived: posts.reduce((sum, post) => sum + ((post._count && post._count.userUpvotes) || 0), 0),
             };
-            
-            return {
-                ...user,
-                stats,
-            };
+
+            return { ...user, stats };
         }).catch(error => {
             console.error('Error fetching user:', error);
             throw new Error('Failed to fetch user');

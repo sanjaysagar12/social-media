@@ -5,12 +5,11 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
-import { EventModule } from './event/event.module';
+import { PostModule } from './post/post.module';
 import { S3Module } from './s3/s3.module';
-import { EtherlinkModule } from './etherlink/etherlink.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, UserModule, EventModule, S3Module, EtherlinkModule],
+  imports: [AuthModule, PrismaModule, UserModule, PostModule, S3Module],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
