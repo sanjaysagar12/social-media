@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -54,7 +54,7 @@ export default function EventsPage() {
         return;
       }
 
-      const response = await fetch('https://api-small-step-for-earth.portos.cloud/api/event', {
+  const response = await fetch('https://api-small-step-for-earth.portos.cloud/api/step', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

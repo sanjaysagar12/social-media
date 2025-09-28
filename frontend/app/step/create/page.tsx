@@ -9,7 +9,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import UploadImage from "@/components/UploadImage";
 import { 
   Calendar, 
-  Trophy, 
   FileText, 
   ImageIcon, 
   Clock, 
@@ -24,7 +23,6 @@ export default function CreateEventPage() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    prize: '',
     thumbnail: '',
     startDate: '',
     endDate: ''
@@ -59,29 +57,34 @@ export default function CreateEventPage() {
         return;
       }
 
-      const response = await fetch('https://api-etherlink.portos.cloud/api/event', {
+      const response = await fetch('http://localhost:3000/api/step', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          thumbnail: formData.thumbnail,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+        })
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        alert('Event created successfully!');
+        alert('Step created successfully!');
         setFormData({
           title: '',
           description: '',
-          prize: '',
           thumbnail: '',
           startDate: '',
           endDate: ''
         });
       } else {
-        alert(`Error: ${result.message || 'Failed to create event'}`);
+        alert(`Error: ${result.message || 'Failed to create step'}`);
       }
     } catch (error) {
       console.error('Error creating event:', error);
@@ -123,10 +126,10 @@ export default function CreateEventPage() {
             <div className="w-12 h-12 bg-[#E94042] rounded-full flex items-center justify-center shadow-lg">
               <Plus className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-white">Create New Event</h1>
+            <h1 className="text-4xl font-bold text-white">Create New Step</h1>
           </div>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Bring your community together with an amazing event
+            Bring your community together with an actionable Step
           </p>
         </div>
 
@@ -171,22 +174,7 @@ export default function CreateEventPage() {
                     />
                   </div>
 
-                  {/* Prize */}
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <Trophy className="w-5 h-5 text-yellow-400" />
-                      <Label htmlFor="prize" className="text-white font-semibold">Prize (Optional)</Label>
-                    </div>
-                    <Input
-                      id="prize"
-                      name="prize"
-                      type="text"
-                      value={formData.prize}
-                      onChange={handleInputChange}
-                      placeholder="What will the winner receive?"
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#E94042]/50 focus:ring-[#E94042]/50"
-                    />
-                  </div>
+                  {/* prize removed (backend no longer supports prize) */}
 
                   {/* Event Thumbnail */}
                   <div className="space-y-3">
@@ -284,12 +272,7 @@ export default function CreateEventPage() {
                     {formData.description && (
                       <p className="text-gray-300 text-sm line-clamp-3">{formData.description}</p>
                     )}
-                    {formData.prize && (
-                      <div className="flex items-center gap-2 text-yellow-400 text-sm">
-                        <Trophy className="w-4 h-4" />
-                        <span>{formData.prize}</span>
-                      </div>
-                    )}
+                    {/* prize removed from preview (backend no longer supports prize) */}
                     {formData.startDate && (
                       <div className="flex items-center gap-2 text-gray-400 text-sm">
                         <Clock className="w-4 h-4" />

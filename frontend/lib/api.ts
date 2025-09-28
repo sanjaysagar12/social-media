@@ -1,6 +1,6 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: 'https://api-etherlink.portos.cloud',
+  BASE_URL: 'http://localhost:3000',
   
   // API Endpoints
   ENDPOINTS: {
@@ -11,12 +11,12 @@ export const API_CONFIG = {
     USER_PROFILE: '/api/user/me',
     
     // Events
-    EVENTS: '/api/event',
-    MY_EVENTS: '/api/event/my',
-    EXPLORE: '/api/event/explore',
-    EVENT_BY_ID: (id: string) => `/api/event/${id}`,
-    JOIN_EVENT: (id: string) => `/api/event/${id}/join`,
-    EVENT_POSTS: (id: string) => `/api/event/${id}/posts`,
+  EVENTS: '/api/step',
+  MY_EVENTS: '/api/step/my',
+  EXPLORE: '/api/step/explore',
+  EVENT_BY_ID: (id: string) => `/api/step/${id}`,
+  JOIN_EVENT: (id: string) => `/api/step/${id}/join`,
+  EVENT_POSTS: (id: string) => `/api/step/${id}/posts`,
     
     // Posts
     POSTS: '/api/post',
