@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -11,20 +12,14 @@ import {
   Sparkles,
   TrendingUp,
   Target,
-  Star
+  Star,
+  Zap,
+  Globe,
+  Trophy,
+  Heart,
+  CheckCircle,
+  Plus
 } from 'lucide-react';
-
-// Simple Badge component
-const Badge = ({ className = "", children, ...props }: { className?: string, children: React.ReactNode, [key: string]: any }) => {
-  return (
-    <span 
-      className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${className}`} 
-      {...props}
-    >
-      {children}
-    </span>
-  );
-};
 
 interface Step {
   id: string;
@@ -48,6 +43,7 @@ interface Step {
 }
 
 export default function HomePage() {
+  const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [featuredEvents, setFeaturedEvents] = useState<Step[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +58,7 @@ export default function HomePage() {
 
   const fetchFeaturedEvents = async () => {
     try {
-  const response = await fetch('http://localhost:3000/api/step', {
+      const response = await fetch('http://localhost:3000/api/step', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -82,26 +78,6 @@ export default function HomePage() {
     }
   };
 
-  const handleGetStarted = () => {
-    if (isAuthenticated) {
-      window.location.href = '/explore';
-    } else {
-      window.location.href = '/login';
-    }
-  };
-
-  const handleExploreEvents = () => {
-    window.location.href = '/explore';
-  };
-
-  const handleCreateStep = () => {
-    if (isAuthenticated) {
-      window.location.href = '/step/create';
-    } else {
-      window.location.href = '/auth/login';
-    }
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -110,293 +86,300 @@ export default function HomePage() {
     });
   };
 
+  const features = [
+    {
+      icon: Trophy,
+      title: 'Win Prizes',
+      description: 'Compete in exciting challenges and win ETH prizes',
+      color: 'text-yellow-600',
+      bgColor: 'bg-yellow-50'
+    },
+    {
+      icon: Users,
+      title: 'Community Driven',
+      description: 'Connect with like-minded individuals worldwide',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50'
+    },
+    {
+      icon: Zap,
+      title: 'Blockchain Powered',
+      description: 'Secure, transparent, and decentralized platform',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50'
+    },
+    {
+      icon: Globe,
+      title: 'Global Reach',
+      description: 'Participate in steps from anywhere in the world',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50'
+    }
+  ];
+
+  const stats = [
+    { label: 'Active Steps', value: '50+', icon: Target },
+    { label: 'Participants', value: '1000+', icon: Users },
+    { label: 'Prizes Won', value: '25 ETH', icon: Trophy },
+    { label: 'Communities', value: '10+', icon: Heart }
+  ];
+
   return (
-    <div className="min-h-screen bg-[#161616]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
+          <div className="text-center space-y-8">
+            {/* Badge */}
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+              <Sparkles className="w-4 h-4" />
+              <span>The Future of Community Challenges</span>
+            </div>
 
-        {/* Responsive overlay for better readability */}
-        <div className="absolute inset-0 bg-black/20" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
-          <div className="text-center space-y-6 sm:space-y-8">
-            <div className="space-y-4 sm:space-y-6">
-              <Badge className="inline-flex items-center space-x-2 bg-black/80 backdrop-blur-sm text-white px-4 py-2 text-sm sm:text-base">
-                <Sparkles className="w-4 h-4" />
-                <span>The Future of Steps</span>
-              </Badge>
-
-              <h1 className="text-5xl text-white sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-tight">
-                Discover Amazing
-                <span className="block">Steps & Experiences</span>
+            {/* Main Heading */}
+            <div className="space-y-4">
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+                  Discover Amazing
+                </span>
+                <br />
+                <span className="text-gray-900">Steps & Experiences</span>
               </h1>
-
-              <p className="max-w-2xl sm:max-w-3xl mx-auto text-xl sm:text-2xl text-gray-200 leading-relaxed px-4 sm:px-0">
-                Join a community of innovators, creators, and dreamers. Participate in exclusive steps,
+              <p className="max-w-3xl mx-auto text-xl text-gray-600 leading-relaxed">
+                Join a community of innovators, creators, and dreamers. Participate in exclusive challenges,
                 win prizes, and connect with like-minded individuals from around the world.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
-                onClick={handleGetStarted}
+                onClick={() => router.push(isAuthenticated ? '/explore' : '/auth/login')}
                 size="lg"
-                className="bg-black/80 hover:bg-black/90 backdrop-blur-sm px-10 sm:px-14 py-5 sm:py-6 text-lg sm:text-2xl shadow-xl border border-white/10"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
               >
                 {isAuthenticated ? 'Explore Steps' : 'Get Started'}
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
 
               <Button
-                onClick={handleCreateStep}
+                onClick={() => router.push(isAuthenticated ? '/step/create' : '/auth/login')}
                 variant="outline"
                 size="lg"
-                className="px-10 sm:px-14 py-5 sm:py-6 text-lg sm:text-2xl bg-[#E94042]/90 hover:bg-[#E94042] backdrop-blur-sm border-[#E94042] text-white shadow-xl"
+                className="border-2 border-gray-300 hover:border-blue-500 px-8 py-4 text-lg font-semibold transition-all duration-300"
               >
+                <Plus className="w-5 h-5 mr-2" />
                 Create Step
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Mobile-specific background adjustments */}
-        <style jsx>{`
-          @media (max-width: 768px) {
-            section {
-              background-attachment: scroll;
-            }
-          }
-        `}</style>
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-blue-500/10 rounded-full blur-xl"></div>
+        <div className="absolute bottom-20 right-10 w-32 h-32 bg-purple-500/10 rounded-full blur-xl"></div>
       </section>
 
-      {/* Features Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-35"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        
-        {/* Dark overlay for better readability */}
-        <div className="absolute inset-0 bg-black/40" />
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
-          <div className="text-center space-y-12 sm:space-y-16">
-            <div className="space-y-4 sm:space-y-6">
-              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight">
-                Why Choose Our Platform?
-              </h2>
-              <p className="max-w-3xl mx-auto text-xl sm:text-2xl text-gray-200 leading-relaxed">
-                Experience the next generation of step discovery and participation
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-              <Card className="text-center p-6 sm:p-8 bg-[#1D1D1D]/90 backdrop-blur-sm border border-white/10 hover:bg-[#1D1D1D]/95 transition-all duration-300">
-                <CardContent className="space-y-4 sm:space-y-6">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#E94042] rounded-full flex items-center justify-center mx-auto">
-                    <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+      {/* Stats Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <div key={index} className="text-center group">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-xl sm:text-2xl text-white font-semibold">Trending Steps</h3>
-                  <p className="text-gray-200 text-base sm:text-lg leading-relaxed">
-                    Discover the hottest steps and trending topics in your industry
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center p-6 sm:p-8 bg-[#1D1D1D]/90 backdrop-blur-sm border border-white/10 hover:bg-[#1D1D1D]/95 transition-all duration-300">
-                <CardContent className="space-y-4 sm:space-y-6">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#E94042] rounded-full flex items-center justify-center mx-auto">
-                    <Target className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-                  </div>
-                  <h3 className="text-xl sm:text-2xl text-white font-semibold">Win Prizes</h3>
-                  <p className="text-gray-200 text-base sm:text-lg leading-relaxed">
-                    Participate in competitions and win amazing prizes worth thousands
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="text-center p-6 sm:p-8 bg-[#1D1D1D]/90 backdrop-blur-sm border border-white/10 hover:bg-[#1D1D1D]/95 transition-all duration-300">
-                <CardContent className="space-y-4 sm:space-y-6">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#E94042] rounded-full flex items-center justify-center mx-auto">
-                    <Users className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-                  </div>
-                  <h3 className="text-xl sm:text-2xl text-white font-semibold">Global Community</h3>
-                  <p className="text-gray-200 text-base sm:text-lg leading-relaxed">
-                    Connect with thousands of passionate individuals worldwide
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+                  <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
+                  <div className="text-gray-600 font-medium">{stat.label}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Featured Steps */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        
-        {/* Dark overlay for better readability */}
-        <div className="absolute inset-0 bg-black/50" />
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
-          <div className="text-center space-y-12 sm:space-y-16">
-            <div className="space-y-4 sm:space-y-6">
-              <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight">
-                Featured Steps
-              </h2>
-              <p className="max-w-3xl mx-auto text-xl sm:text-2xl text-gray-200 leading-relaxed">
-                Don't miss out on these exciting upcoming steps
-              </p>
-            </div>
+      {/* Features Section */}
+      <section className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Why Choose EtherLink?
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Experience the next generation of community challenges with blockchain-powered transparency and rewards.
+            </p>
+          </div>
 
-            {loading ? (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 border-4 border-gray-200 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-xl text-gray-200">Loading featured steps...</p>
-              </div>
-            ) : featuredEvents.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-                {featuredEvents.map((step) => (
-                  <Card key={step.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 bg-[#1D1D1D]/90 backdrop-blur-sm border border-white/10 p-0">
-                    <div className="relative h-48 sm:h-56">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg hover:-translate-y-2">
+                  <CardContent className="p-8 text-center">
+                    <div className={`w-16 h-16 ${feature.bgColor} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon className={`w-8 h-8 ${feature.color}`} />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+                    <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Steps Section */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Featured Steps
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Discover trending challenges and join the community in exciting experiences.
+            </p>
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="w-full h-48 bg-gray-200 rounded-lg mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : featuredEvents.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {featuredEvents.map((step) => (
+                <Card
+                  key={step.id}
+                  className="group hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-lg hover:-translate-y-2"
+                  onClick={() => router.push(`/step/${step.id}`)}
+                >
+                  <CardContent className="p-0">
+                    <div className="relative">
                       {step.thumbnail ? (
                         <img
                           src={step.thumbnail}
                           alt={step.title}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/api/placeholder/400/250';
-                          }}
+                          className="w-full h-48 object-cover rounded-t-lg"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
-                          <Calendar className="w-16 h-16 text-gray-400" />
+                        <div className="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 rounded-t-lg flex items-center justify-center">
+                          <Target className="w-12 h-12 text-white" />
                         </div>
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                      <Badge className="absolute top-4 right-4 bg-[#E94042] text-white">
-                        Featured
-                      </Badge>
                       {step.verified && (
-                        <Badge className="absolute top-4 left-4 bg-yellow-500 text-white">
-                          <Star className="w-3 h-3 mr-1 fill-current" />
-                          Verified
-                        </Badge>
+                        <div className="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
+                          <CheckCircle className="w-3 h-3" />
+                          <span>Verified</span>
+                        </div>
                       )}
                     </div>
 
-                    <CardContent className="p-6 space-y-4">
-                      <h3 className="text-xl font-semibold text-white text-left">{step.title}</h3>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                        {step.title}
+                      </h3>
                       {step.description && (
-                        <p className="text-gray-300 line-clamp-2 text-left">{step.description}</p>
+                        <p className="text-gray-600 mb-4 line-clamp-2">{step.description}</p>
                       )}
 
-                      <div className="space-y-2 text-sm">
-                        <div className="flex items-center space-x-1 text-gray-300">
+                      <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                        <div className="flex items-center space-x-1">
                           <Users className="w-4 h-4" />
-                          <span>{step._count?.participants || 0} participants</span>
+                          <span>{step._count.participants} participants</span>
                         </div>
-
-                        <div className="flex items-center space-x-1 text-gray-300">
+                        <div className="flex items-center space-x-1">
                           <Calendar className="w-4 h-4" />
-                          <span>Created {formatDate(step.createdAt)}</span>
-                        </div>
-
-                        <div className="flex items-center space-x-1 text-gray-300">
-                          <span className="text-sm">By {step.creator.name || step.creator.email}</span>
-                        </div>
-
-                        <div className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                          step.isActive 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {step.isActive ? 'Active' : 'Inactive'}
+                          <span>{formatDate(step.startDate)}</span>
                         </div>
                       </div>
 
-                      <Button
-                        onClick={() => window.location.href = `/step/${step.id}`}
-                        className="w-full bg-[#E94042] hover:bg-[#E94042]/90 text-white"
-                      >
-                        View Details
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <div className="max-w-md mx-auto bg-[#1D1D1D]/90 backdrop-blur-sm border border-white/10 rounded-lg p-8">
-                  <Calendar className="w-24 h-24 text-gray-300 mx-auto mb-6" />
-                  <h3 className="text-2xl font-semibold text-white mb-3">
-                    No Featured Steps Yet
-                  </h3>
-                  <p className="text-gray-300 text-lg mb-6">
-                    Be the first to create an exciting step for the community!
-                  </p>
-                  <Button
-                    onClick={handleCreateStep}
-                    className="bg-[#E94042] hover:bg-[#E94042]/90 text-white"
-                  >
-                    Create First Step
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-                </div>
-              </div>
-            )}
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm text-gray-600">
+                          by {step.creator.name || step.creator.email}
+                        </div>
+                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                          Join Step
+                          <ArrowRight className="w-4 h-4 ml-1" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <Target className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Featured Steps Yet</h3>
+              <p className="text-gray-600 mb-6">Be the first to create an amazing step!</p>
+              <Button
+                onClick={() => router.push('/step/create')}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              >
+                Create First Step
+              </Button>
+            </div>
+          )}
 
-            {featuredEvents.length > 0 && (
-              <div className="text-center mt-12">
-                <Button
-                  onClick={handleExploreEvents}
-                  variant="outline"
-                  size="lg"
-                  className="px-8 py-4 text-lg border-white text-black hover:bg-white hover:text-black backdrop-blur-sm"
-                >
-                  View All Steps
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </div>
-            )}
+          <div className="text-center mt-12">
+            <Button
+              onClick={() => router.push('/explore')}
+              variant="outline"
+              size="lg"
+              className="border-2 border-blue-500 text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg"
+            >
+              View All Steps
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black text-white py-8 border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4">
-            <div className="pt-6 border-gray-800 text-sm text-gray-500">
-              <p>&copy; 2024 Step Platform. All rights reserved.</p>
+      {/* CTA Section */}
+      <section className="py-24 bg-gradient-to-r from-blue-600 to-purple-600">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+                Ready to Start Your Journey?
+              </h2>
+              <p className="text-xl text-blue-100">
+                Join thousands of participants in exciting challenges and win amazing prizes.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                onClick={() => router.push(isAuthenticated ? '/step/create' : '/auth/login')}
+                size="lg"
+                className="bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 text-lg font-semibold shadow-xl"
+              >
+                {isAuthenticated ? 'Create Your Step' : 'Join Now'}
+              </Button>
+
+              <Button
+                onClick={() => router.push('/explore')}
+                variant="outline"
+                size="lg"
+                className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
+              >
+                Explore Steps
+              </Button>
             </div>
           </div>
         </div>
-      </footer>
+      </section>
     </div>
   );
 }

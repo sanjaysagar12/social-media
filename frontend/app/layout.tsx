@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ModernHeader from "@/components/ModernHeader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EtherLink",
-  description: "Connect with events and communities",
+  title: "Small Step For Earth - Social Media",
+  description: "A social media platform to share your steps towards a sustainable future.",
 };
 
 export default function RootLayout({
@@ -25,9 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900`}
       >
-        {children}
+        <ModernHeader />
+        <main className="pt-16 min-h-screen">
+          {children}
+        </main>
       </body>
     </html>
   );

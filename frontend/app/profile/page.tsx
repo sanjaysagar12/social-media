@@ -17,7 +17,6 @@ import {
   LogOut,
   Home,
   Wallet,
-  CreditCard,
   TrendingUp,
   TrendingDown,
   Clock,
@@ -160,38 +159,6 @@ interface WalletInfo {
   updatedAt: string;
 }
 
-interface TransactionInfo {
-  id: string;
-  amount: string;
-  type: string;
-  status: string;
-  description?: string;
-  txHash?: string;
-  createdAt: string;
-  confirmedAt?: string;
-  senderWallet?: {
-    id: string;
-    user: {
-      id: string;
-      name?: string;
-      email: string;
-    };
-  };
-  receiverWallet?: {
-    id: string;
-    user: {
-      id: string;
-      name?: string;
-      email: string;
-    };
-  };
-  event?: {
-    id: string;
-    title: string;
-    verified: boolean;
-  };
-}
-
 interface FullUserData {
   id: string;
   name: string;
@@ -210,7 +177,6 @@ interface FullUserData {
   eventLikes: StepLikeSummary[];
   stats: UserStats;
   wallet?: WalletInfo;
-  transactions: TransactionInfo[];
 }
 
 interface ProfileResponse {
@@ -299,36 +265,6 @@ export default function ProfilePage() {
     return `${Math.floor(diffInMinutes / 1440)}d ago`;
   };
 
-  const getTransactionIcon = (type: string, status: string) => {
-    if (status === 'FAILED' || status === 'CANCELLED') return <XCircle className="w-4 h-4 text-red-400" />;
-    if (status === 'PENDING') return <Clock className="w-4 h-4 text-yellow-400" />;
-    
-    switch (type) {
-      case 'DEPOSIT': return <TrendingUp className="w-4 h-4 text-green-400" />;
-      case 'WITHDRAWAL': return <TrendingDown className="w-4 h-4 text-red-400" />;
-      case 'PRIZE_DISTRIBUTION': return <Trophy className="w-4 h-4 text-yellow-400" />;
-      case 'PRIZE_LOCK': return <AlertCircle className="w-4 h-4 text-orange-400" />;
-      case 'EVENT_PARTICIPATION': return <Users className="w-4 h-4 text-blue-400" />;
-      case 'REFUND': return <CheckCircle className="w-4 h-4 text-green-400" />;
-      default: return <CreditCard className="w-4 h-4 text-gray-400" />;
-    }
-  };
-
-  const getTransactionColor = (type: string, status: string) => {
-    if (status === 'FAILED' || status === 'CANCELLED') return 'text-red-400';
-    if (status === 'PENDING') return 'text-yellow-400';
-    
-    switch (type) {
-      case 'DEPOSIT': return 'text-green-400';
-      case 'WITHDRAWAL': return 'text-red-400';
-      case 'PRIZE_DISTRIBUTION': return 'text-yellow-400';
-      case 'PRIZE_LOCK': return 'text-orange-400';
-      case 'EVENT_PARTICIPATION': return 'text-blue-400';
-      case 'REFUND': return 'text-green-400';
-      default: return 'text-gray-400';
-    }
-  };
-
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     router.push('/auth/login');
@@ -396,21 +332,10 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <div className="text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl rounded-lg p-8 relative z-10">
-          <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#E94042] border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-300">Loading profile...</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center bg-white border border-gray-200 shadow-lg rounded-lg p-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading profile...</p>
         </div>
       </div>
     );
@@ -418,35 +343,24 @@ export default function ProfilePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <div className="text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl rounded-lg p-8 relative z-10 max-w-md">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center bg-white border border-gray-200 shadow-lg rounded-lg p-8 max-w-md">
           <div className="mb-6">
-            <User className="w-16 h-16 text-red-400 mx-auto mb-4" />
-            <p className="text-red-400 text-lg font-semibold mb-2">Authentication Error</p>
-            <p className="text-gray-300">{error}</p>
+            <User className="w-16 h-16 text-red-500 mx-auto mb-4" />
+            <p className="text-red-600 text-lg font-semibold mb-2">Authentication Error</p>
+            <p className="text-gray-600">{error}</p>
           </div>
           {isTokenInvalid ? (
             <button 
               onClick={handleLogin} 
-              className="w-full px-6 py-3 bg-[#E94042] text-white rounded-lg hover:bg-[#E94042]/90 font-medium transition-colors"
+              className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition-colors"
             >
               Go to Login
             </button>
           ) : (
             <button 
               onClick={fetchProfile} 
-              className="w-full px-6 py-3 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-lg hover:bg-white/20 font-medium transition-colors"
+              className="w-full px-6 py-3 bg-gray-100 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-200 font-medium transition-colors"
             >
               Try Again
             </button>
@@ -465,24 +379,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#161616] relative overflow-hidden">
-      {/* Background Image */}
-      <div
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-50"
-        style={{
-          backgroundImage: `url('/Avalink.webp')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundAttachment: 'fixed'
-        }}
-      />
-      
-      {/* Dark overlay */}
-      <div className="fixed inset-0 bg-black/60" />
-
-      <div className="max-w-6xl mx-auto relative z-10">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-white/5 backdrop-blur-md border-b border-white/20">
+        <div className="bg-white border-b border-gray-200 shadow-sm">
           <div className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
@@ -490,25 +390,25 @@ export default function ProfilePage() {
                   <img
                     src={userData.avatar}
                     alt={userData.name}
-                    className="w-16 h-16 rounded-full object-cover border-2 border-[#E94042]"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-blue-500"
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-[#E94042] flex items-center justify-center text-white text-xl font-bold">
+                  <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl font-bold">
                     {userData.name?.[0]?.toUpperCase() || userData.email[0].toUpperCase()}
                   </div>
                 )}
                 <div>
-                  <h1 className="text-2xl font-bold text-white">{userData.name || userData.email}</h1>
-                  <p className="text-gray-300">{userData.email}</p>
+                  <h1 className="text-2xl font-bold text-gray-900">{userData.name || userData.email}</h1>
+                  <p className="text-gray-600">{userData.email}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className={`px-2 py-1 text-xs rounded-full font-medium ${
                       userData.role === 'ADMIN' 
-                        ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' 
-                        : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                        ? 'bg-purple-100 text-purple-700 border border-purple-200' 
+                        : 'bg-blue-100 text-blue-700 border border-blue-200'
                     }`}>
                       {userData.role}
                     </span>
-                    <span className="text-sm text-gray-400">
+                    <span className="text-sm text-gray-500">
                       Joined {formatDate(userData.createdAt)}
                     </span>
                   </div>
@@ -518,21 +418,21 @@ export default function ProfilePage() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => router.push('/step/my')}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:bg-white/10 rounded-lg backdrop-blur-sm border border-white/20 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-300 transition-colors"
                 >
                   <Calendar className="w-4 h-4" />
                   My Steps
                 </button>
                 <button
                   onClick={() => router.push('/')}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:bg-white/10 rounded-lg backdrop-blur-sm border border-white/20 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-300 transition-colors"
                 >
                   <Home className="w-4 h-4" />
                   Home
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#E94042] text-white rounded-lg hover:bg-[#E94042]/90 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
                   Logout
@@ -546,21 +446,21 @@ export default function ProfilePage() {
         <div className="p-6">
           {/* Wallet Card */}
           {userData.wallet && (
-            <div className="mb-6 bg-gradient-to-r from-[#E94042]/10 to-purple-500/10 backdrop-blur-md border border-white/20 rounded-lg p-6 shadow-xl">
+            <div className="mb-6 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-[#E94042]/20 rounded-lg flex items-center justify-center">
-                    <Wallet className="w-6 h-6 text-[#E94042]" />
+                  <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+                    <Wallet className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">In-App Wallet</h3>
-                    <p className="text-sm text-gray-300">Manage your ETH balance</p>
+                    <h3 className="text-xl font-bold text-gray-900">In-App Wallet</h3>
+                    <p className="text-sm text-gray-600">Manage your ETH balance</p>
                   </div>
                 </div>
                 <button
                   onClick={() => setShowWithdrawModal(true)}
                   disabled={parseFloat(userData.wallet.balance) <= 0}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#E94042] text-white rounded-lg hover:bg-[#E94042]/90 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                 >
                   <Send className="w-4 h-4" />
                   Send Funds
@@ -568,55 +468,55 @@ export default function ProfilePage() {
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-lg p-4">
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="w-5 h-5 text-green-400" />
-                    <span className="text-sm text-gray-300">Available Balance</span>
+                    <TrendingUp className="w-5 h-5 text-green-600" />
+                    <span className="text-sm text-gray-700">Available Balance</span>
                   </div>
-                  <div className="text-2xl font-bold text-green-400">
+                  <div className="text-2xl font-bold text-green-600">
                     {parseFloat(userData.wallet.balance).toFixed(4)} ETH
                   </div>
                 </div>
                 
-                <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-lg p-4">
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <AlertCircle className="w-5 h-5 text-orange-400" />
-                    <span className="text-sm text-gray-300">Locked Balance</span>
+                    <AlertCircle className="w-5 h-5 text-orange-600" />
+                    <span className="text-sm text-gray-700">Locked Balance</span>
                   </div>
-                  <div className="text-2xl font-bold text-orange-400">
+                  <div className="text-2xl font-bold text-orange-600">
                     {parseFloat(userData.wallet.lockedBalance).toFixed(4)} ETH
                   </div>
                 </div>
               </div>
               
-              <div className="mt-4 pt-4 border-t border-white/20">
+              <div className="mt-4 pt-4 border-t border-gray-200">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <span className="text-sm text-gray-300">Total Balance:</span>
-                    <span className="text-lg font-bold text-white ml-2">
+                    <span className="text-sm text-gray-600">Total Balance:</span>
+                    <span className="text-lg font-bold text-gray-900 ml-2">
                       {(parseFloat(userData.wallet.balance) + parseFloat(userData.wallet.lockedBalance)).toFixed(4)} ETH
                     </span>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-gray-400">Wallet created</p>
-                    <p className="text-xs text-gray-300">{formatDate(userData.wallet.createdAt)}</p>
+                    <p className="text-xs text-gray-500">Wallet created</p>
+                    <p className="text-xs text-gray-600">{formatDate(userData.wallet.createdAt)}</p>
                   </div>
                 </div>
                 
                 {/* Wallet Address Display */}
                 {userData.walletAddress && (
-                  <div className="flex items-center justify-between bg-white/5 rounded-lg p-3">
+                  <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
                     <div className="flex items-center gap-2">
-                      <Wallet className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-300">Wallet Address:</span>
+                      <Wallet className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-700">Wallet Address:</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-white font-mono">
+                      <span className="text-sm text-gray-900 font-mono">
                         {`${userData.walletAddress.slice(0, 6)}...${userData.walletAddress.slice(-4)}`}
                       </span>
                       <button
                         onClick={() => copyToClipboard(userData.walletAddress!)}
-                        className="text-gray-400 hover:text-white"
+                        className="text-gray-500 hover:text-gray-700"
                         title="Copy address"
                       >
                         <Copy className="w-4 h-4" />
@@ -628,93 +528,52 @@ export default function ProfilePage() {
             </div>
           )}
 
-          {/* Transaction History */}
-          {userData.transactions && userData.transactions.length > 0 && (
-            <div className="mb-6 bg-white/5 backdrop-blur-md border border-white/20 rounded-lg p-6 shadow-xl">
-              <h3 className="text-lg font-semibold text-white mb-4">Recent Transactions</h3>
-              <div className="space-y-4">
-                {userData.transactions.slice(0, 10).map((tx) => (
-                  <div 
-                    key={tx.id} 
-                    className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 hover:bg-white/20 transition-all duration-300"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        {getTransactionIcon(tx.type, tx.status)}
-                        <span className={`text-sm font-medium ${getTransactionColor(tx.type, tx.status)}`}>
-                          {tx.type.replace('_', ' ')} {tx.status === 'PENDING' ? '(Pending)' : ''}
-                        </span>
-                      </div>
-                      <span className="text-xs text-gray-500">{formatTimeAgo(tx.createdAt)}</span>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <div className="flex-1">
-                        <p className="text-gray-300 text-sm mb-1">{tx.description || 'No description'}</p>
-                        <p className="text-xs text-gray-400">
-                          {tx.senderWallet ? `From: ${tx.senderWallet.user.name || tx.senderWallet.user.email}` : ''}
-                          {tx.receiverWallet ? `To: ${tx.receiverWallet.user.name || tx.receiverWallet.user.email}` : ''}
-                        </p>
-                      </div>
-                      <div className="whitespace-nowrap">
-                        <span className={`text-lg font-bold ${
-                          tx.status === 'FAILED' || tx.status === 'CANCELLED' ? 'text-red-400' : 'text-green-400'
-                        }`}>
-                          {tx.amount} ETH
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white/5 backdrop-blur-md border border-white/20 rounded-lg p-4 hover:bg-white/7 transition-all duration-300">
+            <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
-                  <Trophy className="w-5 h-5 text-blue-400" />
+                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <Trophy className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{userData.stats.totalEventsHosted}</p>
-                  <p className="text-sm text-gray-300">Steps Hosted</p>
+                  <p className="text-2xl font-bold text-gray-900">{userData.stats.totalEventsHosted}</p>
+                  <p className="text-sm text-gray-600">Steps Hosted</p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-white/5 backdrop-blur-md border border-white/20 rounded-lg p-4 hover:bg-white/7 transition-all duration-300">
+            <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-green-400" />
+                <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                  <Users className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{userData.stats.totalEventsJoined}</p>
-                  <p className="text-sm text-gray-300">Steps Joined</p>
+                  <p className="text-2xl font-bold text-gray-900">{userData.stats.totalEventsJoined}</p>
+                  <p className="text-sm text-gray-600">Steps Joined</p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-white/5 backdrop-blur-md border border-white/20 rounded-lg p-4 hover:bg-white/7 transition-all duration-300">
+            <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-purple-400" />
+                <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{userData.stats.totalPosts}</p>
-                  <p className="text-sm text-gray-300">Posts Created</p>
+                  <p className="text-2xl font-bold text-gray-900">{userData.stats.totalPosts}</p>
+                  <p className="text-sm text-gray-600">Posts Created</p>
                 </div>
               </div>
             </div>
             
-            <div className="bg-white/5 backdrop-blur-md border border-white/20 rounded-lg p-4 hover:bg-white/7 transition-all duration-300">
+            <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                  <ArrowUp className="w-5 h-5 text-orange-400" />
+                <div className="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                  <ArrowUp className="w-5 h-5 text-orange-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-white">{userData.stats.totalUpvotesReceived}</p>
-                  <p className="text-sm text-gray-300">Upvotes Received</p>
+                  <p className="text-2xl font-bold text-gray-900">{userData.stats.totalUpvotesReceived}</p>
+                  <p className="text-sm text-gray-600">Upvotes Received</p>
                 </div>
               </div>
             </div>
@@ -724,19 +583,19 @@ export default function ProfilePage() {
 
       {/* Withdraw Modal */}
       {showWithdrawModal && userData?.wallet && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <div className="w-96 max-w-[90vw] bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-lg">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="w-96 max-w-[90vw] bg-white border border-gray-200 shadow-xl rounded-lg">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#E94042]/20 rounded-lg flex items-center justify-center">
-                    <Send className="w-5 h-5 text-[#E94042]" />
+                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                    <Send className="w-5 h-5 text-blue-600" />
                   </div>
-                  <h2 className="text-xl font-bold text-white">Send Funds</h2>
+                  <h2 className="text-xl font-bold text-gray-900">Send Funds</h2>
                 </div>
                 <button
                   onClick={() => setShowWithdrawModal(false)}
-                  className="text-gray-400 hover:text-white"
+                  className="text-gray-400 hover:text-gray-600"
                 >
                   ✕
                 </button>
@@ -744,10 +603,10 @@ export default function ProfilePage() {
 
               <div className="space-y-4">
                 {/* Available Balance Display */}
-                <div className="bg-white/5 rounded-lg p-4">
+                <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-300">Available Balance</span>
-                    <span className="text-lg font-bold text-green-400">
+                    <span className="text-sm text-gray-700">Available Balance</span>
+                    <span className="text-lg font-bold text-green-600">
                       {parseFloat(userData.wallet.balance).toFixed(4)} ETH
                     </span>
                   </div>
@@ -755,7 +614,7 @@ export default function ProfilePage() {
 
                 {/* Recipient Address */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Recipient Address
                   </label>
                   <input
@@ -763,13 +622,13 @@ export default function ProfilePage() {
                     value={withdrawData.recipientAddress}
                     onChange={(e) => setWithdrawData({ ...withdrawData, recipientAddress: e.target.value })}
                     placeholder="0x..."
-                    className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#E94042]"
+                    className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
                 {/* Amount */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Amount (ETH)
                   </label>
                   <div className="relative">
@@ -781,12 +640,12 @@ export default function ProfilePage() {
                       value={withdrawData.amount}
                       onChange={(e) => setWithdrawData({ ...withdrawData, amount: e.target.value })}
                       placeholder="0.0000"
-                      className="w-full px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#E94042]"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                     <button
                       type="button"
                       onClick={() => setWithdrawData({ ...withdrawData, amount: userData.wallet?.balance || '0' })}
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-[#E94042] hover:text-[#E94042]/80"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-blue-600 hover:text-blue-700"
                     >
                       MAX
                     </button>
@@ -794,8 +653,8 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Warning */}
-                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
-                  <p className="text-yellow-400 text-sm">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                  <p className="text-yellow-800 text-sm">
                     ⚠️ This action cannot be undone. Please double-check the recipient address before proceeding.
                   </p>
                 </div>
@@ -808,7 +667,7 @@ export default function ProfilePage() {
                       setWithdrawData({ recipientAddress: '', amount: '' });
                     }}
                     disabled={isWithdrawing}
-                    className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 transition-colors"
+                    className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 transition-colors"
                   >
                     Cancel
                   </button>
@@ -821,7 +680,7 @@ export default function ProfilePage() {
                       parseFloat(withdrawData.amount) <= 0 ||
                       parseFloat(withdrawData.amount) > parseFloat(userData.wallet.balance)
                     }
-                    className="flex-1 px-4 py-2 bg-[#E94042] text-white rounded-lg hover:bg-[#E94042]/90 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors"
+                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                   >
                     {isWithdrawing ? (
                       <div className="flex items-center justify-center gap-2">
