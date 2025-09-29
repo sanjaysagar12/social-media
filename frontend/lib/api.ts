@@ -9,6 +9,7 @@ export const API_CONFIG = {
     
     // User
     USER_PROFILE: '/api/user/me',
+    USER_BY_ID: (id: string) => `/api/user/${id}`,
     
     // Steps
   STEPS: '/api/step',
