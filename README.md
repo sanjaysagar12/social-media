@@ -229,9 +229,12 @@ Key API endpoints available at `http://localhost:3000`:
 
 - `POST /auth/login` - User authentication
 - `POST /auth/register` - User registration
-- `GET /event` - List all events
-- `POST /event` - Create new event
-- `GET /event/:id` - Get event details
+- `GET /api/step` - List all steps
+- `POST /api/step` - Create new step
+- `GET /api/step/:id` - Get step details
+- `GET /api/step/my` - Get user's hosted steps
+- `POST /api/step/post` - Create standalone post
+- `GET /api/step/explore` - Get all posts (steps + standalone)
 - `GET /user/me` - Get current user profile
 
 ## 🧪 Testing

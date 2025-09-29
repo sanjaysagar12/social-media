@@ -79,7 +79,7 @@ export default function MyEventsPage() {
       const result = await response.json();
 
       if (response.ok) {
-        setEvents(result.data);
+        setEvents(result.data || []);
       } else {
         setError(result.message || 'Failed to fetch hosted events');
       }
@@ -266,13 +266,13 @@ export default function MyEventsPage() {
                   Back to Explore
                 </Button>
               </Link>
-              <h1 className="text-2xl font-bold text-white">My Events</h1>
+              <h1 className="text-2xl font-bold text-white">My Steps</h1>
             </div>
             
-            <Link href="/event/create">
+            <Link href="/step/create">
               <Button className="bg-[#E94042] hover:bg-[#E94042]/90">
                 <Plus className="w-4 h-4 mr-2" />
-                Create Event
+                Create Step
               </Button>
             </Link>
           </div>
@@ -285,13 +285,13 @@ export default function MyEventsPage() {
             <CardContent className="pt-12 pb-12">
               <div className="mb-6">
                 <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h2 className="text-2xl font-semibold text-white mb-2">No Events Yet</h2>
-                <p className="text-gray-300 mb-6">You haven't created any events yet. Start by creating your first event!</p>
+                <h2 className="text-2xl font-semibold text-white mb-2">No Steps Yet</h2>
+                <p className="text-gray-300 mb-6">You haven't created any steps yet. Start by creating your first step!</p>
                 
-                <Link href="/event/create">
+                <Link href="/step/create">
                   <Button className="bg-[#E94042] hover:bg-[#E94042]/90">
                     <Plus className="w-4 h-4 mr-2" />
-                    Create Your First Event
+                    Create Your First Step
                   </Button>
                 </Link>
               </div>
@@ -389,13 +389,13 @@ export default function MyEventsPage() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-2">
-                      <Link href={`/event/${event.id}`} className="flex-1">
+                      <Link href={`/step/${event.id}`} className="flex-1">
                         <Button variant="outline" className="w-full border-gray-600 text-gray-300 hover:bg-white/10">
                           <Eye className="w-4 h-4 mr-2" />
                           View
                         </Button>
                       </Link>
-                      <Link href={`/event/${event.id}/participants`} className="flex-1">
+                      <Link href={`/step/${event.id}/participants`} className="flex-1">
                         <Button variant="outline" className="w-full border-gray-600 text-gray-300 hover:bg-white/10">
                           <Users className="w-4 h-4 mr-2" />
                           Participants
