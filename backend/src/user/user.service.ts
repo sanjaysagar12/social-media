@@ -172,8 +172,8 @@ export class UserService {
             const eventLikes = (user as any).stepLikes || [];
 
             const stats = {
-                totalEventsHosted: created.length,
-                totalEventsJoined: joined.length,
+                totalStepsHosted: created.length,
+                totalStepsJoined: joined.length,
                 totalEventsWon: won.length,
                 totalPosts: posts.length,
                 totalComments: comments.length,

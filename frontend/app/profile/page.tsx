@@ -141,8 +141,8 @@ interface StepLikeSummary {
 }
 
 interface UserStats {
-  totalEventsHosted: number;
-  totalEventsJoined: number;
+  totalStepsHosted: number;
+  totalStepsJoined: number;
   totalEventsWon: number;
   totalPosts: number;
   totalComments: number;
@@ -169,8 +169,8 @@ interface FullUserData {
   isActive: boolean;
   createdAt: string;
   walletAddress?: string;
-  createdEvents: StepSummary[];
-  joinedEvents: StepSummary[];
+  createdSteps: StepSummary[];
+  joinedSteps: StepSummary[];
   wonEvents: StepSummary[];
   posts: PostSummary[];
   comments: CommentSummary[];
@@ -392,41 +392,42 @@ export default function ProfilePage() {
   return (
     <AuthGuard>
       <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 shadow-sm">
-          <div className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
+        <div className="bg-white shadow-sm border-b">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex items-center space-x-6">
+              <div className="relative">
                 {userData.avatar ? (
                   <img
                     src={userData.avatar}
                     alt={userData.name}
-                    className="w-16 h-16 rounded-full object-cover border-2 border-blue-500"
+                    className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl font-bold">
+                  <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-lg">
                     {userData.name?.[0]?.toUpperCase() || userData.email[0].toUpperCase()}
                   </div>
                 )}
-                <div>
-                  <h1 className="text-2xl font-bold text-gray-900">{userData.name || userData.email}</h1>
-                  <p className="text-gray-600">{userData.email}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                      userData.role === 'ADMIN' 
-                        ? 'bg-purple-100 text-purple-700 border border-purple-200' 
-                        : 'bg-blue-100 text-blue-700 border border-blue-200'
-                    }`}>
-                      {userData.role}
-                    </span>
-                    <span className="text-sm text-gray-500">
-                      Joined {formatDate(userData.createdAt)}
-                    </span>
-                  </div>
+                {userData.isActive && (
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
+                )}
+              </div>
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold text-gray-900">{userData.name || userData.email}</h1>
+                <p className="text-gray-600">{userData.email}</p>
+                <div className="flex items-center space-x-4 mt-2">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                    userData.role === 'ADMIN' 
+                      ? 'bg-purple-100 text-purple-700 border border-purple-200' 
+                      : 'bg-blue-100 text-blue-700 border border-blue-200'
+                  }`}>
+                    {userData.role}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    Joined {formatDate(userData.createdAt)}
+                  </span>
                 </div>
               </div>
-              
               <div className="flex items-center gap-3">
                 {/* Shareable Link */}
                 <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
@@ -444,7 +445,6 @@ export default function ProfilePage() {
                     </button>
                   </div>
                 </div>
-
                 <button
                   onClick={() => router.push('/step/my')}
                   className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-300 transition-colors"
@@ -471,144 +471,388 @@ export default function ProfilePage() {
           </div>
         </div>
 
+        {/* Navigation Tabs */}
+        <div className="bg-white border-b">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav className="flex space-x-8">
+              {[
+                { id: 'overview', label: 'Overview', icon: Home },
+                { id: 'steps', label: 'Steps', icon: Calendar },
+                { id: 'posts', label: 'Posts', icon: FileText },
+              ].map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
+                      activeTab === tab.id
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+
         {/* Content */}
-        <div className="p-6">
-          {/* Wallet Card */}
-          {userData.wallet && (
-            <div className="mb-6 bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-                    <Wallet className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900">In-App Wallet</h3>
-                    <p className="text-sm text-gray-600">Manage your ETH balance</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowWithdrawModal(true)}
-                  disabled={parseFloat(userData.wallet.balance) <= 0}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Send className="w-4 h-4" />
-                  Send Funds
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="w-5 h-5 text-green-600" />
-                    <span className="text-sm text-gray-700">Available Balance</span>
-                  </div>
-                  <div className="text-2xl font-bold text-green-600">
-                    {parseFloat(userData.wallet.balance).toFixed(4)} ETH
-                  </div>
-                </div>
-                
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <AlertCircle className="w-5 h-5 text-orange-600" />
-                    <span className="text-sm text-gray-700">Locked Balance</span>
-                  </div>
-                  <div className="text-2xl font-bold text-orange-600">
-                    {parseFloat(userData.wallet.lockedBalance).toFixed(4)} ETH
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <span className="text-sm text-gray-600">Total Balance:</span>
-                    <span className="text-lg font-bold text-gray-900 ml-2">
-                      {(parseFloat(userData.wallet.balance) + parseFloat(userData.wallet.lockedBalance)).toFixed(4)} ETH
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-gray-500">Wallet created</p>
-                    <p className="text-xs text-gray-600">{formatDate(userData.wallet.createdAt)}</p>
-                  </div>
-                </div>
-                
-                {/* Wallet Address Display */}
-                {userData.walletAddress && (
-                  <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                    <div className="flex items-center gap-2">
-                      <Wallet className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm text-gray-700">Wallet Address:</span>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {activeTab === 'overview' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Stats */}
+              <div className="lg:col-span-1">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Statistics</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <Calendar className="h-5 w-5 text-blue-500" />
+                        <span className="text-sm text-gray-600">Steps Hosted</span>
+                      </div>
+                      <span className="font-semibold">{userData.stats.totalStepsHosted}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-900 font-mono">
-                        {`${userData.walletAddress.slice(0, 6)}...${userData.walletAddress.slice(-4)}`}
-                      </span>
-                      <button
-                        onClick={() => copyToClipboard(userData.walletAddress!)}
-                        className="text-gray-500 hover:text-gray-700"
-                        title="Copy address"
-                      >
-                        <Copy className="w-4 h-4" />
-                      </button>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <Users className="h-5 w-5 text-green-500" />
+                        <span className="text-sm text-gray-600">Steps Joined</span>
+                      </div>
+                      <span className="font-semibold">{userData.stats.totalStepsJoined}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <FileText className="h-5 w-5 text-purple-500" />
+                        <span className="text-sm text-gray-600">Posts</span>
+                      </div>
+                      <span className="font-semibold">{userData.stats.totalPosts}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <MessageCircle className="h-5 w-5 text-orange-500" />
+                        <span className="text-sm text-gray-600">Comments</span>
+                      </div>
+                      <span className="font-semibold">{userData.stats.totalComments}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <Heart className="h-5 w-5 text-red-500" />
+                        <span className="text-sm text-gray-600">Upvotes Given</span>
+                      </div>
+                      <span className="font-semibold">{userData.stats.totalUpvotesGiven}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <ArrowUp className="h-5 w-5 text-pink-500" />
+                        <span className="text-sm text-gray-600">Upvotes Received</span>
+                      </div>
+                      <span className="font-semibold">{userData.stats.totalUpvotesReceived}</span>
                     </div>
                   </div>
-                )}
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div className="lg:col-span-2">
+                <div className="space-y-6">
+                  {/* Wallet Card */}
+                  {userData.wallet && (
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+                            <Wallet className="w-6 h-6 text-blue-600" />
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-900">In-App Wallet</h3>
+                            <p className="text-sm text-gray-600">Manage your ETH balance</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setShowWithdrawModal(true)}
+                          disabled={parseFloat(userData.wallet.balance) <= 0}
+                          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                        >
+                          <Send className="w-4 h-4" />
+                          Send Funds
+                        </button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <TrendingUp className="w-5 h-5 text-green-600" />
+                            <span className="text-sm text-gray-700">Available Balance</span>
+                          </div>
+                          <div className="text-2xl font-bold text-green-600">
+                            {parseFloat(userData.wallet.balance).toFixed(4)} ETH
+                          </div>
+                        </div>
+                        
+                        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <AlertCircle className="w-5 h-5 text-orange-600" />
+                            <span className="text-sm text-gray-700">Locked Balance</span>
+                          </div>
+                          <div className="text-2xl font-bold text-orange-600">
+                            {parseFloat(userData.wallet.lockedBalance).toFixed(4)} ETH
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4 pt-4 border-t border-gray-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <div>
+                            <span className="text-sm text-gray-600">Total Balance:</span>
+                            <span className="text-lg font-bold text-gray-900 ml-2">
+                              {(parseFloat(userData.wallet.balance) + parseFloat(userData.wallet.lockedBalance)).toFixed(4)} ETH
+                            </span>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-gray-500">Wallet created</p>
+                            <p className="text-xs text-gray-600">{formatDate(userData.wallet.createdAt)}</p>
+                          </div>
+                        </div>
+                        
+                        {/* Wallet Address Display */}
+                        {userData.walletAddress && (
+                          <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <Wallet className="w-4 h-4 text-gray-500" />
+                              <span className="text-sm text-gray-700">Wallet Address:</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-900 font-mono">
+                                {`${userData.walletAddress.slice(0, 6)}...${userData.walletAddress.slice(-4)}`}
+                              </span>
+                              <button
+                                onClick={() => copyToClipboard(userData.walletAddress!)}
+                                className="text-gray-500 hover:text-gray-700"
+                                title="Copy address"
+                              >
+                                <Copy className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Recent Steps */}
+                  {userData.createdSteps.length > 0 && (
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Steps Created</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {userData.createdSteps.slice(0, 4).map((step) => (
+                          <div key={step.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-start space-x-3">
+                              {step.thumbnail && (
+                                <img
+                                  src={step.thumbnail}
+                                  alt={step.title}
+                                  className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                                />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center space-x-2 mb-1">
+                                  <h4 className="text-sm font-semibold text-gray-900 truncate">{step.title}</h4>
+                                  {step.verified && <Star className="w-4 h-4 text-yellow-500 fill-current flex-shrink-0" />}
+                                </div>
+                                <p className="text-xs text-gray-500 mb-2">
+                                  {formatDate(step.createdAt)} • {step._count.participants} participants
+                                </p>
+                                <div className="flex items-center space-x-3 text-xs text-gray-500">
+                                  <span>{step._count.posts} posts</span>
+                                  <span>{step._count.userLikes} likes</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Recent Posts */}
+                  {userData.posts.length > 0 && (
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Posts</h3>
+                      <div className="space-y-4">
+                        {userData.posts.slice(0, 3).map((post) => (
+                          <div key={post.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <p className="text-gray-900 text-sm mb-3 line-clamp-2">{post.content}</p>
+                            {post.image && (
+                              <img
+                                src={post.image}
+                                alt="Post image"
+                                className="w-full h-32 object-cover rounded-lg mb-3"
+                              />
+                            )}
+                            <div className="flex items-center justify-between text-xs text-gray-500">
+                              <div className="flex items-center space-x-4">
+                                <span className="flex items-center space-x-1">
+                                  <Heart className="w-3 h-3" />
+                                  <span>{post._count.userUpvotes}</span>
+                                </span>
+                                <span className="flex items-center space-x-1">
+                                  <MessageCircle className="w-3 h-3" />
+                                  <span>{post._count.comments}</span>
+                                </span>
+                              </div>
+                              <span>{formatDate(post.createdAt)}</span>
+                            </div>
+                            {post.step && (
+                              <div className="mt-2 text-xs text-gray-600">
+                                Posted in: <span className="font-medium">{post.step.title}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                  <Trophy className="w-5 h-5 text-blue-600" />
+          {activeTab === 'steps' && (
+            <div className="space-y-6">
+              {/* Created Steps */}
+              {userData.createdSteps.length > 0 && (
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Steps Created</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {userData.createdSteps.map((step) => (
+                      <div key={step.id} className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleStepClick(step.id)}>
+                        {step.thumbnail && (
+                          <img
+                            src={step.thumbnail}
+                            alt={step.title}
+                            className="w-full h-48 object-cover"
+                          />
+                        )}
+                        <div className="p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-lg font-semibold text-gray-900">{step.title}</h4>
+                            {step.verified && <Star className="w-5 h-5 text-yellow-500 fill-current" />}
+                          </div>
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">{step.description}</p>
+                          <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+                            <span>{step._count.participants} participants</span>
+                            <span>{step._count.posts} posts</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                              step.isActive
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {step.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                            <span className="text-xs text-gray-500">{formatDate(step.createdAt)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{userData.stats.totalEventsHosted}</p>
-                  <p className="text-sm text-gray-600">Steps Hosted</p>
+              )}
+
+              {/* Joined Steps */}
+              {userData.joinedSteps.length > 0 && (
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Steps Joined</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {userData.joinedSteps.map((step) => (
+                      <div key={step.id} className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleStepClick(step.id)}>
+                        {step.thumbnail && (
+                          <img
+                            src={step.thumbnail}
+                            alt={step.title}
+                            className="w-full h-48 object-cover"
+                          />
+                        )}
+                        <div className="p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-lg font-semibold text-gray-900">{step.title}</h4>
+                            {step.verified && <Star className="w-5 h-5 text-yellow-500 fill-current" />}
+                          </div>
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">{step.description}</p>
+                          <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+                            <span>{step._count.participants} participants</span>
+                            <span>{step._count.posts} posts</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                              step.isActive
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {step.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                            <span className="text-xs text-gray-500">{formatDate(step.createdAt)}</span>
+                          </div>
+                          {step.creator && (
+                            <div className="mt-2 text-xs text-gray-500">
+                              Created by {step.creator.name}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
-            
-            <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-green-600" />
+          )}
+
+          {activeTab === 'posts' && (
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Posts</h3>
+              {userData.posts.length > 0 ? (
+                <div className="space-y-6">
+                  {userData.posts.map((post) => (
+                    <div key={post.id} className="border rounded-lg p-6 hover:bg-gray-50">
+                      <p className="text-gray-900 mb-4">{post.content}</p>
+                      {post.image && (
+                        <img
+                          src={post.image}
+                          alt="Post image"
+                          className="w-full h-64 object-cover rounded-lg mb-4"
+                        />
+                      )}
+                      <div className="flex items-center justify-between text-sm text-gray-500">
+                        <div className="flex items-center space-x-4">
+                          <span className="flex items-center space-x-1">
+                            <Heart className="w-4 h-4" />
+                            <span>{post._count.userUpvotes}</span>
+                          </span>
+                          <span className="flex items-center space-x-1">
+                            <MessageCircle className="w-4 h-4" />
+                            <span>{post._count.comments}</span>
+                          </span>
+                        </div>
+                        <span>{formatDate(post.createdAt)}</span>
+                      </div>
+                      {post.step && (
+                        <div className="mt-3 text-sm text-gray-600">
+                          Posted in step: <span className="font-medium">{post.step.title}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{userData.stats.totalEventsJoined}</p>
-                  <p className="text-sm text-gray-600">Steps Joined</p>
-                </div>
-              </div>
+              ) : (
+                <p className="text-gray-500 text-center py-8">No posts yet</p>
+              )}
             </div>
-            
-            <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{userData.stats.totalPosts}</p>
-                  <p className="text-sm text-gray-600">Posts Created</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
-                  <ArrowUp className="w-5 h-5 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{userData.stats.totalUpvotesReceived}</p>
-                  <p className="text-sm text-gray-600">Upvotes Received</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
-      </div>
 
       {/* Withdraw Modal */}
       {showWithdrawModal && userData?.wallet && (
