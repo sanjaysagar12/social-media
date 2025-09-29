@@ -5,7 +5,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
   Home,
-  Calendar,
   Users,
   Plus,
   Search,
@@ -92,7 +91,7 @@ export default function ModernHeader() {
   const navigation = [
     { name: 'Home', href: '/', icon: Home, requiresAuth: false },
     { name: 'Explore', href: '/explore', icon: Search, requiresAuth: true },
-    { name: 'My Steps', href: '/step/my', icon: Calendar, requiresAuth: true },
+    { name: 'Create Post', href: '/post/create', icon: Plus, requiresAuth: true },
   ];
 
   const isActive = (href: string) => {
@@ -113,14 +112,6 @@ export default function ModernHeader() {
     setIsAuthenticated(false);
     setUser(null);
     router.push('/auth/login');
-  };
-
-  const handleCreateStep = () => {
-    if (!isAuthenticated) {
-      router.push('/auth/login');
-      return;
-    }
-    router.push('/step/create');
   };
 
   if (isLoading) {
@@ -187,16 +178,6 @@ export default function ModernHeader() {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-3">
-            {/* Create Step Button - Only show when authenticated */}
-            {isAuthenticated && (
-              <Button
-                onClick={handleCreateStep}
-                className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Create Step</span>
-              </Button>
-            )}
 
             {/* Notifications - Only show when authenticated */}
             {isAuthenticated && (
@@ -317,16 +298,6 @@ export default function ModernHeader() {
                     >
                       <User className="w-4 h-4 mr-2" />
                       Profile
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        handleCreateStep();
-                        setIsMobileMenuOpen(false);
-                      }}
-                      className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create Step
                     </Button>
                     <Button
                       onClick={() => {
