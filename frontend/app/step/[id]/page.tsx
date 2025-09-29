@@ -688,10 +688,10 @@ export default function StepDetailPage() {
       {/* Floating Action Button for Mobile */}
       <div className="fixed bottom-6 right-6 lg:hidden">
         <Button
-          onClick={() => currentUserId && isUserParticipant(currentUserId) && event.isActive && setShowPostForm(true)}
+          onClick={() => currentUserId && (isUserParticipant(currentUserId) || isStepHost(currentUserId)) && event.isActive && setShowPostForm(true)}
           className="h-14 w-14 rounded-full bg-[#E94042] hover:bg-[#E94042]/90 shadow-lg"
           size="lg"
-          disabled={!currentUserId || !isUserParticipant(currentUserId) || !event.isActive}
+          disabled={!currentUserId || (!isUserParticipant(currentUserId) && !isStepHost(currentUserId)) || !event.isActive}
         >
           <Plus className="w-6 h-6" />
         </Button>

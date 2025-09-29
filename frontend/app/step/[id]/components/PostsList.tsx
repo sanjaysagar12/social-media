@@ -88,8 +88,8 @@ export default function PostsList({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-white">Posts & Discussions ({posts.length})</h3>
-        {/* Create Post Button - Only for participants */}
-        {currentUserId && isUserParticipant(currentUserId) && isActive && (
+        {/* Create Post Button - For participants and hosts */}
+        {canParticipate && (
           <Button 
             onClick={() => setShowPostForm(true)}
             className="bg-[#E94042] hover:bg-[#E94042]/90 text-white"

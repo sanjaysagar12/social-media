@@ -382,8 +382,8 @@ export class PostService {
             const isCreator = step.creator.id === userId;
             const isParticipant = step.participants.some(p => p.id === userId);
 
-            if (!isParticipant) {
-                if (isCreator) throw new Error('Step creator must join the step to post');
+            // Allow posting if user is creator OR participant
+            if (!isCreator && !isParticipant) {
                 throw new Error('You must join the step to post');
             }
         }
