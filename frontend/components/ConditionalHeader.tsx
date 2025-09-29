@@ -1,15 +1,15 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import ModernHeader from '@/components/ModernHeader';
+import BottomNavigation from '@/components/BottomNavigation';
 
 export default function ConditionalHeader() {
   const pathname = usePathname();
-  const showHeader = pathname !== '/' && !pathname.startsWith('/auth/') && !pathname.startsWith('/profile/');
+  const showNavigation = pathname !== '/' && !pathname.startsWith('/auth/');
 
-  if (!showHeader) {
+  if (!showNavigation) {
     return null;
   }
 
-  return <ModernHeader />;
+  return <BottomNavigation />;
 }

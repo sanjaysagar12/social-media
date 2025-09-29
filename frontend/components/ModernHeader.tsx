@@ -89,9 +89,7 @@ export default function ModernHeader() {
   };
 
   const navigation = [
-    { name: 'Home', href: '/', icon: Home, requiresAuth: false },
-    { name: 'Explore', href: '/explore', icon: Search, requiresAuth: true },
-    { name: 'Create Post', href: '/post/create', icon: Plus, requiresAuth: true },
+    // Navigation moved to bottom navigation component
   ];
 
   const isActive = (href: string) => {
@@ -151,8 +149,8 @@ export default function ModernHeader() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
+          {/* Desktop Navigation - Moved to bottom */}
+          {/* <nav className="hidden md:flex items-center space-x-1">
             {navigation.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
@@ -171,7 +169,7 @@ export default function ModernHeader() {
                 </button>
               );
             })}
-          </nav>
+          </nav> */}
 
           {/* Right side actions */}
           <div className="flex items-center space-x-3">
@@ -255,32 +253,10 @@ export default function ModernHeader() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Moved to bottom */}
         {isMobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-md">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.href);
-                return (
-                  <button
-                    key={item.name}
-                    onClick={() => {
-                      handleNavigation(item.href, item.requiresAuth);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`flex items-center space-x-3 px-3 py-2 rounded-lg font-medium transition-all duration-200 w-full text-left ${
-                      active
-                        ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span>{item.name}</span>
-                  </button>
-                );
-              })}
-
               {/* Mobile Auth Section */}
               <div className="pt-2 border-t border-gray-200 mt-2">
                 {isAuthenticated ? (
