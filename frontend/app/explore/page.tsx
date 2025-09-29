@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
+import AuthGuard from "@/components/AuthGuard";
 import {
     ArrowUp,
     MessageCircle,
@@ -243,7 +244,8 @@ export default function ExplorePage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <AuthGuard>
+            <div className="min-h-screen bg-gray-50">
             {/* Header */}
             <div className="bg-white shadow-sm border-b">
                 <div className="px-6 py-4">
@@ -540,5 +542,6 @@ export default function ExplorePage() {
                 </div>
             </div>
         </div>
+        </AuthGuard>
     );
 }

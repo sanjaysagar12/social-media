@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import AuthGuard from "@/components/AuthGuard";
 import { 
   User,
   Calendar,
@@ -379,7 +380,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <AuthGuard>
+      <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white border-b border-gray-200 shadow-sm">
@@ -701,5 +703,6 @@ export default function ProfilePage() {
         </div>
       )}
     </div>
+    </AuthGuard>
   );
 }
