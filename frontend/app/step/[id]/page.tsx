@@ -240,7 +240,7 @@ export default function EventDetailPage() {
         return;
       }
 
-  const response = await fetch(`https://api-small-step-for-earth.portos.cloud/api/step/${params.id}/post`, {
+  const response = await fetch(`http://localhost:3000/api/step/${params.id}/post`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -299,7 +299,7 @@ export default function EventDetailPage() {
         return;
       }
 
-  const response = await fetch(`https://api-small-step-for-earth.portos.cloud/api/step/post/${postId}/comment`, {
+  const response = await fetch(`http://localhost:3000/api/step/post/${postId}/comment`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -346,7 +346,7 @@ export default function EventDetailPage() {
         return;
       }
 
-  const response = await fetch(`https://api-small-step-for-earth.portos.cloud/api/step/comment/${commentId}/reply`, {
+  const response = await fetch(`http://localhost:3000/api/step/comment/${commentId}/reply`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -402,7 +402,7 @@ export default function EventDetailPage() {
       }
 
       const endpoint = isCurrentlyLiked ? 'unlike' : 'like';
-  const response = await fetch(`https://api-small-step-for-earth.portos.cloud/api/step/${eventId}/${endpoint}`, {
+  const response = await fetch(`http://localhost:3000/api/step/${eventId}/${endpoint}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -443,7 +443,7 @@ export default function EventDetailPage() {
       }
 
       const endpoint = isCurrentlyUpvoted ? 'remove-upvote' : 'upvote';
-  const response = await fetch(`https://api-small-step-for-earth.portos.cloud/api/step/post/${postId}/${endpoint}`, {
+  const response = await fetch(`http://localhost:3000/api/step/post/${postId}/${endpoint}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

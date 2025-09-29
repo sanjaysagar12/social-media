@@ -48,7 +48,7 @@ npx prisma migrate dev
 npm run start:dev
 ```
 
-✅ Backend will be running at: `https://api-small-step-for-earth.portos.cloud`
+✅ Backend will be running at: `http://localhost:3000`
 
 ### Step 3: **SECOND** - Setup and Run Frontend
 
@@ -105,7 +105,7 @@ Once both services are running:
 | Service | URL | Description |
 |---------|-----|-------------|
 | **Frontend** | `http://localhost:3001` | Main application interface |
-| **Backend API** | `https://api-small-step-for-earth.portos.cloud` | REST API endpoints |
+| **Backend API** | `http://localhost:3000` | REST API endpoints |
 | **Database** | `localhost:5432` | PostgreSQL (via Docker) |
 | **Prisma Studio** | `http://localhost:5555` | Database GUI (run `npx prisma studio` in backend/) |
 
@@ -179,7 +179,7 @@ NODE_ENV="development"
 
 ### Frontend (`.env.local` in `/frontend`):
 ```env
-NEXT_PUBLIC_API_URL="https://api-small-step-for-earth.portos.cloud"
+NEXT_PUBLIC_API_URL="http://localhost:3000"
 NEXTAUTH_URL="http://localhost:3001"
 NEXTAUTH_SECRET="your-nextauth-secret"
 ```
@@ -199,7 +199,7 @@ NEXTAUTH_SECRET="your-nextauth-secret"
    ```
 
 2. **Frontend can't connect to API**:
-   - Ensure backend is running on `https://api-small-step-for-earth.portos.cloud`
+   - Ensure backend is running on `http://localhost:3000`
    - Check `NEXT_PUBLIC_API_URL` in frontend `.env.local`
 
 3. **Database connection errors**:
@@ -225,7 +225,7 @@ NEXTAUTH_SECRET="your-nextauth-secret"
 
 ## 📊 API Endpoints
 
-Key API endpoints available at `https://api-small-step-for-earth.portos.cloud`:
+Key API endpoints available at `http://localhost:3000`:
 
 - `POST /auth/login` - User authentication
 - `POST /auth/register` - User registration

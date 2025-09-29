@@ -75,7 +75,7 @@ export default function EventParticipantsPage() {
     try {
       const token = localStorage.getItem('access_token');
       
-  const response = await fetch(`https://api-small-step-for-earth.portos.cloud/api/step/${params.id}/participants`, {
+  const response = await fetch(`http://localhost:3000/api/step/${params.id}/participants`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -161,7 +161,7 @@ export default function EventParticipantsPage() {
     try {
       const token = localStorage.getItem('access_token');
       
-  const response = await fetch(`https://api-small-step-for-earth.portos.cloud/api/step/${params.id}/select-winner`, {
+  const response = await fetch(`http://localhost:3000/api/step/${params.id}/select-winner`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,

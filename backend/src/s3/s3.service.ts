@@ -31,7 +31,7 @@ export class S3Service {
             fs.writeFileSync(filePath, file.buffer);
 
             // Return the public URL (served by NestJS static files)
-            const baseUrl = process.env.BASE_URL || 'https://api-small-step-for-earth.portos.cloud';
+            const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
             return `${baseUrl}/uploads/${folder}/${fileName}`;
         } catch (error) {
             console.error('File upload error:', error);

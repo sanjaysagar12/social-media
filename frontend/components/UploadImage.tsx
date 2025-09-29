@@ -52,7 +52,7 @@ export default function UploadImage({ onImageUploaded, currentImage, className }
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('https://api-small-step-for-earth.portos.cloud/api/image', {
+      const response = await fetch('http://localhost:3000/api/image', {
         method: 'POST',
         headers: {
           'Authorization': token ? `Bearer ${token}` : '',

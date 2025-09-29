@@ -20,6 +20,6 @@ export class AuthController {
         // After successful Google authentication, generate JWT
         const token = await this.authService.googleSignin(req.user.id, req.user.role);
         // Redirect to frontend with token in URL
-        return res.redirect(`https://small-step-for-earth.portos.cloud/auth/callback?token=${token.access_token}`);
+        return res.redirect(`http://localhost:4000/auth/callback?token=${token.access_token}`);
     }
 }

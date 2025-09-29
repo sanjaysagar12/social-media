@@ -59,7 +59,7 @@ Finally, start the NestJS development server:
 npm run start:dev
 ```
 
-The API will be available at `https://api-small-step-for-earth.portos.cloud`
+The API will be available at `http://localhost:3000`
 
 ### ⚡ One-Command Setup
 
@@ -152,7 +152,7 @@ DATABASE_URL=postgresql://<user>:<password>@localhost:5432/<database>
 
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_CALLBACK_URL=https://api-small-step-for-earth.portos.cloud/api/auth/google/callback
+GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
 
 # JWT
 JWT_SECRET=your_jwt_secret_key
@@ -188,8 +188,8 @@ Authorization: Bearer <your-jwt-token>
 
 Once the server is running, you can access:
 
-- **API Endpoints**: `https://api-small-step-for-earth.portos.cloud`
-- **Swagger Documentation**: `https://api-small-step-for-earth.portos.cloud/api` (if configured)
+- **API Endpoints**: `http://localhost:3000`
+- **Swagger Documentation**: `http://localhost:3000/api` (if configured)
 - **Prisma Studio**: Run `npx prisma studio` for database GUI
 
 ## 🐳 Docker Development

@@ -54,7 +54,7 @@ export default function EventsPage() {
         return;
       }
 
-  const response = await fetch('https://api-small-step-for-earth.portos.cloud/api/step', {
+  const response = await fetch('http://localhost:3000/api/step', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

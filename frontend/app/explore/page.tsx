@@ -148,7 +148,7 @@ export default function ExplorePage() {
             }
 
             const endpoint = isCurrentlyUpvoted ? 'remove-upvote' : 'upvote';
-            const response = await fetch(`https://api-small-step-for-earth.portos.cloud/api/event/post/${postId}/${endpoint}`, {
+            const response = await fetch(`http://localhost:3000/api/event/post/${postId}/${endpoint}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
