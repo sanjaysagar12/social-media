@@ -111,22 +111,11 @@ export default function StepParticipantsPage() {
   // Don't render anything until mounted to prevent hydration mismatch
   if (!isMounted) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <Card className="w-96 text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl relative z-10">
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Card className="w-96 text-center bg-white border border-gray-200 shadow-lg">
           <CardContent className="pt-6">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#E94042] border-t-transparent mx-auto mb-4"></div>
-            <p className="text-gray-300">Loading...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
           </CardContent>
         </Card>
       </div>
@@ -207,25 +196,14 @@ export default function StepParticipantsPage() {
 
   if (!currentUserId) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <Card className="w-96 text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl relative z-10">
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Card className="w-96 text-center bg-white border border-gray-200 shadow-lg">
           <CardContent className="pt-6">
-            <h1 className="text-2xl font-semibold mb-4 text-white">Authentication Required</h1>
-            <p className="text-gray-300 mb-4">Please login to view step participants</p>
+            <h1 className="text-2xl font-semibold mb-4 text-gray-900">Authentication Required</h1>
+            <p className="text-gray-600 mb-4">Please login to view step participants</p>
             <Button 
               onClick={() => window.location.href = '/auth/login'}
-              className="bg-[#E94042] hover:bg-[#E94042]/90"
+              className="bg-blue-500 hover:bg-blue-600 text-white"
             >
               Login
             </Button>
@@ -237,22 +215,11 @@ export default function StepParticipantsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <Card className="w-96 text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl relative z-10">
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Card className="w-96 text-center bg-white border border-gray-200 shadow-lg">
           <CardContent className="pt-6">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#E94042] border-t-transparent mx-auto mb-4"></div>
-            <p className="text-gray-300">Loading participants...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading participants...</p>
           </CardContent>
         </Card>
       </div>
@@ -261,32 +228,21 @@ export default function StepParticipantsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <Card className="w-96 text-center bg-white/5 backdrop-blur-md border border-white shadow-xl relative z-10">
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Card className="w-96 text-center bg-white border border-gray-200 shadow-lg">
           <CardContent className="pt-6">
-            <h1 className="text-2xl font-semibold mb-4 text-red-400">Error</h1>
-            <p className="text-gray-300 mb-4">{error}</p>
+            <h1 className="text-2xl font-semibold mb-4 text-red-600">Error</h1>
+            <p className="text-gray-600 mb-4">{error}</p>
             <div className="flex gap-2 justify-center">
               <Link href="/explore">
-                <Button variant="outline" className="border-gray-600 text-gray-300">
+                <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Explore
                 </Button>
               </Link>
               <Button 
                 onClick={fetchStepParticipants}
-                className="bg-[#E94042] hover:bg-[#E94042]/90"
+                className="bg-blue-500 hover:bg-blue-600 text-white"
               >
                 Try Again
               </Button>
@@ -302,56 +258,42 @@ export default function StepParticipantsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#161616] relative overflow-hidden">
-      {/* Background Image */}
-      <div
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-50"
-        style={{
-          backgroundImage: `url('/Avalink.webp')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundAttachment: 'fixed'
-        }}
-      />
-      
-      {/* Dark overlay */}
-      <div className="fixed inset-0 bg-black/60" />
-
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="relative z-10 bg-white/5 backdrop-blur-md border-b border-white/20">
+      <header className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
               <Link href={`/step/${params.id}`}>
-                <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 hover:bg-gray-100">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Step
                 </Button>
               </Link>
               <div>
-                <h1 className="text-2xl font-bold text-white">Participants</h1>
-                <p className="text-sm text-gray-300">{data.step.title}</p>
+                <h1 className="text-2xl font-bold text-gray-900">Participants</h1>
+                <p className="text-sm text-gray-600">{data.step.title}</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg">
-              <Users className="w-5 h-5 text-[#E94042]" />
-              <span className="text-white font-medium">{data.step.totalParticipants} Participants</span>
+            <div className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg">
+              <Users className="w-5 h-5 text-blue-500" />
+              <span className="text-gray-900 font-medium">{data.step.totalParticipants} Participants</span>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Winner Selection Info */}
         {canSelectWinner() && (
-          <Card className="mb-6 bg-yellow-500/10 backdrop-blur-md border border-yellow-500/30 shadow-xl">
+          <Card className="mb-6 bg-yellow-50 border border-yellow-200 shadow-lg">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3 mb-4">
-                <Crown className="w-6 h-6 text-yellow-400" />
-                <h3 className="text-lg font-semibold text-yellow-400">Select Winner</h3>
+                <Crown className="w-6 h-6 text-yellow-600" />
+                <h3 className="text-lg font-semibold text-yellow-800">Select Winner</h3>
               </div>
-              <p className="text-gray-300 text-sm">
+              <p className="text-gray-700 text-sm">
                 The step has ended and is ready for winner selection. Click "Select Winner" on any participant card to choose the winner and distribute the prize.
               </p>
             </CardContent>
@@ -360,30 +302,30 @@ export default function StepParticipantsPage() {
 
         {/* Winner Announcement */}
         {data.step.winner && (
-          <Card className="mb-6 bg-green-500/10 backdrop-blur-md border border-green-500/30 shadow-xl">
+          <Card className="mb-6 bg-green-50 border border-green-200 shadow-lg">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3 mb-4">
-                <Trophy className="w-6 h-6 text-green-400" />
-                <h3 className="text-lg font-semibold text-green-400">Winner Announced</h3>
+                <Trophy className="w-6 h-6 text-green-600" />
+                <h3 className="text-lg font-semibold text-green-800">Winner Announced</h3>
               </div>
-              <p className="text-gray-300 text-sm">
+              <p className="text-gray-700 text-sm">
                 🎉 <strong>{data.step.winner.name || 'Anonymous User'}</strong> has won this step! The prize has been distributed to their wallet.
               </p>
             </CardContent>
           </Card>
         )}
         {(!data.participants || data.participants.length === 0) ? (
-          <Card className="w-full text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl">
+          <Card className="w-full text-center bg-white border border-gray-200 shadow-lg">
             <CardContent className="pt-12 pb-12">
               <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h2 className="text-2xl font-semibold text-white mb-2">No Participants Yet</h2>
-              <p className="text-gray-300 mb-6">This step doesn't have any participants yet.</p>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">No Participants Yet</h2>
+              <p className="text-gray-600 mb-6">This step doesn't have any participants yet.</p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {data.participants && data.participants.map((participant) => (
-              <Card key={participant.id} className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl hover:bg-white/7 transition-all duration-300">
+              <Card key={participant.id} className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-4 mb-4">
                     {participant.avatar ? (
@@ -393,15 +335,15 @@ export default function StepParticipantsPage() {
                         className="w-12 h-12 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#E94042] to-purple-500 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
                         <User className="w-6 h-6 text-white" />
                       </div>
                     )}
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-white">
+                      <h3 className="text-lg font-semibold text-gray-900">
                         {participant.name || 'Anonymous User'}
                       </h3>
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-gray-500">
                         Joined {formatDate(participant.createdAt)}
                       </p>
                     </div>
@@ -409,26 +351,26 @@ export default function StepParticipantsPage() {
 
                   {/* Contact Info (only visible to step host) */}
                   {participant.email && (
-                    <div className="flex items-center gap-2 mb-2 p-2 bg-white/5 rounded-lg">
-                      <Mail className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-300">{participant.email}</span>
+                    <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 rounded-lg">
+                      <Mail className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-700">{participant.email}</span>
                     </div>
                   )}
 
                   {/* Wallet Address (only visible to step host) */}
                   {participant.walletAddress && (
-                    <div className="flex items-center gap-2 mb-2 p-2 bg-white/5 rounded-lg">
-                      <Wallet className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-300 font-mono">
+                    <div className="flex items-center gap-2 mb-2 p-2 bg-gray-50 rounded-lg">
+                      <Wallet className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-700 font-mono">
                         {formatShortAddress(participant.walletAddress)}
                       </span>
                     </div>
                   )}
 
                   {/* Join Date */}
-                  <div className="flex items-center gap-2 mb-4 p-2 bg-white/5 rounded-lg">
-                    <Calendar className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-300">
+                  <div className="flex items-center gap-2 mb-4 p-2 bg-gray-50 rounded-lg">
+                    <Calendar className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm text-gray-700">
                       Member since {formatDate(participant.createdAt)}
                     </span>
                   </div>
@@ -446,9 +388,9 @@ export default function StepParticipantsPage() {
 
                   {/* Winner Badge */}
                   {data.step.winner?.id === participant.id && (
-                    <div className="flex items-center justify-center gap-2 mt-4 p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
-                      <Trophy className="w-5 h-5 text-green-400" />
-                      <span className="text-green-400 font-semibold">🎉 Winner!</span>
+                    <div className="flex items-center justify-center gap-2 mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <Trophy className="w-5 h-5 text-green-600" />
+                      <span className="text-green-800 font-semibold">🎉 Winner!</span>
                     </div>
                   )}
                 </CardContent>
@@ -461,10 +403,10 @@ export default function StepParticipantsPage() {
       {/* Winner Selection Modal */}
       {showWinnerModal && selectedWinner && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
-          <Card className="w-96 max-w-[90vw] bg-white/10 backdrop-blur-md border border-white/20 shadow-xl">
+          <Card className="w-96 max-w-[90vw] bg-white border border-gray-200 shadow-xl">
             <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <Crown className="w-6 h-6 text-yellow-400" />
+              <CardTitle className="text-gray-900 flex items-center gap-2">
+                <Crown className="w-6 h-6 text-yellow-600" />
                 Confirm Winner Selection
               </CardTitle>
             </CardHeader>
@@ -478,19 +420,19 @@ export default function StepParticipantsPage() {
                       className="w-16 h-16 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E94042] to-purple-500 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
                       <User className="w-8 h-8 text-white" />
                     </div>
                   )}
                 </div>
-                <h3 className="text-xl font-semibold text-white mb-2">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {selectedWinner.name || 'Anonymous User'}
                 </h3>
-                <p className="text-gray-300 text-sm mb-4">
+                <p className="text-gray-600 text-sm mb-4">
                   Are you sure you want to select this participant as the winner?
                 </p>
-                <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-4">
-                  <p className="text-yellow-400 text-sm">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                  <p className="text-yellow-800 text-sm">
                     ⚠️ This action cannot be undone. The prize will be immediately transferred to the winner's wallet and the step will be closed.
                   </p>
                 </div>
@@ -504,7 +446,7 @@ export default function StepParticipantsPage() {
                     setSelectedWinner(null);
                   }}
                   disabled={isSelectingWinner}
-                  className="flex-1 border-gray-600 text-gray-300 hover:bg-white/10"
+                  className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
                 >
                   Cancel
                 </Button>

@@ -100,7 +100,6 @@ export default function StepDetailPage() {
   const [isUpvoting, setIsUpvoting] = useState<{ [key: string]: boolean }>({});
 
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [commentVotes, setCommentVotes] = useState<{ [key: string]: 'up' | 'down' | null }>({});
   
   // Prize/verification handling removed from client (moved to backend)
 
@@ -492,35 +491,17 @@ export default function StepDetailPage() {
     return `${Math.floor(diffInHours / 24)}d ago`;
   };
 
-  const handleVote = (commentId: string, voteType: 'up' | 'down') => {
-    setCommentVotes(prev => ({
-      ...prev,
-      [commentId]: prev[commentId] === voteType ? null : voteType
-    }));
-  };
-
   const canParticipate = currentUserId && (isUserParticipant(currentUserId) || isStepHost(currentUserId)) && event?.isActive;
 
   // Prize verification and on-chain flows removed from client-side
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <Card className="w-96 text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl relative z-10">
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Card className="w-96 text-center bg-white border border-gray-200 shadow-lg">
           <CardContent className="pt-6">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#E94042] border-t-transparent mx-auto mb-4"></div>
-            <p className="text-gray-300">Loading step...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading step...</p>
           </CardContent>
         </Card>
       </div>
@@ -529,26 +510,15 @@ export default function StepDetailPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <Card className="w-96 text-center bg-white/5 backdrop-blur-md border border-white shadow-xl relative z-10">
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Card className="w-96 text-center bg-white border border-gray-200 shadow-lg">
           <CardContent className="pt-6">
-            <h1 className="text-2xl font-semibold mb-4 text-red-400">Error</h1>
-            <p className="text-gray-300 mb-4">{error}</p>
+            <h1 className="text-2xl font-semibold mb-4 text-red-600">Error</h1>
+            <p className="text-gray-600 mb-4">{error}</p>
             <Button 
               variant="outline" 
               onClick={() => window.location.href = '/explore'}
-              className="inline-flex items-center space-x-2 border-gray-600 text-gray-300"
+              className="inline-flex items-center space-x-2 border-gray-300 text-gray-700 hover:bg-gray-50"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Steps</span>
@@ -561,25 +531,14 @@ export default function StepDetailPage() {
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <Card className="w-96 text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl relative z-10">
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Card className="w-96 text-center bg-white border border-gray-200 shadow-lg">
           <CardContent className="pt-6">
-            <h1 className="text-2xl font-semibold mb-4 text-white">Step not found</h1>
+            <h1 className="text-2xl font-semibold mb-4 text-gray-900">Step not found</h1>
             <Button 
               variant="outline" 
               onClick={() => window.location.href = '/explore'}
-              className="inline-flex items-center space-x-2 border-gray-600 text-gray-300 hover:bg-white/10"
+              className="inline-flex items-center space-x-2 border-gray-300 text-gray-700 hover:bg-gray-50"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Back to Steps</span>
@@ -591,28 +550,14 @@ export default function StepDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#161616] relative overflow-hidden">
-      {/* Background Image */}
-      <div
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-50"
-        style={{
-          backgroundImage: `url('/Avalink.webp')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundAttachment: 'fixed'
-        }}
-      />
-      
-      {/* Dark overlay */}
-      <div className="fixed inset-0 bg-black/60" />
-
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <StepHeader 
         isBookmarked={isBookmarked}
         setIsBookmarked={setIsBookmarked}
       />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Main Content */}
@@ -663,8 +608,6 @@ export default function StepDetailPage() {
               handleCreateComment={handleCreateComment}
               handleCancelComment={handleCancelComment}
               isCreatingComment={isCreatingComment}
-              commentVotes={commentVotes}
-              handleVote={handleVote}
               showReplyForm={showReplyForm}
               setShowReplyForm={setShowReplyForm}
               handleCreateReply={handleCreateReply}
@@ -689,7 +632,7 @@ export default function StepDetailPage() {
       <div className="fixed bottom-6 right-6 lg:hidden">
         <Button
           onClick={() => currentUserId && (isUserParticipant(currentUserId) || isStepHost(currentUserId)) && event.isActive && setShowPostForm(true)}
-          className="h-14 w-14 rounded-full bg-[#E94042] hover:bg-[#E94042]/90 shadow-lg"
+          className="h-14 w-14 rounded-full bg-blue-500 hover:bg-blue-600 shadow-lg"
           size="lg"
           disabled={!currentUserId || (!isUserParticipant(currentUserId) && !isStepHost(currentUserId)) || !event.isActive}
         >

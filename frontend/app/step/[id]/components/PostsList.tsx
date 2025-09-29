@@ -52,8 +52,6 @@ interface PostsListProps {
   handleCreateComment: (postId: string) => void;
   handleCancelComment: (id: string, type: 'comment' | 'reply') => void;
   isCreatingComment: { [key: string]: boolean };
-  commentVotes: { [key: string]: 'up' | 'down' | null };
-  handleVote: (commentId: string, voteType: 'up' | 'down') => void;
   showReplyForm: { [key: string]: boolean };
   setShowReplyForm: (value: React.SetStateAction<{ [key: string]: boolean }>) => void;
   handleCreateReply: (commentId: string) => void;
@@ -77,8 +75,6 @@ export default function PostsList({
   handleCreateComment,
   handleCancelComment,
   isCreatingComment,
-  commentVotes,
-  handleVote,
   showReplyForm,
   setShowReplyForm,
   handleCreateReply,
@@ -87,12 +83,12 @@ export default function PostsList({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-white">Posts & Discussions ({posts.length})</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Posts & Discussions ({posts.length})</h3>
         {/* Create Post Button - For participants and hosts */}
         {canParticipate && (
           <Button 
             onClick={() => setShowPostForm(true)}
-            className="bg-[#E94042] hover:bg-[#E94042]/90 text-white"
+            className="bg-blue-500 hover:bg-blue-600 text-white"
             size="sm"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -102,10 +98,10 @@ export default function PostsList({
       </div>
       
       {posts.length === 0 ? (
-        <Card className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl p-12 text-center">
-          <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-300 text-lg">No posts yet</p>
-          <p className="text-gray-400 text-sm">Be the first to start a discussion!</p>
+        <Card className="bg-white border border-gray-200 shadow-lg p-12 text-center">
+          <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-600 text-lg">No posts yet</p>
+          <p className="text-gray-500 text-sm">Be the first to start a discussion!</p>
         </Card>
       ) : (
         posts.map((post) => (
@@ -124,8 +120,6 @@ export default function PostsList({
             handleCreateComment={handleCreateComment}
             handleCancelComment={handleCancelComment}
             isCreatingComment={isCreatingComment}
-            commentVotes={commentVotes}
-            handleVote={handleVote}
             showReplyForm={showReplyForm}
             setShowReplyForm={setShowReplyForm}
             handleCreateReply={handleCreateReply}

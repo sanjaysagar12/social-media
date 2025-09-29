@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import CommentComponent from './CommentComponent';
 import { 
   ArrowUp, 
-  ChevronDown, 
   MessageCircle 
 } from 'lucide-react';
 
@@ -53,8 +52,6 @@ interface PostItemProps {
   handleCreateComment: (postId: string) => void;
   handleCancelComment: (id: string, type: 'comment' | 'reply') => void;
   isCreatingComment: { [key: string]: boolean };
-  commentVotes: { [key: string]: 'up' | 'down' | null };
-  handleVote: (commentId: string, voteType: 'up' | 'down') => void;
   showReplyForm: { [key: string]: boolean };
   setShowReplyForm: (value: React.SetStateAction<{ [key: string]: boolean }>) => void;
   handleCreateReply: (commentId: string) => void;
@@ -75,15 +72,13 @@ export default function PostItem({
   handleCreateComment,
   handleCancelComment,
   isCreatingComment,
-  commentVotes,
-  handleVote,
   showReplyForm,
   setShowReplyForm,
   handleCreateReply,
   canParticipate
 }: PostItemProps) {
   return (
-    <Card className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl hover:bg-white/7 transition-all duration-300">
+    <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
       <CardContent className="p-4">
         <div className="flex space-x-3">
           <div className="flex flex-col items-center space-y-1">
@@ -92,7 +87,7 @@ export default function PostItem({
               size="sm"
               onClick={() => handleUpvotePost(post.id)}
               disabled={!currentUserId || isUpvoting[post.id]}
-              className={userUpvotes[post.id] ? "bg-orange-500 hover:bg-orange-600 text-white" : "text-gray-300 hover:bg-white/10"}
+              className={userUpvotes[post.id] ? "bg-orange-500 hover:bg-orange-600 text-white" : "text-gray-600 hover:bg-gray-100"}
             >
               {isUpvoting[post.id] ? (
                 <div className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
@@ -100,19 +95,16 @@ export default function PostItem({
                 <ArrowUp className={`w-4 h-4 ${userUpvotes[post.id] ? 'fill-current' : ''}`} />
               )}
             </Button>
-            <span className="text-xs font-medium text-gray-300">{post._count?.userUpvotes || 0}</span>
-            <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-white/10">
-              <ChevronDown className="w-4 h-4" />
-            </Button>
+            <span className="text-xs font-medium text-gray-600">{post._count?.userUpvotes || 0}</span>
           </div>
 
           <div className="flex-1 space-y-3">
             <div className="flex items-center space-x-2">
-              <span className="font-medium text-white">u/{post.author.name || post.author.email}</span>
-              <span className="text-xs text-gray-400">{formatShortDate(post.createdAt)}</span>
+              <span className="font-medium text-gray-900">u/{post.author.name || post.author.email}</span>
+              <span className="text-xs text-gray-500">{formatShortDate(post.createdAt)}</span>
             </div>
             
-            <p className="text-gray-300 leading-relaxed">{post.content}</p>
+            <p className="text-gray-700 leading-relaxed">{post.content}</p>
             
             {/* Post Image */}
             {post.image && (
@@ -120,7 +112,7 @@ export default function PostItem({
                 <img 
                   src={post.image} 
                   alt="Post attachment" 
-                  className="max-w-md h-auto rounded-lg border border-gray-600"
+                  className="max-w-md h-auto rounded-lg border border-gray-300"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
@@ -128,29 +120,27 @@ export default function PostItem({
               </div>
             )}
             
-            <div className="flex items-center space-x-4 text-xs text-gray-400">
+            <div className="flex items-center space-x-4 text-xs text-gray-500">
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={() => setShowCommentForm(prev => ({ ...prev, [post.id]: !prev[post.id] }))}
-                className="text-gray-300 hover:bg-white/10"
+                className="text-gray-600 hover:bg-gray-100"
               >
                 <MessageCircle className="w-4 h-4 mr-1" />
                 {post._count?.comments || 0} Comments
               </Button>
-              <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-white/10">Share</Button>
-              <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-white/10">Save</Button>
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-gray-100">Share</Button>
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:bg-gray-100">Save</Button>
             </div>
 
             {/* Comments */}
             {post.comments && post.comments.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-gray-600 space-y-4">
+              <div className="mt-4 pt-4 border-t border-gray-200 space-y-4">
                 {post.comments && post.comments.map((comment) => (
                   <CommentComponent
                     key={comment.id}
                     comment={comment}
-                    commentVotes={commentVotes}
-                    handleVote={handleVote}
                     formatShortDate={formatShortDate}
                     showReplyForm={showReplyForm}
                     setShowReplyForm={setShowReplyForm}
@@ -167,21 +157,21 @@ export default function PostItem({
 
             {/* Comment Form */}
             {showCommentForm[post.id] && currentUserId && (
-              <div className="mt-4 ml-6 border-l-2 border-gray-600 pl-4">
+              <div className="mt-4 ml-6 border-l-2 border-gray-200 pl-4">
                 <div className="flex space-x-2">
                   <textarea
                     value={commentContent[post.id] || ''}
                     onChange={(e) => setCommentContent(prev => ({ ...prev, [post.id]: e.target.value }))}
                     placeholder="Write a comment..."
                     rows={2}
-                    className="flex-1 p-2 bg-gray-800/50 border border-gray-600 text-white placeholder:text-gray-400 rounded-lg resize-none focus:outline-none focus:ring-0 focus:border-gray-600"
+                    className="flex-1 p-2 bg-gray-50 border border-gray-300 text-gray-900 placeholder:text-gray-500 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <div className="flex flex-col space-y-2">
                     <Button
                       onClick={() => handleCreateComment(post.id)}
                       disabled={!commentContent[post.id]?.trim() || isCreatingComment[post.id]}
                       size="sm"
-                      className="bg-[#E94042] hover:bg-[#E94042]/90"
+                      className="bg-blue-500 hover:bg-blue-600 text-white"
                     >
                       {isCreatingComment[post.id] ? 'Posting...' : 'Comment'}
                     </Button>
@@ -189,7 +179,7 @@ export default function PostItem({
                       onClick={() => handleCancelComment(post.id, 'comment')}
                       variant="outline"
                       size="sm"
-                      className="border-gray-600 text-gray-300 hover:bg-white/10"
+                      className="border-gray-300 text-gray-700 hover:bg-gray-50"
                       disabled={isCreatingComment[post.id]}
                     >
                       Cancel

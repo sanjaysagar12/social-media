@@ -92,21 +92,10 @@ export default function StepsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <div className="text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl rounded-lg p-8 relative z-10">
-          <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#E94042] border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-300">Loading steps...</p>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading steps...</p>
         </div>
       </div>
     );
@@ -114,25 +103,16 @@ export default function StepsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#161616] flex items-center justify-center relative overflow-hidden">
-        <div
-          className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-          style={{
-            backgroundImage: `url('/Avalink.webp')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundAttachment: 'fixed'
-          }}
-        />
-        <div className="fixed inset-0 bg-black/60" />
-        
-        <div className="text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl rounded-lg p-8 relative z-10 max-w-md">
-          <Calendar className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <p className="text-red-400 text-lg font-semibold mb-2">Error</p>
-          <p className="text-gray-300 mb-4">{error}</p>
-          <Button 
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 mb-4">
+            <Calendar className="h-12 w-12 mx-auto" />
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Steps</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <Button
             onClick={fetchSteps}
-            className="w-full bg-[#E94042] hover:bg-[#E94042]/90 text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             Try Again
           </Button>
@@ -142,60 +122,36 @@ export default function StepsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#161616] relative overflow-hidden">
-      {/* Background Image */}
-      <div
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-50"
-        style={{
-          backgroundImage: `url('/Avalink.webp')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundAttachment: 'fixed'
-        }}
-      />
-      
-      {/* Dark overlay */}
-      <div className="fixed inset-0 bg-black/60" />
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}
         <div className="mb-12">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-[#E94042] rounded-full flex items-center justify-center shadow-lg">
-                <Calendar className="w-6 h-6 text-white" />
-              </div>
-              <h1 className="text-4xl font-bold text-white">All Steps</h1>
+              <Calendar className="w-12 h-12 text-blue-600" />
+              <h1 className="text-4xl font-bold text-gray-900">All Steps</h1>
             </div>
-            <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
               Discover and participate in exciting steps from the community
             </p>
           </div>
 
           {/* Action Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/5 backdrop-blur-md border border-white/20 rounded-lg p-4">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+            <div className="flex items-center gap-4 flex-1 max-w-md">
+              <div className="relative w-full">
+                <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search events..."
-                  className="pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#E94042]/50 focus:border-[#E94042]/50"
+                  placeholder="Search steps..."
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                 />
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center gap-2 text-gray-300 hover:bg-white/10 border border-white/20"
-              >
-                <Filter className="w-4 h-4" />
-                Filter
-              </Button>
             </div>
-            
-            <div className="flex items-center gap-3">
-              <div className="text-sm text-gray-400 bg-white/10 px-3 py-2 rounded-lg border border-white/20">
-                <span className="font-medium">{events.length}</span> events found
+
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-gray-500 bg-gray-100 px-4 py-2 rounded-full font-medium">
+                <span className="text-blue-600 font-semibold">{events.length}</span> steps found
               </div>
             </div>
           </div>
@@ -203,18 +159,18 @@ export default function StepsPage() {
 
         {events.length === 0 ? (
           <div className="text-center py-16">
-            <div className="bg-white/5 backdrop-blur-md border border-white/20 rounded-lg p-12 max-w-md mx-auto">
-              <Calendar className="w-20 h-20 text-gray-500 mx-auto mb-6" />
-              <p className="text-gray-300 text-xl font-semibold mb-2">No events found</p>
-              <p className="text-gray-400 mb-6">Check back later for new events!</p>
+            <div className="bg-white rounded-lg shadow-sm p-12 max-w-md mx-auto">
+              <Calendar className="w-20 h-20 text-gray-400 mx-auto mb-6" />
+              <p className="text-gray-900 text-xl font-semibold mb-2">No steps found</p>
+              <p className="text-gray-500 mb-6">Check back later for new steps!</p>
             </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {events.map((step) => (
-              <Card 
-                key={step.id} 
-                className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl hover:bg-white/7 hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden group"
+              <Card
+                key={step.id}
+                className="bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:shadow-blue-100/50 hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden group"
                 onClick={() => handleStepClick(step.id)}
               >
                 {/* Step Image */}
@@ -231,8 +187,8 @@ export default function StepsPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     <div className="absolute top-3 left-3">
                       <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                        step.isActive 
-                          ? 'bg-green-500 text-white' 
+                        step.isActive
+                          ? 'bg-green-500 text-white'
                           : 'bg-gray-500 text-white'
                       }`}>
                         {step.isActive ? 'Active' : 'Inactive'}
@@ -240,12 +196,12 @@ export default function StepsPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="relative aspect-video w-full bg-gradient-to-br from-[#E94042]/20 to-purple-500/20 flex items-center justify-center">
-                    <Calendar className="w-12 h-12 text-white/40" />
+                  <div className="relative aspect-video w-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+                    <Calendar className="w-12 h-12 text-gray-400" />
                     <div className="absolute top-3 left-3">
                       <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                        step.isActive 
-                          ? 'bg-green-500 text-white' 
+                        step.isActive
+                          ? 'bg-green-500 text-white'
                           : 'bg-gray-500 text-white'
                       }`}>
                         {step.isActive ? 'Active' : 'Inactive'}
@@ -255,55 +211,55 @@ export default function StepsPage() {
                 )}
 
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-xl font-bold text-white line-clamp-2 group-hover:text-[#E94042] transition-colors">
+                  <CardTitle className="text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors">
                     {step.title}
                   </CardTitle>
                   {step.description && (
-                    <p className="text-gray-300 text-sm line-clamp-3 leading-relaxed">
+                    <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
                       {step.description}
                     </p>
                   )}
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                  {/* Event Details */}
+                  {/* Step Details */}
                   <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <Clock className="w-4 h-4 text-[#E94042]" />
-                      <span className="font-medium text-gray-300">Start:</span>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Clock className="w-4 h-4 text-blue-600" />
+                      <span className="font-medium">Start:</span>
                       <span>{formatDate(step.startDate)}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <Clock className="w-4 h-4 text-[#E94042]" />
-                      <span className="font-medium text-gray-300">End:</span>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Clock className="w-4 h-4 text-blue-600" />
+                      <span className="font-medium">End:</span>
                       <span>{formatDate(step.endDate)}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
-                      <User className="w-4 h-4 text-[#E94042]" />
-                      <span className="font-medium text-gray-300">Creator:</span>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <User className="w-4 h-4 text-blue-600" />
+                      <span className="font-medium">Creator:</span>
                       <span>{step.creator.name || step.creator.email}</span>
                     </div>
                   </div>
 
                   {/* Stats Section */}
-                  <div className="flex justify-between items-center pt-4 border-t border-white/20">
+                  <div className="flex justify-between items-center pt-4 border-t border-gray-200">
                     <div className="flex gap-6">
                       <div className="flex items-center gap-2 text-sm">
-                        <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
-                          <Users className="w-4 h-4 text-blue-400" />
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                          <Users className="w-4 h-4 text-blue-600" />
                         </div>
                         <div>
-                          <div className="font-semibold text-white text-sm">{step._count?.participants || 0}</div>
-                          <div className="text-xs text-gray-400">Participants</div>
+                          <div className="font-semibold text-gray-900 text-sm">{step._count?.participants || 0}</div>
+                          <div className="text-xs text-gray-500">Participants</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
-                        <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
-                          <MessageSquare className="w-4 h-4 text-green-400" />
+                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                          <MessageSquare className="w-4 h-4 text-green-600" />
                         </div>
                         <div>
-                          <div className="font-semibold text-white text-sm">{step._count?.posts || 0}</div>
-                          <div className="text-xs text-gray-400">Posts</div>
+                          <div className="font-semibold text-gray-900 text-sm">{step._count?.posts || 0}</div>
+                          <div className="text-xs text-gray-500">Posts</div>
                         </div>
                       </div>
                     </div>

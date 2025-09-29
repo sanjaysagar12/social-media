@@ -95,40 +95,26 @@ export default function CreateStepPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#161616] relative overflow-hidden">
-      {/* Background Image */}
-      <div
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-50"
-        style={{
-          backgroundImage: `url('/Avalink.webp')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundAttachment: 'fixed'
-        }}
-      />
-      
-      {/* Dark overlay */}
-      <div className="fixed inset-0 bg-black/60" />
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <Button 
             variant="ghost" 
             onClick={() => window.history.back()}
-            className="absolute left-4 top-8 flex items-center gap-2 text-gray-300 hover:bg-white/10 border border-white/20"
+            className="absolute left-4 top-8 flex items-center gap-2 text-gray-600 hover:bg-gray-100 border border-gray-200"
           >
             <ArrowLeft className="w-4 h-4" />
             Back
           </Button>
           
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-[#E94042] rounded-full flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
               <Plus className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-white">Create New Step</h1>
+            <h1 className="text-4xl font-bold text-gray-900">Create New Step</h1>
           </div>
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
             Bring your community together with an actionable Step
           </p>
         </div>
@@ -136,14 +122,14 @@ export default function CreateStepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Form */}
           <div className="lg:col-span-2">
-            <Card className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl">
+            <Card className="bg-white border border-gray-200 shadow-lg">
               <CardContent className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-8">
                   {/* Step Title */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Target className="w-5 h-5 text-[#E94042]" />
-                      <Label htmlFor="title" className="text-white font-semibold">Step Title *</Label>
+                      <Target className="w-5 h-5 text-blue-500" />
+                      <Label htmlFor="title" className="text-gray-900 font-semibold">Step Title *</Label>
                     </div>
                     <Input
                       id="title"
@@ -153,15 +139,15 @@ export default function CreateStepPage() {
                       onChange={handleInputChange}
                       placeholder="Enter an exciting step title..."
                       required
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#E94042]/50 focus:ring-[#E94042]/50"
+                      className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500"
                     />
                   </div>
 
                   {/* Description */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-[#E94042]" />
-                      <Label htmlFor="description" className="text-white font-semibold">Description</Label>
+                      <FileText className="w-5 h-5 text-blue-500" />
+                      <Label htmlFor="description" className="text-gray-900 font-semibold">Description</Label>
                     </div>
                     <Textarea
                       id="description"
@@ -170,7 +156,7 @@ export default function CreateStepPage() {
                       onChange={handleInputChange}
                       placeholder="Describe your step in detail. What makes it special?"
                       rows={6}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#E94042]/50 focus:ring-[#E94042]/50 resize-none"
+                      className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500 resize-none"
                     />
                   </div>
 
@@ -179,16 +165,16 @@ export default function CreateStepPage() {
                   {/* Step Thumbnail */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <ImageIcon className="w-5 h-5 text-[#E94042]" />
-                      <Label className="text-white font-semibold">Step Thumbnail</Label>
+                      <ImageIcon className="w-5 h-5 text-blue-500" />
+                      <Label className="text-gray-900 font-semibold">Step Thumbnail</Label>
                     </div>
-                    <div className="bg-white/10 border border-white/20 rounded-lg p-4">
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                       <UploadImage 
                         onImageUploaded={handleImageUploaded}
                         currentImage={formData.thumbnail}
                       />
                       {formData.thumbnail && (
-                        <div className="mt-3 flex items-center gap-2 text-green-400 text-sm">
+                        <div className="mt-3 flex items-center gap-2 text-green-600 text-sm">
                           <Sparkles className="w-4 h-4" />
                           Image uploaded successfully!
                         </div>
@@ -199,12 +185,12 @@ export default function CreateStepPage() {
                   {/* Date & Time */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-[#E94042]" />
-                      <Label className="text-white font-semibold">Step Schedule *</Label>
+                      <Clock className="w-5 h-5 text-blue-500" />
+                      <Label className="text-gray-900 font-semibold">Step Schedule *</Label>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="startDate" className="text-gray-300 text-sm">Start Date & Time</Label>
+                        <Label htmlFor="startDate" className="text-gray-600 text-sm">Start Date & Time</Label>
                         <Input
                           id="startDate"
                           name="startDate"
@@ -212,11 +198,11 @@ export default function CreateStepPage() {
                           value={formData.startDate}
                           onChange={handleInputChange}
                           required
-                          className="bg-white/10 border-white/20 text-white focus:border-[#E94042]/50 focus:ring-[#E94042]/50"
+                          className="bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="endDate" className="text-gray-300 text-sm">End Date & Time</Label>
+                        <Label htmlFor="endDate" className="text-gray-600 text-sm">End Date & Time</Label>
                         <Input
                           id="endDate"
                           name="endDate"
@@ -224,7 +210,7 @@ export default function CreateStepPage() {
                           value={formData.endDate}
                           onChange={handleInputChange}
                           required
-                          className="bg-white/10 border-white/20 text-white focus:border-[#E94042]/50 focus:ring-[#E94042]/50"
+                          className="bg-white border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                         />
                       </div>
                     </div>
@@ -235,7 +221,7 @@ export default function CreateStepPage() {
                     <Button 
                       type="submit" 
                       disabled={isLoading || !formData.title || !formData.startDate || !formData.endDate}
-                      className="w-full bg-[#E94042] hover:bg-[#E94042]/90 text-white py-4 text-lg font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 text-lg font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isLoading ? (
                         <div className="flex items-center gap-2">
@@ -259,22 +245,22 @@ export default function CreateStepPage() {
           <div className="space-y-6">
             {/* Preview Card */}
             {formData.title && (
-              <Card className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl">
+              <Card className="bg-white border border-gray-200 shadow-lg">
                 <CardHeader>
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-[#E94042]" />
-                    <CardTitle className="text-white">Preview</CardTitle>
+                    <Calendar className="w-5 h-5 text-blue-500" />
+                    <CardTitle className="text-gray-900">Preview</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <h3 className="text-white font-semibold text-lg line-clamp-2">{formData.title}</h3>
+                    <h3 className="text-gray-900 font-semibold text-lg line-clamp-2">{formData.title}</h3>
                     {formData.description && (
-                      <p className="text-gray-300 text-sm line-clamp-3">{formData.description}</p>
+                      <p className="text-gray-600 text-sm line-clamp-3">{formData.description}</p>
                     )}
                     {/* prize removed from preview (backend no longer supports prize) */}
                     {formData.startDate && (
-                      <div className="flex items-center gap-2 text-gray-400 text-sm">
+                      <div className="flex items-center gap-2 text-gray-500 text-sm">
                         <Clock className="w-4 h-4" />
                         <span>{new Date(formData.startDate).toLocaleDateString()}</span>
                       </div>

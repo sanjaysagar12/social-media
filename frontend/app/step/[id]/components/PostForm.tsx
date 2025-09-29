@@ -26,10 +26,10 @@ export default function PostForm({
   isCreatingPost 
 }: PostFormProps) {
   return (
-    <Card className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl hover:bg-white/7 transition-all duration-300">
+    <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
       <CardContent className="p-4">
         <div className="flex space-x-3">
-          <div className="w-8 h-8 bg-[#E94042] rounded-full flex items-center justify-center">
+          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
             <span className="text-white text-sm font-bold">U</span>
           </div>
           <div className="flex-1 space-y-3">
@@ -38,11 +38,11 @@ export default function PostForm({
               onChange={(e) => setPostContent(e.target.value)}
               placeholder="Share your progress, ideas, or questions..."
               rows={4}
-              className="w-full p-3 bg-gray-800/50 border border-gray-600 text-white placeholder:text-gray-400 rounded-lg resize-none focus:outline-none focus:ring-0 focus:border-gray-600"
+              className="w-full p-3 bg-gray-50 border border-gray-300 text-gray-900 placeholder:text-gray-500 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             
             <div className="space-y-2">
-              <Label className="text-white">Image (Optional)</Label>
+              <Label className="text-gray-700">Image (Optional)</Label>
               <UploadImage 
                 onImageUploaded={handleImageUploaded}
                 currentImage={postImage}
@@ -55,14 +55,14 @@ export default function PostForm({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="space-x-2 text-gray-300 hover:text-black hover:bg-white"
+                  className="space-x-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50"
                   disabled={isCreatingPost}
                 >
                   <ImageIcon className="w-4 h-4" />
                   <span>Add Image</span>
                 </Button>
                 {isCreatingPost && (
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-gray-600"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
                 )}
               </div>
               
@@ -70,7 +70,7 @@ export default function PostForm({
                 <Button
                   onClick={handleCreatePost}
                   disabled={isCreatingPost || !postContent.trim()}
-                  className="space-x-2 bg-[#E94042] hover:bg-[#E94042]/90 text-white"
+                  className="space-x-2 bg-blue-500 hover:bg-blue-600 text-white"
                 >
                   <Send className="w-4 h-4" />
                   <span>{isCreatingPost ? 'Posting...' : 'Post'}</span>
@@ -79,7 +79,7 @@ export default function PostForm({
                   onClick={handleCancelPost}
                   variant="outline"
                   disabled={isCreatingPost}
-                  className="border-gray-600 text-gray-300 hover:bg-white/10"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50"
                 >
                   <X className="w-4 h-4 mr-1" />
                   Cancel
