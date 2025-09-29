@@ -13,7 +13,6 @@ import {
     Clock,
     Home,
     Search,
-    Filter,
     Compass
 } from 'lucide-react';
 
@@ -25,7 +24,7 @@ interface User {
 }
 
 interface Event {
-                            posts.map((post) => (
+    id: string;
     title: string;
     thumbnail?: string;
     verified: boolean;
@@ -48,7 +47,7 @@ interface Post {
     upvotes: number;
     createdAt: string;
     author: User;
-    event: Event;
+    event?: Event; // Make event optional since standalone posts don't have one
     comments: Comment[];
     isUpvotedByUser?: boolean;
     _count: {
@@ -333,44 +332,26 @@ export default function ExplorePage() {
                         </p>
                     </div>
 
-                    {/* Search and Filter Bar */}
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-black/20 backdrop-blur-sm border border-white/10 rounded-xl p-4">
-                        <div className="flex items-center gap-4 flex-1">
-                            <div className="relative flex-1 max-w-md">
-                                <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                                <input
-                                    type="text"
-                                    placeholder="Search posts, events, or users..."
-                                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#E94042]/50 focus:border-[#E94042]/50 transition-all duration-300"
-                                />
-                            </div>
-                            
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="flex items-center gap-2 text-gray-300 hover:bg-white/10 hover:text-white border border-white/20 hover:border-white/30 transition-all duration-300 px-4 py-3"
-                            >
-                                <Filter className="w-4 h-4" />
-                                <span className="font-medium hidden sm:block">Filter</span>
-                            </Button>
+                    {/* Search Bar */}
+                    <div className="flex items-center justify-between gap-4 bg-black/20 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+                        <div className="relative flex-1 max-w-md">
+                            <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                            <input
+                                type="text"
+                                placeholder="Search posts..."
+                                className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#E94042]/50 focus:border-[#E94042]/50 transition-all duration-300"
+                            />
                         </div>
 
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-2 text-sm text-gray-300">
-                                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                                <span>Live feed</span>
-                            </div>
-                            
-                            <Button
-                                onClick={() => fetchExplorePosts()}
-                                variant="ghost"
-                                size="sm"
-                                className="flex items-center gap-2 text-gray-300 hover:bg-[#E94042]/20 hover:text-[#E94042] border border-white/20 hover:border-[#E94042]/30 transition-all duration-300 px-3 py-2"
-                            >
-                                <MessageCircle className="w-4 h-4" />
-                                <span className="font-medium">Refresh</span>
-                            </Button>
-                        </div>
+                        <Button
+                            onClick={() => fetchExplorePosts()}
+                            variant="ghost"
+                            size="sm"
+                            className="flex items-center gap-2 text-gray-300 hover:bg-[#E94042]/20 hover:text-[#E94042] border border-white/20 hover:border-[#E94042]/30 transition-all duration-300 px-4 py-2"
+                        >
+                            <MessageCircle className="w-4 h-4" />
+                            <span className="font-medium">Refresh</span>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -387,22 +368,33 @@ export default function ExplorePage() {
                             <p className="text-gray-400 text-sm">Check back later for new content from the community!</p>
                         </div>
                     ) : (
-                        posts.filter(post => post.event && post.event.title).map((post) => (
+                        posts.map((post) => (
                             <div key={post.id} className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl rounded-lg hover:bg-white/7 transition-all duration-300 overflow-hidden">
                                 {/* Post Header */}
                                 <div className="p-4 border-b border-white/20 bg-white/5">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            {/* Event Info */}
-                                            <div className="flex items-center gap-2 text-sm">
-                                                <div className="w-8 h-8 rounded-full bg-[#E94042] flex items-center justify-center text-white text-xs font-bold shadow-lg">
-                                                    E
+                                            {/* Event Info or Standalone Post Indicator */}
+                                            {post.event ? (
+                                                <>
+                                                    <div className="flex items-center gap-2 text-sm">
+                                                        <div className="w-8 h-8 rounded-full bg-[#E94042] flex items-center justify-center text-white text-xs font-bold shadow-lg">
+                                                            E
+                                                        </div>
+                                                        <span className="font-semibold text-white">r/{post.event.title}</span>
+                                                        {post.event.verified && (
+                                                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                                                        )}
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white text-xs font-bold shadow-lg">
+                                                        P
+                                                    </div>
+                                                    <span className="font-semibold text-white">Standalone Post</span>
                                                 </div>
-                                                <span className="font-semibold text-white">r/{post.event.title}</span>
-                                                {post.event.verified && (
-                                                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                                                )}
-                                            </div>
+                                            )}
 
                                             <span className="text-gray-500">•</span>
 
@@ -428,15 +420,21 @@ export default function ExplorePage() {
                                             <span className="text-sm text-gray-400">{formatTimeAgo(post.createdAt)}</span>
                                         </div>
 
-                                        {/* Event Status */}
+                                        {/* Event Status or Standalone Indicator */}
                                         <div className="flex items-center gap-2">
-                                            {post.event.isActive ? (
-                                                <span className="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full font-medium border border-green-500/30">
-                                                    Active
-                                                </span>
+                                            {post.event ? (
+                                                post.event.isActive ? (
+                                                    <span className="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full font-medium border border-green-500/30">
+                                                        Active
+                                                    </span>
+                                                ) : (
+                                                    <span className="px-3 py-1 bg-gray-500/20 text-gray-400 text-xs rounded-full font-medium border border-gray-500/30">
+                                                        Inactive
+                                                    </span>
+                                                )
                                             ) : (
-                                                <span className="px-3 py-1 bg-gray-500/20 text-gray-400 text-xs rounded-full font-medium border border-gray-500/30">
-                                                    Inactive
+                                                <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full font-medium border border-blue-500/30">
+                                                    Standalone
                                                 </span>
                                             )}
                                         </div>
@@ -445,8 +443,8 @@ export default function ExplorePage() {
 
                                 {/* Post Content */}
                                 <div
-                                    className="p-6 cursor-pointer"
-                                    onClick={() => handlePostClick(post.event.id)}
+                                    className={`p-6 ${post.event ? 'cursor-pointer' : ''}`}
+                                    onClick={post.event ? () => handlePostClick(post.event!.id) : undefined}
                                 >
                                     <p className="text-gray-200 mb-4 leading-relaxed text-lg">{post.content}</p>
 
@@ -502,26 +500,40 @@ export default function ExplorePage() {
                                         )}
 
                                         {/* Comments */}
-                                        <Button
-                                            onClick={() => handlePostClick(post.event.id)}
-                                            variant="ghost"
-                                            size="sm"
-                                            className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-300 hover:bg-white/10 border border-white/20 hover:border-white/30 transition-all duration-300"
-                                        >
-                                            <MessageCircle className="w-5 h-5" />
-                                            <span className="text-sm font-semibold">{post._count.comments}</span>
-                                        </Button>
+                                        {post.event ? (
+                                            <Button
+                                                onClick={() => handlePostClick(post.event!.id)}
+                                                variant="ghost"
+                                                size="sm"
+                                                className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-300 hover:bg-white/10 border border-white/20 hover:border-white/30 transition-all duration-300"
+                                            >
+                                                <MessageCircle className="w-5 h-5" />
+                                                <span className="text-sm font-semibold">{post._count.comments}</span>
+                                            </Button>
+                                        ) : (
+                                            <div className="flex items-center gap-2 px-4 py-2 text-gray-400 bg-white/5 rounded-full border border-white/20">
+                                                <MessageCircle className="w-5 h-5" />
+                                                <span className="text-sm font-semibold">{post._count.comments}</span>
+                                            </div>
+                                        )}
 
-                                        {/* View Event */}
-                                        <Button
-                                            onClick={() => handlePostClick(post.event.id)}
-                                            variant="ghost"
-                                            size="sm"
-                                            className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-300 hover:bg-[#E94042]/20 hover:text-[#E94042] border border-white/20 hover:border-[#E94042]/30 transition-all duration-300 ml-auto"
-                                        >
-                                            <ExternalLink className="w-4 h-4" />
-                                            <span className="text-sm font-medium">View Event</span>
-                                        </Button>
+                                        {/* View Event or Standalone Indicator */}
+                                        {post.event ? (
+                                            <Button
+                                                onClick={() => handlePostClick(post.event!.id)}
+                                                variant="ghost"
+                                                size="sm"
+                                                className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-300 hover:bg-[#E94042]/20 hover:text-[#E94042] border border-white/20 hover:border-[#E94042]/30 transition-all duration-300 ml-auto"
+                                            >
+                                                <ExternalLink className="w-4 h-4" />
+                                                <span className="text-sm font-medium">View Event</span>
+                                            </Button>
+                                        ) : (
+                                            <div className="flex items-center gap-2 px-4 py-2 text-gray-400 bg-white/5 rounded-full border border-white/20 ml-auto">
+                                                <MessageCircle className="w-4 h-4" />
+                                                <span className="text-sm font-medium">Standalone</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
@@ -555,9 +567,9 @@ export default function ExplorePage() {
                                                     </div>
                                                 </div>
                                             ))}
-                                            {post.comments.length > 2 && (
+                                            {post.comments.length > 2 && post.event && (
                                                 <Button
-                                                    onClick={() => handlePostClick(post.event.id)}
+                                                    onClick={() => handlePostClick(post.event!.id)}
                                                     variant="ghost"
                                                     size="sm"
                                                     className="text-[#E94042] hover:text-[#E94042]/80 text-sm p-0 h-auto font-medium"
