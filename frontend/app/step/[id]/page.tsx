@@ -7,11 +7,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Plus } from 'lucide-react';
 
 // Import components
-import EventHeader from './components/EventHeader';
-import EventCard from './components/EventCard';
+import StepHeader from './components/EventHeader';
+import StepCard from './components/EventCard';
 import PostForm from './components/PostForm';
 import PostsList from './components/PostsList';
-import EventSidebar from './components/EventSidebar';
+import StepSidebar from './components/EventSidebar';
 
 // Extend Window interface for MetaMask
 declare global {
@@ -50,7 +50,7 @@ interface Post {
   };
 }
 
-interface EventDetail {
+interface StepDetail {
   id: string;
   title: string;
   description?: string;
@@ -74,9 +74,9 @@ interface EventDetail {
   };
 }
 
-export default function EventDetailPage() {
+export default function StepDetailPage() {
   const params = useParams();
-  const [event, setEvent] = useState<EventDetail | null>(null);
+  const [event, setEvent] = useState<StepDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isJoining, setIsJoining] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -104,7 +104,7 @@ export default function EventDetailPage() {
   
   // Prize/verification handling removed from client (moved to backend)
 
-  const fetchEventDetail = async () => {
+  const fetchStepDetail = async () => {
     try {
       const token = localStorage.getItem('access_token');
       
@@ -144,11 +144,11 @@ export default function EventDetailPage() {
         }
         
       } else {
-        setError(result.message || 'Failed to fetch event details');
+        setError(result.message || 'Failed to fetch step details');
       }
     } catch (error) {
-      console.error('Error fetching event details:', error);
-      setError('Failed to fetch event details');
+      console.error('Error fetching step details:', error);
+      setError('Failed to fetch step details');
     } finally {
       setIsLoading(false);
     }
@@ -156,11 +156,11 @@ export default function EventDetailPage() {
 
   useEffect(() => {
     if (params.id) {
-      fetchEventDetail();
+      fetchStepDetail();
     }
   }, [params.id]);
 
-  const handleJoinEvent = async () => {
+  const handleJoinStep = async () => {
     if (!event) return;
     
     setIsJoining(true);
@@ -183,15 +183,15 @@ export default function EventDetailPage() {
       const result = await response.json();
 
       if (response.ok) {
-        alert('Successfully joined the event!');
-        // Refresh event details to show updated participant count
-        fetchEventDetail();
+        alert('Successfully joined the step!');
+        // Refresh step details to show updated participant count
+        fetchStepDetail();
       } else {
-        alert(`Error: ${result.message || 'Failed to join event'}`);
+        alert(`Error: ${result.message || 'Failed to join step'}`);
       }
     } catch (error) {
-      console.error('Error joining event:', error);
-      alert('Failed to join event');
+      console.error('Error joining step:', error);
+      alert('Failed to join step');
     } finally {
       setIsJoining(false);
     }
@@ -199,10 +199,10 @@ export default function EventDetailPage() {
 
   const isUserParticipant = (userId: string) => {
     if (!event) return false;
-    return event.participants.some(participant => participant.id === userId);
+    return event.participants.some((participant: User) => participant.id === userId);
   };
 
-  const isEventHost = (userId: string) => {
+  const isStepHost = (userId: string) => {
     if (!event) return false;
     return event.creator.id === userId;
   };
@@ -260,8 +260,8 @@ export default function EventDetailPage() {
         setPostContent('');
         setPostImage('');
         setShowPostForm(false);
-        // Refresh event details to show new post
-        fetchEventDetail();
+        // Refresh step details to show new post
+        fetchStepDetail();
       } else {
         alert(`Error: ${result.message || 'Failed to create post'}`);
       }
@@ -317,8 +317,8 @@ export default function EventDetailPage() {
         // Reset form
         setCommentContent(prev => ({ ...prev, [postId]: '' }));
         setShowCommentForm(prev => ({ ...prev, [postId]: false }));
-        // Refresh event details to show new comment
-        fetchEventDetail();
+        // Refresh step details to show new comment
+        fetchStepDetail();
       } else {
         alert(`Error: ${result.message || 'Failed to create comment'}`);
       }
@@ -364,8 +364,8 @@ export default function EventDetailPage() {
         // Reset form
         setCommentContent(prev => ({ ...prev, [commentId]: '' }));
         setShowReplyForm(prev => ({ ...prev, [commentId]: false }));
-        // Refresh event details to show new reply
-        fetchEventDetail();
+        // Refresh step details to show new reply
+        fetchStepDetail();
       } else {
         alert(`Error: ${result.message || 'Failed to create reply'}`);
       }
@@ -415,13 +415,13 @@ export default function EventDetailPage() {
       if (response.ok) {
         // Update local state
         setUserLikes(prev => ({ ...prev, [eventId]: !isCurrentlyLiked }));
-        // Refresh event details to show updated like count
-        fetchEventDetail();
+        // Refresh step details to show updated like count
+        fetchStepDetail();
       } else {
         alert(`Error: ${result.message || 'Failed to update like'}`);
       }
     } catch (error) {
-      console.error('Error updating event like:', error);
+      console.error('Error updating step like:', error);
       alert('Failed to update like');
     } finally {
       setIsLiking(prev => ({ ...prev, [eventId]: false }));
@@ -456,8 +456,8 @@ export default function EventDetailPage() {
       if (response.ok) {
         // Update local state
         setUserUpvotes(prev => ({ ...prev, [postId]: !isCurrentlyUpvoted }));
-        // Refresh event details to show updated upvote count
-        fetchEventDetail();
+        // Refresh step details to show updated upvote count
+        fetchStepDetail();
       } else {
         alert(`Error: ${result.message || 'Failed to update upvote'}`);
       }
@@ -499,7 +499,7 @@ export default function EventDetailPage() {
     }));
   };
 
-  const canParticipate = currentUserId && (isUserParticipant(currentUserId) || isEventHost(currentUserId)) && event?.isActive;
+  const canParticipate = currentUserId && (isUserParticipant(currentUserId) || isStepHost(currentUserId)) && event?.isActive;
 
   // Prize verification and on-chain flows removed from client-side
 
@@ -520,7 +520,7 @@ export default function EventDetailPage() {
         <Card className="w-96 text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl relative z-10">
           <CardContent className="pt-6">
             <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#E94042] border-t-transparent mx-auto mb-4"></div>
-            <p className="text-gray-300">Loading event...</p>
+            <p className="text-gray-300">Loading step...</p>
           </CardContent>
         </Card>
       </div>
@@ -551,7 +551,7 @@ export default function EventDetailPage() {
               className="inline-flex items-center space-x-2 border-gray-600 text-gray-300"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Back to Events</span>
+              <span>Back to Steps</span>
             </Button>
           </CardContent>
         </Card>
@@ -575,14 +575,14 @@ export default function EventDetailPage() {
         
         <Card className="w-96 text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl relative z-10">
           <CardContent className="pt-6">
-            <h1 className="text-2xl font-semibold mb-4 text-white">Event not found</h1>
+            <h1 className="text-2xl font-semibold mb-4 text-white">Step not found</h1>
             <Button 
               variant="outline" 
               onClick={() => window.location.href = '/explore'}
               className="inline-flex items-center space-x-2 border-gray-600 text-gray-300 hover:bg-white/10"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Back to Events</span>
+              <span>Back to Steps</span>
             </Button>
           </CardContent>
         </Card>
@@ -607,7 +607,7 @@ export default function EventDetailPage() {
       <div className="fixed inset-0 bg-black/60" />
 
       {/* Header */}
-      <EventHeader 
+      <StepHeader 
         isBookmarked={isBookmarked}
         setIsBookmarked={setIsBookmarked}
       />
@@ -617,16 +617,16 @@ export default function EventDetailPage() {
           
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Event Card */}
-            <EventCard
+            {/* Step Card */}
+            <StepCard
               event={event}
               userLikes={userLikes}
               isLiking={isLiking}
               currentUserId={currentUserId}
               isUserParticipant={isUserParticipant}
-              isEventHost={isEventHost}
+              isEventHost={isStepHost}
               handleLikeEvent={handleLikeEvent}
-              handleJoinEvent={handleJoinEvent}
+              handleJoinEvent={handleJoinStep}
               isJoining={isJoining}
               formatDate={formatDate}
               formatShortDate={formatShortDate}
@@ -673,12 +673,12 @@ export default function EventDetailPage() {
           </div>
 
           {/* Sidebar */}
-          <EventSidebar
+          <StepSidebar
             event={event}
             currentUserId={currentUserId}
-            isEventHost={isEventHost}
+            isEventHost={isStepHost}
             isUserParticipant={isUserParticipant}
-            handleJoinEvent={handleJoinEvent}
+            handleJoinEvent={handleJoinStep}
             isJoining={isJoining}
             formatShortDate={formatShortDate}
           />
