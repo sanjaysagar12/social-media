@@ -88,39 +88,39 @@ export default function HomePage() {
 
   const features = [
     {
-      icon: Trophy,
-      title: 'Win Prizes',
-      description: 'Compete in exciting challenges and win ETH prizes',
-      color: 'text-yellow-600',
-      bgColor: 'bg-yellow-50'
+      icon: Globe,
+      title: 'Global Impact',
+      description: 'Contribute to worldwide sustainability goals through collective action',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50'
     },
     {
       icon: Users,
       title: 'Community Driven',
-      description: 'Connect with like-minded individuals worldwide',
+      description: 'Connect with eco-conscious individuals and organizations worldwide',
       color: 'text-blue-600',
       bgColor: 'bg-blue-50'
     },
     {
       icon: Zap,
-      title: 'Blockchain Powered',
-      description: 'Secure, transparent, and decentralized platform',
+      title: 'Track Your Impact',
+      description: 'Monitor your environmental contributions and earn recognition',
       color: 'text-purple-600',
       bgColor: 'bg-purple-50'
     },
     {
-      icon: Globe,
-      title: 'Global Reach',
-      description: 'Participate in steps from anywhere in the world',
-      color: 'text-green-600',
-      bgColor: 'bg-green-50'
+      icon: Heart,
+      title: 'Sustainable Living',
+      description: 'Learn and share tips for reducing your carbon footprint',
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-50'
     }
   ];
 
   const stats = [
-    { label: 'Active Steps', value: '50+', icon: Target },
-    { label: 'Participants', value: '1000+', icon: Users },
-    { label: 'Prizes Won', value: '25 ETH', icon: Trophy },
+    { label: 'Active Challenges', value: '50+', icon: Target },
+    { label: 'Earth Champions', value: '1000+', icon: Users },
+    { label: 'Impact Points Earned', value: '25K', icon: Trophy },
     { label: 'Communities', value: '10+', icon: Heart }
   ];
 
@@ -132,23 +132,23 @@ export default function HomePage() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
           <div className="text-center space-y-8">
             {/* Badge */}
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
               <Sparkles className="w-4 h-4" />
-              <span>The Future of Community Challenges</span>
+              <span>Small Steps for a Sustainable Future</span>
             </div>
 
             {/* Main Heading */}
             <div className="space-y-4">
               <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight">
-                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
-                  Discover Amazing
+                <span className="bg-gradient-to-r from-green-600 via-blue-600 to-green-800 bg-clip-text text-transparent">
+                  Small Steps
                 </span>
                 <br />
-                <span className="text-gray-900">Steps & Experiences</span>
+                <span className="text-gray-900">for Earth</span>
               </h1>
               <p className="max-w-3xl mx-auto text-xl text-gray-600 leading-relaxed">
-                Join a community of innovators, creators, and dreamers. Participate in exclusive challenges,
-                win prizes, and connect with like-minded individuals from around the world.
+                Join a global community of environmental champions. Take meaningful actions, participate in sustainability challenges,
+                earn rewards, and contribute to a greener planet, one small step at a time.
               </p>
             </div>
 
@@ -157,20 +157,20 @@ export default function HomePage() {
               <Button
                 onClick={() => router.push(isAuthenticated ? '/explore' : '/auth/login')}
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
               >
-                {isAuthenticated ? 'Explore Steps' : 'Get Started'}
+                {isAuthenticated ? 'Explore Challenges' : 'Join the Movement'}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
 
               <Button
-                onClick={() => router.push(isAuthenticated ? '/step/create' : '/auth/login')}
+                onClick={() => router.push(isAuthenticated ? '/post/create' : '/auth/login')}
                 variant="outline"
                 size="lg"
-                className="border-2 border-gray-300 hover:border-blue-500 px-8 py-4 text-lg font-semibold transition-all duration-300"
+                className="border-2 border-gray-300 hover:border-green-500 px-8 py-4 text-lg font-semibold transition-all duration-300"
               >
                 <Plus className="w-5 h-5 mr-2" />
-                Create Step
+                Share Your Impact
               </Button>
             </div>
           </div>
@@ -206,10 +206,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose EtherLink?
+              Why Choose Small Step for Earth?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Experience the next generation of community challenges with blockchain-powered transparency and rewards.
+              Join a movement that combines technology, community, and environmental action to create lasting positive change.
             </p>
           </div>
 
@@ -237,10 +237,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Featured Steps
+              Featured Challenges
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Discover trending challenges and join the community in exciting experiences.
+              Discover trending sustainability challenges and join the community in making a positive environmental impact.
             </p>
           </div>
 
@@ -321,13 +321,13 @@ export default function HomePage() {
           ) : (
             <div className="text-center py-16">
               <Target className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Featured Steps Yet</h3>
-              <p className="text-gray-600 mb-6">Be the first to create an amazing step!</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No Challenges Yet</h3>
+              <p className="text-gray-600 mb-6">Be the first to create a sustainability challenge!</p>
               <Button
                 onClick={() => router.push('/step/create')}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
               >
-                Create First Step
+                Create First Challenge
               </Button>
             </div>
           )}
@@ -337,9 +337,9 @@ export default function HomePage() {
               onClick={() => router.push('/explore')}
               variant="outline"
               size="lg"
-              className="border-2 border-blue-500 text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg"
+              className="border-2 border-green-500 text-green-600 hover:bg-green-50 px-8 py-4 text-lg"
             >
-              View All Steps
+              View All Challenges
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </div>
@@ -347,34 +347,34 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-r from-blue-600 to-purple-600">
+      <section className="py-24 bg-gradient-to-r from-green-600 to-blue-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <div className="space-y-8">
             <div>
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                Ready to Start Your Journey?
+                Ready to Make a Difference?
               </h2>
-              <p className="text-xl text-blue-100">
-                Join thousands of participants in exciting challenges and win amazing prizes.
+              <p className="text-xl text-green-100">
+                Join thousands of environmental champions taking small steps towards a sustainable future.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
-                onClick={() => router.push(isAuthenticated ? '/step/create' : '/auth/login')}
+                onClick={() => router.push(isAuthenticated ? '/post/create' : '/auth/login')}
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-50 px-8 py-4 text-lg font-semibold shadow-xl"
+                className="bg-white text-green-600 hover:bg-gray-50 px-8 py-4 text-lg font-semibold shadow-xl"
               >
-                {isAuthenticated ? 'Create Your Step' : 'Join Now'}
+                {isAuthenticated ? 'Share Your Story' : 'Join the Movement'}
               </Button>
 
               <Button
                 onClick={() => router.push('/explore')}
                 variant="outline"
                 size="lg"
-                className="border-2 border-white text-white hover:bg-white hover:text-blue-600 px-8 py-4 text-lg font-semibold"
+                className="border-2 border-white text-white hover:bg-white hover:text-green-600 px-8 py-4 text-lg font-semibold"
               >
-                Explore Steps
+                Explore Challenges
               </Button>
             </div>
           </div>

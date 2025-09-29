@@ -15,7 +15,7 @@ function AuthCallbackContent() {
             localStorage.setItem('access_token', token);
             
             // Redirect to dashboard or home page
-            router.push('/');
+            router.push('/explore');
         } else {
             // If no token, redirect to login page
             router.push('/auth/login');
