@@ -33,7 +33,7 @@ export default function CreatePostPage() {
         return;
       }
 
-      const response = await fetch('/api/post', {
+      const response = await fetch('http://localhost:4000/api/step/post', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

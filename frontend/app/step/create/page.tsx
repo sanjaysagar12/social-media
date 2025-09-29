@@ -57,7 +57,7 @@ export default function CreateEventPage() {
         return;
       }
 
-      const response = await fetch('http://localhost:3000/api/step', {
+  const response = await fetch('http://localhost:3000/api/step', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

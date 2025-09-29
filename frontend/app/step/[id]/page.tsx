@@ -117,7 +117,7 @@ export default function EventDetailPage() {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch(`http://localhost:3000/api/step/${params.id}`, {
+  const response = await fetch(`http://localhost:3000/api/step/${params.id}`, {
         method: 'GET',
         headers,
       });

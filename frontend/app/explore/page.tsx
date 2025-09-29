@@ -25,7 +25,7 @@ interface User {
 }
 
 interface Event {
-    id: string;
+                            posts.map((post) => (
     title: string;
     thumbnail?: string;
     verified: boolean;
@@ -97,14 +97,15 @@ export default function ExplorePage() {
                 headers['Authorization'] = `Bearer ${token}`;
             }
 
-      const response = await fetch('http://localhost:3000/api/event/explore', {
-        method: 'GET',
-        headers,
-      });            const result = await response.json();
+            const response = await fetch('http://localhost:3000/api/step/explore', {
+                method: 'GET',
+                headers,
+            });
+            const result = await response.json();
 
             if (response.ok) {
                 setPosts(result.data);
-
+                console.log(result.data);
                 // Initialize upvote state for all posts (only if user is logged in)
                 if (token && result.data) {
                     const upvoteState: { [key: string]: boolean } = {};
@@ -148,7 +149,7 @@ export default function ExplorePage() {
             }
 
             const endpoint = isCurrentlyUpvoted ? 'remove-upvote' : 'upvote';
-            const response = await fetch(`http://localhost:3000/api/event/post/${postId}/${endpoint}`, {
+            const response = await fetch(`http://localhost:3000/api/step/post/${postId}/${endpoint}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -187,7 +188,7 @@ export default function ExplorePage() {
     };
 
     const handlePostClick = (eventId: string) => {
-        router.push(`/event/${eventId}`);
+    router.push(`/step/${eventId}`);
     };
 
     const formatDate = (dateString: string) => {
@@ -386,7 +387,7 @@ export default function ExplorePage() {
                             <p className="text-gray-400 text-sm">Check back later for new content from the community!</p>
                         </div>
                     ) : (
-                        posts.map((post) => (
+                        posts.filter(post => post.event && post.event.title).map((post) => (
                             <div key={post.id} className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl rounded-lg hover:bg-white/7 transition-all duration-300 overflow-hidden">
                                 {/* Post Header */}
                                 <div className="p-4 border-b border-white/20 bg-white/5">
