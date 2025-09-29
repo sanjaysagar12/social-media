@@ -38,7 +38,7 @@ interface UserProfile {
   createdAt: string;
 }
 
-interface EventSummary {
+interface StepSummary {
   id: string;
   title: string;
   description?: string;
@@ -63,7 +63,7 @@ interface PostSummary {
   image?: string;
   upvotes: number;
   createdAt: string;
-  event: {
+  step: {
     id: string;
     title: string;
     thumbnail?: string;
@@ -83,7 +83,7 @@ interface CommentSummary {
   post: {
     id: string;
     content: string;
-    event: {
+    step: {
       id: string;
       title: string;
       isActive: boolean;
@@ -115,7 +115,7 @@ interface UpvoteSummary {
       name: string;
       email: string;
     };
-    event: {
+    step: {
       id: string;
       title: string;
       isActive: boolean;
@@ -123,10 +123,10 @@ interface UpvoteSummary {
   };
 }
 
-interface EventLikeSummary {
+interface StepLikeSummary {
   id: string;
   createdAt: string;
-  event: {
+  step: {
     id: string;
     title: string;
     thumbnail?: string;
@@ -201,13 +201,13 @@ interface FullUserData {
   isActive: boolean;
   createdAt: string;
   walletAddress?: string;
-  createdEvents: EventSummary[];
-  joinedEvents: EventSummary[];
-  wonEvents: EventSummary[];
+  createdEvents: StepSummary[];
+  joinedEvents: StepSummary[];
+  wonEvents: StepSummary[];
   posts: PostSummary[];
   comments: CommentSummary[];
   upvotes: UpvoteSummary[];
-  eventLikes: EventLikeSummary[];
+  eventLikes: StepLikeSummary[];
   stats: UserStats;
   wallet?: WalletInfo;
   transactions: TransactionInfo[];
@@ -334,8 +334,8 @@ export default function ProfilePage() {
     router.push('/auth/login');
   };
 
-  const handleEventClick = (eventId: string) => {
-    router.push(`/event/${eventId}`);
+  const handleStepClick = (stepId: string) => {
+    router.push(`/step/${stepId}`);
   };
 
   const handleWithdraw = async () => {
@@ -517,11 +517,11 @@ export default function ProfilePage() {
               
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => router.push('/event/my')}
+                  onClick={() => router.push('/step/my')}
                   className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:bg-white/10 rounded-lg backdrop-blur-sm border border-white/20 transition-colors"
                 >
                   <Calendar className="w-4 h-4" />
-                  My Events
+                  My Steps
                 </button>
                 <button
                   onClick={() => router.push('/')}
@@ -678,7 +678,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">{userData.stats.totalEventsHosted}</p>
-                  <p className="text-sm text-gray-300">Events Hosted</p>
+                  <p className="text-sm text-gray-300">Steps Hosted</p>
                 </div>
               </div>
             </div>
@@ -690,7 +690,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-white">{userData.stats.totalEventsJoined}</p>
-                  <p className="text-sm text-gray-300">Events Joined</p>
+                  <p className="text-sm text-gray-300">Steps Joined</p>
                 </div>
               </div>
             </div>

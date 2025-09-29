@@ -169,8 +169,8 @@ export default function ExplorePage() {
                             _count: {
                                 ...post._count,
                                 userUpvotes: isCurrentlyUpvoted
-                                    ? post._count.userUpvotes - 1
-                                    : post._count.userUpvotes + 1
+                                    ? (post._count?.userUpvotes || 0) - 1
+                                    : (post._count?.userUpvotes || 0) + 1
                             }
                         }
                         : post
@@ -483,19 +483,19 @@ export default function ExplorePage() {
                                                 {isUpvoting[post.id] ? (
                                                     <>
                                                         <div className="w-4 h-4 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
-                                                        <span className="text-sm font-medium">{post._count.userUpvotes}</span>
+                                                        <span className="text-sm font-medium">{post._count?.userUpvotes || 0}</span>
                                                     </>
                                                 ) : (
                                                     <>
                                                         <ArrowUp className={`w-5 h-5 ${userUpvotes[post.id] ? 'fill-current' : ''}`} />
-                                                        <span className="text-sm font-semibold">{post._count.userUpvotes}</span>
+                                                        <span className="text-sm font-semibold">{post._count?.userUpvotes || 0}</span>
                                                     </>
                                                 )}
                                             </Button>
                                         ) : (
                                             <div className="flex items-center gap-2 px-4 py-2 text-gray-400 bg-white/5 rounded-full border border-white/20">
                                                 <ArrowUp className="w-5 h-5" />
-                                                <span className="text-sm font-semibold">{post._count.userUpvotes}</span>
+                                                <span className="text-sm font-semibold">{post._count?.userUpvotes || 0}</span>
                                             </div>
                                         )}
 
@@ -508,12 +508,12 @@ export default function ExplorePage() {
                                                 className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-300 hover:bg-white/10 border border-white/20 hover:border-white/30 transition-all duration-300"
                                             >
                                                 <MessageCircle className="w-5 h-5" />
-                                                <span className="text-sm font-semibold">{post._count.comments}</span>
+                                                <span className="text-sm font-semibold">{post._count?.comments || 0}</span>
                                             </Button>
                                         ) : (
                                             <div className="flex items-center gap-2 px-4 py-2 text-gray-400 bg-white/5 rounded-full border border-white/20">
                                                 <MessageCircle className="w-5 h-5" />
-                                                <span className="text-sm font-semibold">{post._count.comments}</span>
+                                                <span className="text-sm font-semibold">{post._count?.comments || 0}</span>
                                             </div>
                                         )}
 
@@ -538,10 +538,10 @@ export default function ExplorePage() {
                                 </div>
 
                                 {/* Comments Preview */}
-                                {post.comments.length > 0 && (
+                                {post.comments && post.comments.length > 0 && (
                                     <div className="px-6 py-4 border-t border-white/20 bg-black/20">
                                         <div className="space-y-4">
-                                            {post.comments.slice(0, 2).map((comment) => (
+                                            {post.comments && post.comments.slice(0, 2).map((comment) => (
                                                 <div key={comment.id} className="flex items-start gap-3">
                                                     {comment.author.avatar ? (
                                                         <img
@@ -567,14 +567,14 @@ export default function ExplorePage() {
                                                     </div>
                                                 </div>
                                             ))}
-                                            {post.comments.length > 2 && post.step && (
+                                            {post.comments && post.comments.length > 2 && post.step && (
                                                 <Button
                                                     onClick={() => handlePostClick(post.step!.id)}
                                                     variant="ghost"
                                                     size="sm"
                                                     className="text-[#E94042] hover:text-[#E94042]/80 text-sm p-0 h-auto font-medium"
                                                 >
-                                                    View all {post._count.comments} comments →
+                                                    View all {post._count?.comments || 0} comments →
                                                 </Button>
                                             )}
                                         </div>

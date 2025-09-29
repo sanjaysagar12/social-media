@@ -372,7 +372,7 @@ export default function StepParticipantsPage() {
             </CardContent>
           </Card>
         )}
-        {data.participants.length === 0 ? (
+        {(!data.participants || data.participants.length === 0) ? (
           <Card className="w-full text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl">
             <CardContent className="pt-12 pb-12">
               <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -382,7 +382,7 @@ export default function StepParticipantsPage() {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {data.participants.map((participant) => (
+            {data.participants && data.participants.map((participant) => (
               <Card key={participant.id} className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl hover:bg-white/7 transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-4 mb-4">

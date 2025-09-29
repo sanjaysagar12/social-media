@@ -375,15 +375,15 @@ export default function MyEventsPage() {
                     <div className="flex items-center justify-between text-sm text-gray-300 mb-4">
                       <div className="flex items-center gap-1">
                         <Users className="w-4 h-4" />
-                        <span>{event._count.participants}</span>
+                        <span>{event._count?.participants || 0}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <MessageSquare className="w-4 h-4" />
-                        <span>{event._count.posts}</span>
+                        <span>{event._count?.posts || 0}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Heart className="w-4 h-4" />
-                        <span>{event._count.userLikes}</span>
+                        <span>{event._count?.userLikes || 0}</span>
                       </div>
                     </div>
 

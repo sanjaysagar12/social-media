@@ -171,7 +171,7 @@ export default function EventCard({
               <span className="text-xs font-medium uppercase tracking-wide">Attendees</span>
             </div>
             <div className="text-sm font-semibold text-white">
-              {event._count.participants}
+              {event._count?.participants || 0}
             </div>
           </Card>
 
@@ -180,7 +180,7 @@ export default function EventCard({
               <MessageCircle className="w-4 h-4" />
               <span className="text-xs font-medium uppercase tracking-wide">Posts</span>
             </div>
-            <div className="text-sm font-semibold text-white">{event._count.posts}</div>
+            <div className="text-sm font-semibold text-white">{event._count?.posts || 0}</div>
           </Card>
 
           {event.prize && (
@@ -199,7 +199,7 @@ export default function EventCard({
           <div className="flex items-center space-x-4">
             <Button variant="ghost" size="sm" className="space-x-2 text-gray-300 hover:bg-white/10">
               <MessageCircle className="w-4 h-4" />
-              <span>{event._count.posts}</span>
+              <span>{event._count?.posts || 0}</span>
             </Button>
 
             <Button 
@@ -214,7 +214,7 @@ export default function EventCard({
               }`}
             >
               <Heart className={`w-4 h-4 ${userLikes[event.id] ? 'fill-current' : ''}`} />
-              <span>{event._count.userLikes}</span>
+              <span>{event._count?.userLikes || 0}</span>
             </Button>
           </div>
 

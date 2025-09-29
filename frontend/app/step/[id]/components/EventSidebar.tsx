@@ -164,15 +164,15 @@ export default function EventSidebar({
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-400 text-sm">Participants</span>
-            <span className="font-medium text-sm text-white">{event._count.participants}</span>
+            <span className="font-medium text-sm text-white">{event._count?.participants || 0}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-400 text-sm">Posts</span>
-            <span className="font-medium text-sm text-white">{event._count.posts}</span>
+            <span className="font-medium text-sm text-white">{event._count?.posts || 0}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-400 text-sm">Likes</span>
-            <span className="font-medium text-sm text-white">{event._count.userLikes}</span>
+            <span className="font-medium text-sm text-white">{event._count?.userLikes || 0}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-400 text-sm">Status</span>
@@ -234,13 +234,13 @@ export default function EventSidebar({
       </Card>
 
       {/* Recent Participants */}
-      {event.participants.length > 0 && (
+      {event.participants && event.participants.length > 0 && (
         <Card className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl hover:bg-white/7 transition-all duration-300">
           <CardHeader>
             <CardTitle className="text-white">Recent Participants</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {event.participants.slice(0, 5).map((participant) => (
+            {event.participants && event.participants.slice(0, 5).map((participant) => (
               <div key={participant.id} className="flex items-center space-x-3">
                 {participant.avatar ? (
                   <img
@@ -260,7 +260,7 @@ export default function EventSidebar({
                 </div>
               </div>
             ))}
-            {event.participants.length > 5 && (
+            {event.participants && event.participants.length > 5 && (
               <div className="text-xs text-gray-400 pt-2 border-t border-gray-600">
                 +{event.participants.length - 5} more participants
               </div>

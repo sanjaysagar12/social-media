@@ -100,7 +100,7 @@ export default function PostItem({
                 <ArrowUp className={`w-4 h-4 ${userUpvotes[post.id] ? 'fill-current' : ''}`} />
               )}
             </Button>
-            <span className="text-xs font-medium text-gray-300">{post._count.userUpvotes}</span>
+            <span className="text-xs font-medium text-gray-300">{post._count?.userUpvotes || 0}</span>
             <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-white/10">
               <ChevronDown className="w-4 h-4" />
             </Button>
@@ -136,16 +136,16 @@ export default function PostItem({
                 className="text-gray-300 hover:bg-white/10"
               >
                 <MessageCircle className="w-4 h-4 mr-1" />
-                {post._count.comments} Comments
+                {post._count?.comments || 0} Comments
               </Button>
               <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-white/10">Share</Button>
               <Button variant="ghost" size="sm" className="text-gray-300 hover:bg-white/10">Save</Button>
             </div>
 
             {/* Comments */}
-            {post.comments.length > 0 && (
+            {post.comments && post.comments.length > 0 && (
               <div className="mt-4 pt-4 border-t border-gray-600 space-y-4">
-                {post.comments.map((comment) => (
+                {post.comments && post.comments.map((comment) => (
                   <CommentComponent
                     key={comment.id}
                     comment={comment}

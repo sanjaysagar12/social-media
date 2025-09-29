@@ -218,7 +218,7 @@ export class PostService {
         });
     }
 
-    async getEventById(stepId: string, userId?: string) {
+    async getStepById(stepId: string, userId?: string) {
         return await this.prisma.step.findUnique({
             where: { id: stepId },
             select: {

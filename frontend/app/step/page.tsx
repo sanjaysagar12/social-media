@@ -293,7 +293,7 @@ export default function StepsPage() {
                           <Users className="w-4 h-4 text-blue-400" />
                         </div>
                         <div>
-                          <div className="font-semibold text-white text-sm">{step._count.participants}</div>
+                          <div className="font-semibold text-white text-sm">{step._count?.participants || 0}</div>
                           <div className="text-xs text-gray-400">Participants</div>
                         </div>
                       </div>
@@ -302,7 +302,7 @@ export default function StepsPage() {
                           <MessageSquare className="w-4 h-4 text-green-400" />
                         </div>
                         <div>
-                          <div className="font-semibold text-white text-sm">{step._count.posts}</div>
+                          <div className="font-semibold text-white text-sm">{step._count?.posts || 0}</div>
                           <div className="text-xs text-gray-400">Posts</div>
                         </div>
                       </div>

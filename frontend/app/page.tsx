@@ -318,7 +318,7 @@ export default function HomePage() {
                       <div className="space-y-2 text-sm">
                         <div className="flex items-center space-x-1 text-gray-300">
                           <Users className="w-4 h-4" />
-                          <span>{step._count.participants} participants</span>
+                          <span>{step._count?.participants || 0} participants</span>
                         </div>
 
                         <div className="flex items-center space-x-1 text-gray-300">

@@ -66,11 +66,22 @@ export class PostController {
         @GetOptionalUser('sub') userId?: string,
     ) {
         this.logger.log(`Fetching step details for ID: ${stepId} ${userId ? `for user ${userId}` : 'for anonymous user'}`);
-        const data = await this.postService.getEventById(stepId, userId);
-        return {
-            status: 'success',
-            data: data,
-        };
+        try {
+            const data = await this.postService.getStepById(stepId, userId);
+            return {
+                status: 'success',
+                data: data,
+            };
+        } catch (error) {
+            if (error.message === 'Step not found') {
+                return {
+                    status: 'error',
+                    message: 'Step not found',
+                    code: 404,
+                };
+            }
+            throw error;
+        }
     }
 
     @Patch('step/:id/join')
