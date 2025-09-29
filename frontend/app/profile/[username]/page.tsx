@@ -3,18 +3,22 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import {
-  User,
-  Calendar,
-  Trophy,
-  Users,
-  FileText,
-  MessageCircle,
-  ArrowUp,
-  Heart,
-  Star,
-  ExternalLink,
   Home,
-  AlertCircle
+  Calendar,
+  FileText,
+  Users,
+  MessageSquare,
+  Heart,
+  ArrowUp,
+  AlertCircle,
+  Star,
+  CheckCircle,
+  Clock,
+  Award,
+  TrendingUp,
+  Target,
+  MapPin,
+  ExternalLink
 } from 'lucide-react';
 
 interface UserProfile {
@@ -95,7 +99,7 @@ interface ProfileResponse {
 
 export default function UserProfilePage() {
   const params = useParams();
-  const userId = params.id as string;
+  const username = params.username as string;
 
   const [userData, setUserData] = useState<FullUserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -104,13 +108,13 @@ export default function UserProfilePage() {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
+      const response = await fetch(`http://localhost:3000/api/user/username/${username}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
+      console.log(response);
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error('User not found');
@@ -129,10 +133,10 @@ export default function UserProfilePage() {
   };
 
   useEffect(() => {
-    if (userId) {
+    if (username) {
       fetchUserProfile();
     }
-  }, [userId]);
+  }, [username]);
 
   if (isLoading) {
     return (
@@ -262,21 +266,21 @@ export default function UserProfilePage() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <MessageCircle className="h-5 w-5 text-orange-500" />
+                      <MessageSquare className="h-5 w-5 text-orange-500" />
                       <span className="text-sm text-gray-600">Comments</span>
                     </div>
                     <span className="font-semibold">{userData.stats.totalComments}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <ArrowUp className="h-5 w-5 text-red-500" />
+                      <Heart className="h-5 w-5 text-red-500" />
                       <span className="text-sm text-gray-600">Upvotes Given</span>
                     </div>
                     <span className="font-semibold">{userData.stats.totalUpvotesGiven}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <Heart className="h-5 w-5 text-pink-500" />
+                      <ArrowUp className="h-5 w-5 text-pink-500" />
                       <span className="text-sm text-gray-600">Upvotes Received</span>
                     </div>
                     <span className="font-semibold">{userData.stats.totalUpvotesReceived}</span>
@@ -291,34 +295,31 @@ export default function UserProfilePage() {
                 {/* Recent Steps */}
                 {userData.createdSteps.length > 0 && (
                   <div className="bg-white rounded-lg shadow-sm p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Steps</h3>
-                    <div className="space-y-4">
-                      {userData.createdSteps.slice(0, 3).map((step) => (
-                        <div key={step.id} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-gray-50">
-                          {step.thumbnail && (
-                            <img
-                              src={step.thumbnail}
-                              alt={step.title}
-                              className="w-16 h-16 rounded-lg object-cover"
-                            />
-                          )}
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900">{step.title}</h4>
-                            <p className="text-sm text-gray-600 line-clamp-2">{step.description}</p>
-                            <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
-                              <span>{step._count.participants} participants</span>
-                              <span>{step._count.posts} posts</span>
-                              <span>{step._count.userLikes} likes</span>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Steps Created</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {userData.createdSteps.slice(0, 4).map((step) => (
+                        <div key={step.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-start space-x-3">
+                            {step.thumbnail && (
+                              <img
+                                src={step.thumbnail}
+                                alt={step.title}
+                                className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                              />
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2 mb-1">
+                                <h4 className="text-sm font-semibold text-gray-900 truncate">{step.title}</h4>
+                                {step.verified && <Star className="w-4 h-4 text-yellow-500 fill-current flex-shrink-0" />}
+                              </div>
+                              <p className="text-xs text-gray-500 mb-2">
+                                {formatDate(step.createdAt)} • {step._count.participants} participants
+                              </p>
+                              <div className="flex items-center space-x-3 text-xs text-gray-500">
+                                <span>{step._count.posts} posts</span>
+                                <span>{step._count.userLikes} likes</span>
+                              </div>
                             </div>
-                          </div>
-                          <div className="text-right">
-                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                              step.isActive
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-gray-100 text-gray-800'
-                            }`}>
-                              {step.isActive ? 'Active' : 'Inactive'}
-                            </span>
                           </div>
                         </div>
                       ))}
@@ -332,25 +333,31 @@ export default function UserProfilePage() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Posts</h3>
                     <div className="space-y-4">
                       {userData.posts.slice(0, 3).map((post) => (
-                        <div key={post.id} className="p-4 border rounded-lg hover:bg-gray-50">
-                          <p className="text-gray-900 mb-2">{post.content}</p>
+                        <div key={post.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                          <p className="text-gray-900 text-sm mb-3 line-clamp-2">{post.content}</p>
                           {post.image && (
                             <img
                               src={post.image}
                               alt="Post image"
-                              className="w-full h-48 object-cover rounded-lg mb-2"
+                              className="w-full h-32 object-cover rounded-lg mb-3"
                             />
                           )}
-                          <div className="flex items-center justify-between text-sm text-gray-500">
+                          <div className="flex items-center justify-between text-xs text-gray-500">
                             <div className="flex items-center space-x-4">
-                              <span>{post.upvotes} upvotes</span>
-                              <span>{post._count.comments} comments</span>
+                              <span className="flex items-center space-x-1">
+                                <Heart className="w-3 h-3" />
+                                <span>{post._count.userUpvotes}</span>
+                              </span>
+                              <span className="flex items-center space-x-1">
+                                <MessageSquare className="w-3 h-3" />
+                                <span>{post._count.comments}</span>
+                              </span>
                             </div>
                             <span>{formatDate(post.createdAt)}</span>
                           </div>
                           {post.step && (
-                            <div className="mt-2 text-xs text-gray-500">
-                              Posted in: {post.step.title}
+                            <div className="mt-2 text-xs text-gray-600">
+                              Posted in: <span className="font-medium">{post.step.title}</span>
                             </div>
                           )}
                         </div>
@@ -380,13 +387,16 @@ export default function UserProfilePage() {
                         />
                       )}
                       <div className="p-4">
-                        <h4 className="font-medium text-gray-900 mb-2">{step.title}</h4>
-                        <p className="text-sm text-gray-600 line-clamp-2 mb-3">{step.description}</p>
-                        <div className="flex items-center justify-between text-xs text-gray-500">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="text-lg font-semibold text-gray-900">{step.title}</h4>
+                          {step.verified && <Star className="w-5 h-5 text-yellow-500 fill-current" />}
+                        </div>
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{step.description}</p>
+                        <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
                           <span>{step._count.participants} participants</span>
                           <span>{step._count.posts} posts</span>
                         </div>
-                        <div className="mt-2">
+                        <div className="flex items-center justify-between">
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             step.isActive
                               ? 'bg-green-100 text-green-800'
@@ -394,6 +404,7 @@ export default function UserProfilePage() {
                           }`}>
                             {step.isActive ? 'Active' : 'Inactive'}
                           </span>
+                          <span className="text-xs text-gray-500">{formatDate(step.createdAt)}</span>
                         </div>
                       </div>
                     </div>
@@ -417,13 +428,16 @@ export default function UserProfilePage() {
                         />
                       )}
                       <div className="p-4">
-                        <h4 className="font-medium text-gray-900 mb-2">{step.title}</h4>
-                        <p className="text-sm text-gray-600 line-clamp-2 mb-3">{step.description}</p>
-                        <div className="flex items-center justify-between text-xs text-gray-500">
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="text-lg font-semibold text-gray-900">{step.title}</h4>
+                          {step.verified && <Star className="w-5 h-5 text-yellow-500 fill-current" />}
+                        </div>
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{step.description}</p>
+                        <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
                           <span>{step._count.participants} participants</span>
                           <span>{step._count.posts} posts</span>
                         </div>
-                        <div className="mt-2">
+                        <div className="flex items-center justify-between">
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             step.isActive
                               ? 'bg-green-100 text-green-800'
@@ -431,7 +445,13 @@ export default function UserProfilePage() {
                           }`}>
                             {step.isActive ? 'Active' : 'Inactive'}
                           </span>
+                          <span className="text-xs text-gray-500">{formatDate(step.createdAt)}</span>
                         </div>
+                        {step.creator && (
+                          <div className="mt-2 text-xs text-gray-500">
+                            Created by {step.creator.name}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -459,12 +479,12 @@ export default function UserProfilePage() {
                     <div className="flex items-center justify-between text-sm text-gray-500">
                       <div className="flex items-center space-x-4">
                         <span className="flex items-center space-x-1">
-                          <ArrowUp className="h-4 w-4" />
-                          <span>{post.upvotes} upvotes</span>
+                          <Heart className="w-4 h-4" />
+                          <span>{post._count.userUpvotes}</span>
                         </span>
                         <span className="flex items-center space-x-1">
-                          <MessageCircle className="h-4 w-4" />
-                          <span>{post._count.comments} comments</span>
+                          <MessageSquare className="w-4 h-4" />
+                          <span>{post._count.comments}</span>
                         </span>
                       </div>
                       <span>{formatDate(post.createdAt)}</span>

@@ -48,4 +48,28 @@ export class UserController {
             throw error;
         }
     }
+
+    @Get('username/:username')
+    async getUserByUsername(
+        @Param('username') username: string,
+    ) {
+        this.logger.log(`Fetching user profile for username: ${username}`);
+        try {
+            const data = await this.userService.getUserByUsername(username);
+            this.logger.log(`User data retrieved: ${JSON.stringify(data)}`);
+            return {
+                status: 'success',
+                data: data,
+            };
+        } catch (error) {
+            console.error('Error fetching user by username:', error);
+            if (error.message === 'User not found') {
+                throw new HttpException({
+                    status: 'error',
+                    message: 'User not found',
+                }, HttpStatus.NOT_FOUND);
+            }
+            throw error;
+        }
+    }
 }

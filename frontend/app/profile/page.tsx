@@ -331,6 +331,16 @@ export default function ProfilePage() {
     alert('Copied to clipboard!');
   };
 
+  const getShareableLink = () => {
+    if (!userData?.email) return '';
+    // Extract username from email (everything before @)
+    const username = userData.email.split('@')[0];
+    console.log('User email:', userData.email);
+    console.log('Extracted username:', username);
+    console.log('Shareable link:', `${window.location.origin}/profile/${username}`);
+    return `${window.location.origin}/profile/${username}`;
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -418,6 +428,23 @@ export default function ProfilePage() {
               </div>
               
               <div className="flex items-center gap-3">
+                {/* Shareable Link */}
+                <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                  <span className="text-sm text-gray-600">Share:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-900 font-mono">
+                      {getShareableLink().replace(window.location.origin + '/', '')}
+                    </span>
+                    <button
+                      onClick={() => copyToClipboard(getShareableLink())}
+                      className="text-gray-500 hover:text-gray-700 transition-colors"
+                      title="Copy shareable link"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
                 <button
                   onClick={() => router.push('/step/my')}
                   className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-300 transition-colors"
