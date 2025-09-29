@@ -15,13 +15,13 @@ class OptionalJwtGuard extends JwtGuard {
   }
 }
 
-@Controller('api/step')
+@Controller('api')
 export class PostController {
     private readonly logger = new Logger(PostController.name);
     
     constructor(private readonly postService: PostService) {}
 
-    @Post()
+    @Post('step')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async createEvent(
@@ -36,7 +36,7 @@ export class PostController {
         };
     }
 
-    @Get()
+    @Get('step')
     async getAllEvents() {
         this.logger.log('Fetching all events');
         const data = await this.postService.getAllEvents();
@@ -46,7 +46,7 @@ export class PostController {
         };
     }
 
-    @Get('explore')
+    @Get('step/explore')
     @UseGuards(OptionalJwtGuard)
     async explorePosts(
         @GetOptionalUser('sub') userId?: string,
@@ -59,7 +59,7 @@ export class PostController {
         };
     }
 
-    @Get(':id')
+    @Get('step/:id')
     @UseGuards(OptionalJwtGuard)
     async getEventById(
         @Param('id') stepId: string,
@@ -73,7 +73,7 @@ export class PostController {
         };
     }
 
-    @Patch(':id/join')
+    @Patch('step/:id/join')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async joinEvent(
@@ -89,7 +89,7 @@ export class PostController {
         };
     }
 
-    @Post(':id/post')
+    @Post('step/:id/post')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async createPost(
@@ -123,7 +123,7 @@ export class PostController {
         };
     }
 
-    @Post('post/:postId/comment')
+    @Post('step/post/:postId/comment')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async createComment(
@@ -140,7 +140,7 @@ export class PostController {
         };
     }
 
-    @Post('comment/:commentId/reply')
+    @Post('step/comment/:commentId/reply')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async replyToComment(
@@ -157,7 +157,7 @@ export class PostController {
         };
     }
 
-    @Post(':id/like')
+    @Post('step/:id/like')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async likeEvent(
@@ -173,7 +173,7 @@ export class PostController {
         };
     }
 
-    @Post(':id/unlike')
+    @Post('step/:id/unlike')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async unlikeEvent(
@@ -189,7 +189,7 @@ export class PostController {
         };
     }
 
-    @Post('post/:postId/upvote')
+    @Post('step/post/:postId/upvote')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async upvotePost(
@@ -205,7 +205,7 @@ export class PostController {
         };
     }
 
-    @Post('post/:postId/remove-upvote')
+    @Post('step/post/:postId/remove-upvote')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async removeUpvote(
@@ -221,7 +221,7 @@ export class PostController {
         };
     }
 
-    @Patch(':id/verify')
+    @Patch('step/:id/verify')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async verifyEvent(
@@ -237,7 +237,7 @@ export class PostController {
         };
     }
 
-    @Get(':id/verify-test')
+    @Get('step/:id/verify-test')
     async testVerifyRoute(
         @Param('id') eventId: string,
     ) {
@@ -249,7 +249,7 @@ export class PostController {
         };
     }
 
-    @Get('hosted/:userId')
+    @Get('step/hosted/:userId')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async getHostedEvents(
@@ -272,7 +272,23 @@ export class PostController {
         };
     }
 
-    @Get(':id/participants')
+    @Get('step/my')
+    @UseGuards(JwtGuard, RolesGuard)
+    @Roles(Role.USER, Role.ADMIN)
+    async getMyHostedEvents(
+        @GetUser('sub') userId: string,
+    ) {
+        this.logger.log(`Fetching hosted events for current user ${userId}`);
+        
+        const data = await this.postService.getHostedEvents(userId);
+        return {
+            status: 'success',
+            data: data,
+            message: 'Hosted events fetched successfully',
+        };
+    }
+
+    @Get('step/:id/participants')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
     async getEventParticipants(
@@ -288,7 +304,7 @@ export class PostController {
         };
     }
 
-    @Patch(':id/unverify')
+    @Patch('step/:id/unverify')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.ADMIN)
     async unverifyEvent(
