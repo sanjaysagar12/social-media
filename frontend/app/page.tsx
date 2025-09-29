@@ -26,7 +26,7 @@ const Badge = ({ className = "", children, ...props }: { className?: string, chi
   );
 };
 
-interface Event {
+interface Step {
   id: string;
   title: string;
   description?: string;
@@ -49,7 +49,7 @@ interface Event {
 
 export default function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [featuredEvents, setFeaturedEvents] = useState<Event[]>([]);
+  const [featuredEvents, setFeaturedEvents] = useState<Step[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -70,13 +70,13 @@ export default function HomePage() {
       });
       if (response.ok) {
         const data = await response.json();
-        // Take first 3 active events as featured
-        setFeaturedEvents((data.data || []).filter((event: Event) => event.isActive).slice(0, 3));
+        // Take first 3 active steps as featured
+        setFeaturedEvents((data.data || []).filter((step: Step) => step.isActive).slice(0, 3));
       } else {
-        console.error('Failed to fetch events');
+        console.error('Failed to fetch steps');
       }
     } catch (error) {
-      console.error('Error fetching events:', error);
+      console.error('Error fetching steps:', error);
     } finally {
       setLoading(false);
     }
@@ -94,9 +94,9 @@ export default function HomePage() {
     window.location.href = '/explore';
   };
 
-  const handleCreateEvent = () => {
+  const handleCreateStep = () => {
     if (isAuthenticated) {
-      window.location.href = '/event/create';
+      window.location.href = '/step/create';
     } else {
       window.location.href = '/auth/login';
     }
@@ -133,16 +133,16 @@ export default function HomePage() {
             <div className="space-y-4 sm:space-y-6">
               <Badge className="inline-flex items-center space-x-2 bg-black/80 backdrop-blur-sm text-white px-4 py-2 text-sm sm:text-base">
                 <Sparkles className="w-4 h-4" />
-                <span>The Future of Events</span>
+                <span>The Future of Steps</span>
               </Badge>
 
               <h1 className="text-5xl text-white sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-tight">
                 Discover Amazing
-                <span className="block">Events & Experiences</span>
+                <span className="block">Steps & Experiences</span>
               </h1>
 
               <p className="max-w-2xl sm:max-w-3xl mx-auto text-xl sm:text-2xl text-gray-200 leading-relaxed px-4 sm:px-0">
-                Join a community of innovators, creators, and dreamers. Participate in exclusive events,
+                Join a community of innovators, creators, and dreamers. Participate in exclusive steps,
                 win prizes, and connect with like-minded individuals from around the world.
               </p>
             </div>
@@ -153,16 +153,16 @@ export default function HomePage() {
                 size="lg"
                 className="bg-black/80 hover:bg-black/90 backdrop-blur-sm px-10 sm:px-14 py-5 sm:py-6 text-lg sm:text-2xl shadow-xl border border-white/10"
               >
-                {isAuthenticated ? 'Explore Events' : 'Get Started'}
+                {isAuthenticated ? 'Explore Steps' : 'Get Started'}
               </Button>
 
               <Button
-                onClick={handleCreateEvent}
+                onClick={handleCreateStep}
                 variant="outline"
                 size="lg"
                 className="px-10 sm:px-14 py-5 sm:py-6 text-lg sm:text-2xl bg-[#E94042]/90 hover:bg-[#E94042] backdrop-blur-sm border-[#E94042] text-white shadow-xl"
               >
-                Create Event
+                Create Step
               </Button>
             </div>
           </div>
@@ -201,7 +201,7 @@ export default function HomePage() {
                 Why Choose Our Platform?
               </h2>
               <p className="max-w-3xl mx-auto text-xl sm:text-2xl text-gray-200 leading-relaxed">
-                Experience the next generation of event discovery and participation
+                Experience the next generation of step discovery and participation
               </p>
             </div>
 
@@ -211,9 +211,9 @@ export default function HomePage() {
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#E94042] rounded-full flex items-center justify-center mx-auto">
                     <TrendingUp className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                   </div>
-                  <h3 className="text-xl sm:text-2xl text-white font-semibold">Trending Events</h3>
+                  <h3 className="text-xl sm:text-2xl text-white font-semibold">Trending Steps</h3>
                   <p className="text-gray-200 text-base sm:text-lg leading-relaxed">
-                    Discover the hottest events and trending topics in your industry
+                    Discover the hottest steps and trending topics in your industry
                   </p>
                 </CardContent>
               </Card>
@@ -246,7 +246,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Events */}
+      {/* Featured Steps */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div
@@ -266,27 +266,27 @@ export default function HomePage() {
           <div className="text-center space-y-12 sm:space-y-16">
             <div className="space-y-4 sm:space-y-6">
               <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white tracking-tight">
-                Featured Events
+                Featured Steps
               </h2>
               <p className="max-w-3xl mx-auto text-xl sm:text-2xl text-gray-200 leading-relaxed">
-                Don't miss out on these exciting upcoming events
+                Don't miss out on these exciting upcoming steps
               </p>
             </div>
 
             {loading ? (
               <div className="text-center py-12">
                 <div className="w-16 h-16 border-4 border-gray-200 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-xl text-gray-200">Loading featured events...</p>
+                <p className="text-xl text-gray-200">Loading featured steps...</p>
               </div>
             ) : featuredEvents.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-                {featuredEvents.map((event) => (
-                  <Card key={event.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 bg-[#1D1D1D]/90 backdrop-blur-sm border border-white/10 p-0">
+                {featuredEvents.map((step) => (
+                  <Card key={step.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 bg-[#1D1D1D]/90 backdrop-blur-sm border border-white/10 p-0">
                     <div className="relative h-48 sm:h-56">
-                      {event.thumbnail ? (
+                      {step.thumbnail ? (
                         <img
-                          src={event.thumbnail}
-                          alt={event.title}
+                          src={step.thumbnail}
+                          alt={step.title}
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = '/api/placeholder/400/250';
@@ -301,7 +301,7 @@ export default function HomePage() {
                       <Badge className="absolute top-4 right-4 bg-[#E94042] text-white">
                         Featured
                       </Badge>
-                      {event.verified && (
+                      {step.verified && (
                         <Badge className="absolute top-4 left-4 bg-yellow-500 text-white">
                           <Star className="w-3 h-3 mr-1 fill-current" />
                           Verified
@@ -310,37 +310,37 @@ export default function HomePage() {
                     </div>
 
                     <CardContent className="p-6 space-y-4">
-                      <h3 className="text-xl font-semibold text-white text-left">{event.title}</h3>
-                      {event.description && (
-                        <p className="text-gray-300 line-clamp-2 text-left">{event.description}</p>
+                      <h3 className="text-xl font-semibold text-white text-left">{step.title}</h3>
+                      {step.description && (
+                        <p className="text-gray-300 line-clamp-2 text-left">{step.description}</p>
                       )}
 
                       <div className="space-y-2 text-sm">
                         <div className="flex items-center space-x-1 text-gray-300">
                           <Users className="w-4 h-4" />
-                          <span>{event._count.participants} participants</span>
+                          <span>{step._count.participants} participants</span>
                         </div>
 
                         <div className="flex items-center space-x-1 text-gray-300">
                           <Calendar className="w-4 h-4" />
-                          <span>Created {formatDate(event.createdAt)}</span>
+                          <span>Created {formatDate(step.createdAt)}</span>
                         </div>
 
                         <div className="flex items-center space-x-1 text-gray-300">
-                          <span className="text-sm">By {event.creator.name || event.creator.email}</span>
+                          <span className="text-sm">By {step.creator.name || step.creator.email}</span>
                         </div>
 
                         <div className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                          event.isActive 
+                          step.isActive 
                             ? 'bg-green-100 text-green-700' 
                             : 'bg-gray-100 text-gray-600'
                         }`}>
-                          {event.isActive ? 'Active' : 'Inactive'}
+                          {step.isActive ? 'Active' : 'Inactive'}
                         </div>
                       </div>
 
                       <Button
-                        onClick={() => window.location.href = `/event/${event.id}`}
+                        onClick={() => window.location.href = `/step/${step.id}`}
                         className="w-full bg-[#E94042] hover:bg-[#E94042]/90 text-white"
                       >
                         View Details
@@ -354,16 +354,16 @@ export default function HomePage() {
                 <div className="max-w-md mx-auto bg-[#1D1D1D]/90 backdrop-blur-sm border border-white/10 rounded-lg p-8">
                   <Calendar className="w-24 h-24 text-gray-300 mx-auto mb-6" />
                   <h3 className="text-2xl font-semibold text-white mb-3">
-                    No Featured Events Yet
+                    No Featured Steps Yet
                   </h3>
                   <p className="text-gray-300 text-lg mb-6">
-                    Be the first to create an exciting event for the community!
+                    Be the first to create an exciting step for the community!
                   </p>
                   <Button
-                    onClick={handleCreateEvent}
+                    onClick={handleCreateStep}
                     className="bg-[#E94042] hover:bg-[#E94042]/90 text-white"
                   >
-                    Create First Event
+                    Create First Step
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </div>
@@ -378,7 +378,7 @@ export default function HomePage() {
                   size="lg"
                   className="px-8 py-4 text-lg border-white text-black hover:bg-white hover:text-black backdrop-blur-sm"
                 >
-                  View All Events
+                  View All Steps
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </div>
@@ -392,7 +392,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4">
             <div className="pt-6 border-gray-800 text-sm text-gray-500">
-              <p>&copy; 2024 Event Platform. All rights reserved.</p>
+              <p>&copy; 2024 Step Platform. All rights reserved.</p>
             </div>
           </div>
         </div>
