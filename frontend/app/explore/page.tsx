@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import AuthGuard from "@/components/AuthGuard";
-import CommentComponent from "@/app/step/[id]/components/CommentComponent";
+import CommentComponent from "@/components/ui/CommentComponent";
 import {
     ArrowUp,
     MessageCircle,

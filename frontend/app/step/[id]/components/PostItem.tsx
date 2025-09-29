@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import CommentComponent from './CommentComponent';
+import CommentComponent from "@/components/ui/CommentComponent";
 import { 
   ArrowUp, 
   MessageCircle 
