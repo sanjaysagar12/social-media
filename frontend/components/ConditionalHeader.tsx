@@ -5,7 +5,7 @@ import ModernHeader from '@/components/ModernHeader';
 
 export default function ConditionalHeader() {
   const pathname = usePathname();
-  const showHeader = pathname !== '/' && !pathname.startsWith('/auth/');
+  const showHeader = pathname !== '/' && !pathname.startsWith('/auth/') && !pathname.startsWith('/profile/');
 
   if (!showHeader) {
     return null;
