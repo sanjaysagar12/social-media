@@ -77,7 +77,7 @@ export default function MyEventsPage() {
       });
 
       const result = await response.json();
-
+      console.log('Fetch hosted events response:', { response, result });
       if (response.ok) {
         setEvents(result.data || []);
       } else {

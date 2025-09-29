@@ -219,63 +219,65 @@ export class PostService {
     }
 
     async getStepById(stepId: string, userId?: string) {
-        return await this.prisma.step.findUnique({
-            where: { id: stepId },
-            select: {
-                id: true,
-                title: true,
-                description: true,
-                thumbnail: true,
-                verified: true,
-                likes: true,
-                startDate: true,
-                endDate: true,
-                isActive: true,
-                createdAt: true,
-                creator: {
-                    select: { id: true, name: true, email: true, avatar: true },
-                },
-                participants: { select: { id: true, name: true, email: true, avatar: true } },
-                posts: {
-                    select: {
-                        id: true,
-                        content: true,
-                        image: true,
-                        upvotes: true,
-                        createdAt: true,
-                        author: { select: { id: true, name: true, email: true, avatar: true } },
-                        comments: {
-                            where: { parentId: null },
-                            select: {
-                                id: true,
-                                content: true,
-                                createdAt: true,
-                                author: { select: { id: true, name: true, email: true, avatar: true } },
-                                replies: {
-                                    select: {
-                                        id: true,
-                                        content: true,
-                                        createdAt: true,
-                                        author: { select: { id: true, name: true, email: true, avatar: true } },
-                                        replies: {
-                                            select: { id: true, content: true, createdAt: true, author: { select: { id: true, name: true, email: true, avatar: true } } },
-                                            orderBy: { createdAt: 'asc' },
-                                        },
-                                    },
-                                    orderBy: { createdAt: 'asc' },
-                                },
-                            },
-                            orderBy: { createdAt: 'desc' },
-                        },
-                        _count: { select: { comments: true, userUpvotes: true } },
-                        userUpvotes: userId ? { where: { userId }, select: { id: true } } : false,
+        try {
+            const step = await this.prisma.step.findUnique({
+                where: { id: stepId },
+                select: {
+                    id: true,
+                    title: true,
+                    description: true,
+                    thumbnail: true,
+                    verified: true,
+                    likes: true,
+                    startDate: true,
+                    endDate: true,
+                    isActive: true,
+                    createdAt: true,
+                    creator: {
+                        select: { id: true, name: true, email: true, avatar: true },
                     },
-                    orderBy: { createdAt: 'desc' },
+                    participants: { select: { id: true, name: true, email: true, avatar: true } },
+                    posts: {
+                        select: {
+                            id: true,
+                            content: true,
+                            image: true,
+                            upvotes: true,
+                            createdAt: true,
+                            author: { select: { id: true, name: true, email: true, avatar: true } },
+                            comments: {
+                                where: { parentId: null },
+                                select: {
+                                    id: true,
+                                    content: true,
+                                    createdAt: true,
+                                    author: { select: { id: true, name: true, email: true, avatar: true } },
+                                    replies: {
+                                        select: {
+                                            id: true,
+                                            content: true,
+                                            createdAt: true,
+                                            author: { select: { id: true, name: true, email: true, avatar: true } },
+                                            replies: {
+                                                select: { id: true, content: true, createdAt: true, author: { select: { id: true, name: true, email: true, avatar: true } } },
+                                                orderBy: { createdAt: 'asc' },
+                                            },
+                                        },
+                                        orderBy: { createdAt: 'asc' },
+                                    },
+                                },
+                                orderBy: { createdAt: 'desc' },
+                            },
+                            _count: { select: { comments: true, userUpvotes: true } },
+                            userUpvotes: userId ? { where: { userId }, select: { id: true } } : false,
+                        },
+                        orderBy: { createdAt: 'desc' },
+                    },
+                    userLikes: userId ? { where: { userId }, select: { id: true } } : false,
+                    _count: { select: { participants: true, posts: true, userLikes: true } },
                 },
-                userLikes: userId ? { where: { userId }, select: { id: true } } : false,
-                _count: { select: { participants: true, posts: true, userLikes: true } },
-            },
-        }).then(step => {
+            });
+
             if (!step) throw new Error('Step not found');
 
             const transformed = {
@@ -289,71 +291,76 @@ export class PostService {
                 userLikes: undefined,
             };
             return transformed;
-        }).catch(error => {
+        } catch (error) {
+            if (error.message === 'Step not found') {
+                // Don't log "Step not found" as an error since it's expected behavior
+                throw new Error('Step not found');
+            }
             console.error('Error fetching step:', error);
-            if (error.message === 'Step not found') throw new Error('Step not found');
             throw new Error('Failed to fetch step');
-        });
+        }
     }
 
     async joinEvent(stepId: string, userId: string) {
-        // First, check if the step exists and get step details
-        const event = await this.prisma.step.findUnique({
-            where: { id: stepId },
-            include: {
-                creator: { select: { id: true } },
-                participants: { select: { id: true } },
-            },
-        });
-
-        if (!event) throw new Error('Step not found');
-
-        // Check if user is the event creator (host)
-        if (event.creator.id === userId) {
-            throw new Error('Step host cannot join their own step');
-        }
-
-        // Check if user is already a participant
-        const isAlreadyParticipant = event.participants.some(participant => participant.id === userId);
-        if (isAlreadyParticipant) {
-            throw new Error('You are already a participant in this event');
-        }
-
-        // Check if event is active
-        if (!event.isActive) {
-            throw new Error('Cannot join an inactive step');
-        }
-
-        // Check if event has not ended
-        if (new Date() > event.endDate) {
-            throw new Error('Cannot join a step that has already ended');
-        }
-
-        // Add user to participants
-        return await this.prisma.step.update({
-            where: { id: stepId },
-            data: {
-                participants: {
-                    connect: { id: userId },
+        try {
+            // First, check if the step exists and get step details
+            const event = await this.prisma.step.findUnique({
+                where: { id: stepId },
+                include: {
+                    creator: { select: { id: true } },
+                    participants: { select: { id: true } },
                 },
-            },
-            select: {
-                id: true,
-                title: true,
-                participants: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
+            });
+
+            if (!event) throw new Error('Step not found');
+
+            // Check if user is the event creator (host)
+            if (event.creator.id === userId) {
+                throw new Error('Step host cannot join their own step');
+            }
+
+            // Check if user is already a participant
+            const isAlreadyParticipant = event.participants.some(participant => participant.id === userId);
+            if (isAlreadyParticipant) {
+                throw new Error('You are already a participant in this event');
+            }
+
+            // Check if event is active
+            if (!event.isActive) {
+                throw new Error('Cannot join an inactive step');
+            }
+
+            // Check if event has not ended
+            if (new Date() > event.endDate) {
+                throw new Error('Cannot join a step that has already ended');
+            }
+
+            // Add user to participants
+            const updatedEvent = await this.prisma.step.update({
+                where: { id: stepId },
+                data: {
+                    participants: {
+                        connect: { id: userId },
                     },
                 },
-                _count: {
-                    select: {
-                        participants: true,
+                select: {
+                    id: true,
+                    title: true,
+                    participants: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                        },
+                    },
+                    _count: {
+                        select: {
+                            participants: true,
+                        },
                     },
                 },
-            },
-        }).then(updatedEvent => {
+            });
+
             return {
                 event: {
                     id: updatedEvent.id,
@@ -362,10 +369,14 @@ export class PostService {
                 },
                 message: 'Successfully joined the event',
             };
-        }).catch(error => {
+        } catch (error) {
+            if (error.message === 'Step not found') {
+                // Don't log "Step not found" as an error since it's expected behavior
+                throw new Error('Step not found');
+            }
             console.error('Error joining event:', error);
             throw new Error('Failed to join event');
-        });
+        }
     }
 
     async createPost(stepId: string | undefined, userId: string, createPostDto: CreatePostDto) {

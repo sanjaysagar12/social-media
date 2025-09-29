@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Logger, Get, Param, Patch, UseInterceptors, Request } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Logger, Get, Param, Patch, UseInterceptors, Request, HttpException, HttpStatus } from '@nestjs/common';
 import { Roles, Role } from 'src/application/common/decorator/roles.decorator';
 import { JwtGuard } from '../application/common/guards/jwt.guard';
 import { RolesGuard } from '../application/common/guards/roles.guard';
@@ -74,11 +74,10 @@ export class PostController {
             };
         } catch (error) {
             if (error.message === 'Step not found') {
-                return {
+                throw new HttpException({
                     status: 'error',
                     message: 'Step not found',
-                    code: 404,
-                };
+                }, HttpStatus.NOT_FOUND);
             }
             throw error;
         }
@@ -92,12 +91,22 @@ export class PostController {
         @GetUser('sub') userId: string,
     ) {
         this.logger.log(`User ${userId} attempting to join step ${stepId}`);
-        const data = await this.postService.joinEvent(stepId, userId);
-        return {
-            status: 'success',
-            data: data,
-            message: 'Successfully joined the event',
-        };
+        try {
+            const data = await this.postService.joinEvent(stepId, userId);
+            return {
+                status: 'success',
+                data: data,
+                message: 'Successfully joined the event',
+            };
+        } catch (error) {
+            if (error.message === 'Step not found') {
+                throw new HttpException({
+                    status: 'error',
+                    message: 'Step not found',
+                }, HttpStatus.NOT_FOUND);
+            }
+            throw error;
+        }
     }
 
     @Post('step/:id/post')
@@ -109,12 +118,22 @@ export class PostController {
         @Body() createPostDto: CreatePostDto,
     ) {
         this.logger.log(`User ${userId} creating post for step ${stepId}`);
-        const data = await this.postService.createPost(stepId, userId, createPostDto);
-        return {
-            status: 'success',
-            data: data,
-            message: 'Post created successfully',
-        };
+        try {
+            const data = await this.postService.createPost(stepId, userId, createPostDto);
+            return {
+                status: 'success',
+                data: data,
+                message: 'Post created successfully',
+            };
+        } catch (error) {
+            if (error.message === 'Step not found') {
+                throw new HttpException({
+                    status: 'error',
+                    message: 'Step not found',
+                }, HttpStatus.NOT_FOUND);
+            }
+            throw error;
+        }
     }
 
     // Create a post without attaching it to any Step
