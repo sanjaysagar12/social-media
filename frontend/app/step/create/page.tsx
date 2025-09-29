@@ -19,7 +19,7 @@ import {
   Target
 } from 'lucide-react';
 
-export default function CreateEventPage() {
+export default function CreateStepPage() {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -87,8 +87,8 @@ export default function CreateEventPage() {
         alert(`Error: ${result.message || 'Failed to create step'}`);
       }
     } catch (error) {
-      console.error('Error creating event:', error);
-      alert('Failed to create event');
+      console.error('Error creating step:', error);
+      alert('Failed to create step');
     } finally {
       setIsLoading(false);
     }
@@ -139,11 +139,11 @@ export default function CreateEventPage() {
             <Card className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl">
               <CardContent className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-8">
-                  {/* Event Title */}
+                  {/* Step Title */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <Target className="w-5 h-5 text-[#E94042]" />
-                      <Label htmlFor="title" className="text-white font-semibold">Event Title *</Label>
+                      <Label htmlFor="title" className="text-white font-semibold">Step Title *</Label>
                     </div>
                     <Input
                       id="title"
@@ -151,7 +151,7 @@ export default function CreateEventPage() {
                       type="text"
                       value={formData.title}
                       onChange={handleInputChange}
-                      placeholder="Enter an exciting event title..."
+                      placeholder="Enter an exciting step title..."
                       required
                       className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#E94042]/50 focus:ring-[#E94042]/50"
                     />
@@ -168,7 +168,7 @@ export default function CreateEventPage() {
                       name="description"
                       value={formData.description}
                       onChange={handleInputChange}
-                      placeholder="Describe your event in detail. What makes it special?"
+                      placeholder="Describe your step in detail. What makes it special?"
                       rows={6}
                       className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-[#E94042]/50 focus:ring-[#E94042]/50 resize-none"
                     />
@@ -176,11 +176,11 @@ export default function CreateEventPage() {
 
                   {/* prize removed (backend no longer supports prize) */}
 
-                  {/* Event Thumbnail */}
+                  {/* Step Thumbnail */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <ImageIcon className="w-5 h-5 text-[#E94042]" />
-                      <Label className="text-white font-semibold">Event Thumbnail</Label>
+                      <Label className="text-white font-semibold">Step Thumbnail</Label>
                     </div>
                     <div className="bg-white/10 border border-white/20 rounded-lg p-4">
                       <UploadImage 
@@ -200,7 +200,7 @@ export default function CreateEventPage() {
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
                       <Clock className="w-5 h-5 text-[#E94042]" />
-                      <Label className="text-white font-semibold">Event Schedule *</Label>
+                      <Label className="text-white font-semibold">Step Schedule *</Label>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -240,12 +240,12 @@ export default function CreateEventPage() {
                       {isLoading ? (
                         <div className="flex items-center gap-2">
                           <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          Creating Event...
+                          Creating Step...
                         </div>
                       ) : (
                         <div className="flex items-center gap-2">
                           <Plus className="w-5 h-5" />
-                          Create Event
+                          Create Step
                         </div>
                       )}
                     </Button>

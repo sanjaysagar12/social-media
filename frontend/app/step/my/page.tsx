@@ -13,7 +13,7 @@ interface User {
   avatar?: string;
 }
 
-interface HostedEvent {
+interface HostedStep {
   id: string;
   title: string;
   description?: string;
@@ -36,7 +36,7 @@ interface HostedEvent {
 }
 
 export default function MyEventsPage() {
-  const [events, setEvents] = useState<HostedEvent[]>([]);
+  const [events, setEvents] = useState<HostedStep[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -135,7 +135,7 @@ export default function MyEventsPage() {
     });
   };
 
-  const getEventStatus = (event: HostedEvent) => {
+  const getEventStatus = (event: HostedStep) => {
     const now = new Date();
     const start = new Date(event.startDate);
     const end = new Date(event.endDate);

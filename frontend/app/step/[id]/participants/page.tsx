@@ -16,8 +16,8 @@ interface User {
   createdAt: string;
 }
 
-interface EventParticipantsData {
-  event: {
+interface StepParticipantsData {
+  step: {
     id: string;
     title: string;
     totalParticipants: number;
@@ -38,9 +38,9 @@ interface EventParticipantsData {
   participants: User[];
 }
 
-export default function EventParticipantsPage() {
+export default function StepParticipantsPage() {
   const params = useParams();
-  const [data, setData] = useState<EventParticipantsData | null>(null);
+  const [data, setData] = useState<StepParticipantsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -65,9 +65,9 @@ export default function EventParticipantsPage() {
 
   const currentUserId = isMounted ? getCurrentUserId() : null;
 
-  const fetchEventParticipants = async () => {
+  const fetchStepParticipants = async () => {
     if (!currentUserId) {
-      setError('Please login to view event participants');
+      setError('Please login to view step participants');
       setIsLoading(false);
       return;
     }
@@ -88,11 +88,11 @@ export default function EventParticipantsPage() {
       if (response.ok) {
         setData(result.data);
       } else {
-        setError(result.message || 'Failed to fetch event participants');
+        setError(result.message || 'Failed to fetch step participants');
       }
     } catch (error) {
-      console.error('Error fetching event participants:', error);
-      setError('Failed to fetch event participants');
+      console.error('Error fetching step participants:', error);
+      setError('Failed to fetch step participants');
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +104,7 @@ export default function EventParticipantsPage() {
 
   useEffect(() => {
     if (params.id && isMounted) {
-      fetchEventParticipants();
+      fetchStepParticipants();
     }
   }, [params.id, isMounted]);
 
@@ -179,7 +179,7 @@ export default function EventParticipantsPage() {
         setShowWinnerModal(false);
         setSelectedWinner(null);
         // Refresh the data to show updated winner status
-        fetchEventParticipants();
+        fetchStepParticipants();
       } else {
         alert(`Error: ${result.message || 'Failed to select winner'}`);
       }
@@ -195,12 +195,12 @@ export default function EventParticipantsPage() {
     console.log('Checking if user can select winner...');
     console.log({ data, currentUserId });
     if (!data || !currentUserId) return false;
-    console.log(data.event.creator?.id)
-    const isHost = data.event.creator?.id === currentUserId;
-    const hasWinner = !!data.event.winner;
-    const eventEnded = data.event.endDate ? new Date() > new Date(data.event.endDate) : false;
-    const isVerified = data.event.verified;
-    const isActive = data.event.isActive;
+    console.log(data.step.creator?.id)
+    const isHost = data.step.creator?.id === currentUserId;
+    const hasWinner = !!data.step.winner;
+    const eventEnded = data.step.endDate ? new Date() > new Date(data.step.endDate) : false;
+    const isVerified = data.step.verified;
+    const isActive = data.step.isActive;
     console.log(isHost , !hasWinner , isVerified , isActive);
     return isHost && !hasWinner && isVerified && isActive;
   };
@@ -222,7 +222,7 @@ export default function EventParticipantsPage() {
         <Card className="w-96 text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl relative z-10">
           <CardContent className="pt-6">
             <h1 className="text-2xl font-semibold mb-4 text-white">Authentication Required</h1>
-            <p className="text-gray-300 mb-4">Please login to view event participants</p>
+            <p className="text-gray-300 mb-4">Please login to view step participants</p>
             <Button 
               onClick={() => window.location.href = '/auth/login'}
               className="bg-[#E94042] hover:bg-[#E94042]/90"
@@ -285,7 +285,7 @@ export default function EventParticipantsPage() {
                 </Button>
               </Link>
               <Button 
-                onClick={fetchEventParticipants}
+                onClick={fetchStepParticipants}
                 className="bg-[#E94042] hover:bg-[#E94042]/90"
               >
                 Try Again
@@ -322,21 +322,21 @@ export default function EventParticipantsPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              <Link href={`/event/${params.id}`}>
+              <Link href={`/step/${params.id}`}>
                 <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Event
+                  Back to Step
                 </Button>
               </Link>
               <div>
                 <h1 className="text-2xl font-bold text-white">Participants</h1>
-                <p className="text-sm text-gray-300">{data.event.title}</p>
+                <p className="text-sm text-gray-300">{data.step.title}</p>
               </div>
             </div>
             
             <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg">
               <Users className="w-5 h-5 text-[#E94042]" />
-              <span className="text-white font-medium">{data.event.totalParticipants} Participants</span>
+              <span className="text-white font-medium">{data.step.totalParticipants} Participants</span>
             </div>
           </div>
         </div>
@@ -352,14 +352,14 @@ export default function EventParticipantsPage() {
                 <h3 className="text-lg font-semibold text-yellow-400">Select Winner</h3>
               </div>
               <p className="text-gray-300 text-sm">
-                The event has ended and is ready for winner selection. Click "Select Winner" on any participant card to choose the winner and distribute the prize.
+                The step has ended and is ready for winner selection. Click "Select Winner" on any participant card to choose the winner and distribute the prize.
               </p>
             </CardContent>
           </Card>
         )}
 
         {/* Winner Announcement */}
-        {data.event.winner && (
+        {data.step.winner && (
           <Card className="mb-6 bg-green-500/10 backdrop-blur-md border border-green-500/30 shadow-xl">
             <CardContent className="pt-6">
               <div className="flex items-center gap-3 mb-4">
@@ -367,7 +367,7 @@ export default function EventParticipantsPage() {
                 <h3 className="text-lg font-semibold text-green-400">Winner Announced</h3>
               </div>
               <p className="text-gray-300 text-sm">
-                🎉 <strong>{data.event.winner.name || 'Anonymous User'}</strong> has won this event! The prize has been distributed to their wallet.
+                🎉 <strong>{data.step.winner.name || 'Anonymous User'}</strong> has won this step! The prize has been distributed to their wallet.
               </p>
             </CardContent>
           </Card>
@@ -377,7 +377,7 @@ export default function EventParticipantsPage() {
             <CardContent className="pt-12 pb-12">
               <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h2 className="text-2xl font-semibold text-white mb-2">No Participants Yet</h2>
-              <p className="text-gray-300 mb-6">This event doesn't have any participants yet.</p>
+              <p className="text-gray-300 mb-6">This step doesn't have any participants yet.</p>
             </CardContent>
           </Card>
         ) : (
@@ -407,7 +407,7 @@ export default function EventParticipantsPage() {
                     </div>
                   </div>
 
-                  {/* Contact Info (only visible to event host) */}
+                  {/* Contact Info (only visible to step host) */}
                   {participant.email && (
                     <div className="flex items-center gap-2 mb-2 p-2 bg-white/5 rounded-lg">
                       <Mail className="w-4 h-4 text-gray-400" />
@@ -415,7 +415,7 @@ export default function EventParticipantsPage() {
                     </div>
                   )}
 
-                  {/* Wallet Address (only visible to event host) */}
+                  {/* Wallet Address (only visible to step host) */}
                   {participant.walletAddress && (
                     <div className="flex items-center gap-2 mb-2 p-2 bg-white/5 rounded-lg">
                       <Wallet className="w-4 h-4 text-gray-400" />
@@ -445,7 +445,7 @@ export default function EventParticipantsPage() {
                   )}
 
                   {/* Winner Badge */}
-                  {data.event.winner?.id === participant.id && (
+                  {data.step.winner?.id === participant.id && (
                     <div className="flex items-center justify-center gap-2 mt-4 p-3 bg-green-500/20 border border-green-500/30 rounded-lg">
                       <Trophy className="w-5 h-5 text-green-400" />
                       <span className="text-green-400 font-semibold">🎉 Winner!</span>
@@ -491,7 +491,7 @@ export default function EventParticipantsPage() {
                 </p>
                 <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3 mb-4">
                   <p className="text-yellow-400 text-sm">
-                    ⚠️ This action cannot be undone. The prize will be immediately transferred to the winner's wallet and the event will be closed.
+                    ⚠️ This action cannot be undone. The prize will be immediately transferred to the winner's wallet and the step will be closed.
                   </p>
                 </div>
               </div>

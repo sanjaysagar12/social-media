@@ -10,13 +10,13 @@ export const API_CONFIG = {
     // User
     USER_PROFILE: '/api/user/me',
     
-    // Events
-  EVENTS: '/api/step',
-  MY_EVENTS: '/api/step/my',
+    // Steps
+  STEPS: '/api/step',
+  MY_STEPS: '/api/step/my',
   EXPLORE: '/api/step/explore',
-  EVENT_BY_ID: (id: string) => `/api/step/${id}`,
-  JOIN_EVENT: (id: string) => `/api/step/${id}/join`,
-  EVENT_POSTS: (id: string) => `/api/step/${id}/posts`,
+  STEP_BY_ID: (id: string) => `/api/step/${id}`,
+  JOIN_STEP: (id: string) => `/api/step/${id}/join`,
+  STEP_POSTS: (id: string) => `/api/step/${id}/posts`,
     
     // Posts
     POSTS: '/api/post',

@@ -23,7 +23,7 @@ interface User {
     avatar?: string;
 }
 
-interface Event {
+interface Step {
     id: string;
     title: string;
     thumbnail?: string;
@@ -47,7 +47,7 @@ interface Post {
     upvotes: number;
     createdAt: string;
     author: User;
-    event?: Event; // Make event optional since standalone posts don't have one
+    step?: Step; // Make step optional since standalone posts don't have one
     comments: Comment[];
     isUpvotedByUser?: boolean;
     _count: {
@@ -186,8 +186,8 @@ export default function ExplorePage() {
         }
     };
 
-    const handlePostClick = (eventId: string) => {
-    router.push(`/step/${eventId}`);
+    const handlePostClick = (stepId: string) => {
+    router.push(`/step/${stepId}`);
     };
 
     const formatDate = (dateString: string) => {
@@ -296,13 +296,13 @@ export default function ExplorePage() {
                             <div className="h-6 w-px bg-white/20"></div>
                             
                             <Button
-                                onClick={() => router.push('/event')}
+                                onClick={() => router.push('/step')}
                                 variant="ghost"
                                 size="sm"
                                 className="flex items-center gap-2 text-gray-300 hover:bg-white/10 hover:text-white border border-white/20 hover:border-white/30 transition-all duration-300 px-3 py-2"
                             >
                                 <Calendar className="w-4 h-4" />
-                                <span className="font-medium">Events</span>
+                                <span className="font-medium">Steps</span>
                             </Button>
                         </div>
 
@@ -338,7 +338,7 @@ export default function ExplorePage() {
                             <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                             <input
                                 type="text"
-                                placeholder="Search posts..."
+                                placeholder="Search posts, steps, or users..."
                                 className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#E94042]/50 focus:border-[#E94042]/50 transition-all duration-300"
                             />
                         </div>
@@ -374,15 +374,15 @@ export default function ExplorePage() {
                                 <div className="p-4 border-b border-white/20 bg-white/5">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
-                                            {/* Event Info or Standalone Post Indicator */}
-                                            {post.event ? (
+                                            {/* Step Info or Standalone Post Indicator */}
+                                            {post.step ? (
                                                 <>
                                                     <div className="flex items-center gap-2 text-sm">
                                                         <div className="w-8 h-8 rounded-full bg-[#E94042] flex items-center justify-center text-white text-xs font-bold shadow-lg">
                                                             E
                                                         </div>
-                                                        <span className="font-semibold text-white">r/{post.event.title}</span>
-                                                        {post.event.verified && (
+                                                        <span className="font-semibold text-white">r/{post.step.title}</span>
+                                                        {post.step.verified && (
                                                             <Star className="w-4 h-4 text-yellow-400 fill-current" />
                                                         )}
                                                     </div>
@@ -420,10 +420,10 @@ export default function ExplorePage() {
                                             <span className="text-sm text-gray-400">{formatTimeAgo(post.createdAt)}</span>
                                         </div>
 
-                                        {/* Event Status or Standalone Indicator */}
+                                        {/* Step Status or Standalone Indicator */}
                                         <div className="flex items-center gap-2">
-                                            {post.event ? (
-                                                post.event.isActive ? (
+                                            {post.step ? (
+                                                post.step.isActive ? (
                                                     <span className="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full font-medium border border-green-500/30">
                                                         Active
                                                     </span>
@@ -443,8 +443,8 @@ export default function ExplorePage() {
 
                                 {/* Post Content */}
                                 <div
-                                    className={`p-6 ${post.event ? 'cursor-pointer' : ''}`}
-                                    onClick={post.event ? () => handlePostClick(post.event!.id) : undefined}
+                                    className={`p-6 ${post.step ? 'cursor-pointer' : ''}`}
+                                    onClick={post.step ? () => handlePostClick(post.step!.id) : undefined}
                                 >
                                     <p className="text-gray-200 mb-4 leading-relaxed text-lg">{post.content}</p>
 
@@ -500,9 +500,9 @@ export default function ExplorePage() {
                                         )}
 
                                         {/* Comments */}
-                                        {post.event ? (
+                                        {post.step ? (
                                             <Button
-                                                onClick={() => handlePostClick(post.event!.id)}
+                                                onClick={() => handlePostClick(post.step!.id)}
                                                 variant="ghost"
                                                 size="sm"
                                                 className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-300 hover:bg-white/10 border border-white/20 hover:border-white/30 transition-all duration-300"
@@ -517,16 +517,16 @@ export default function ExplorePage() {
                                             </div>
                                         )}
 
-                                        {/* View Event or Standalone Indicator */}
-                                        {post.event ? (
+                                        {/* View Step or Standalone Indicator */}
+                                        {post.step ? (
                                             <Button
-                                                onClick={() => handlePostClick(post.event!.id)}
+                                                onClick={() => handlePostClick(post.step!.id)}
                                                 variant="ghost"
                                                 size="sm"
                                                 className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-300 hover:bg-[#E94042]/20 hover:text-[#E94042] border border-white/20 hover:border-[#E94042]/30 transition-all duration-300 ml-auto"
                                             >
                                                 <ExternalLink className="w-4 h-4" />
-                                                <span className="text-sm font-medium">View Event</span>
+                                                <span className="text-sm font-medium">View Step</span>
                                             </Button>
                                         ) : (
                                             <div className="flex items-center gap-2 px-4 py-2 text-gray-400 bg-white/5 rounded-full border border-white/20 ml-auto">
@@ -567,9 +567,9 @@ export default function ExplorePage() {
                                                     </div>
                                                 </div>
                                             ))}
-                                            {post.comments.length > 2 && post.event && (
+                                            {post.comments.length > 2 && post.step && (
                                                 <Button
-                                                    onClick={() => handlePostClick(post.event!.id)}
+                                                    onClick={() => handlePostClick(post.step!.id)}
                                                     variant="ghost"
                                                     size="sm"
                                                     className="text-[#E94042] hover:text-[#E94042]/80 text-sm p-0 h-auto font-medium"

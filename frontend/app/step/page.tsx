@@ -17,7 +17,7 @@ import {
   Filter
 } from 'lucide-react';
 
-interface Event {
+interface Step {
   id: string;
   title: string;
   description?: string;
@@ -39,13 +39,13 @@ interface Event {
   };
 }
 
-export default function EventsPage() {
+export default function StepsPage() {
   const router = useRouter();
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<Step[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchEvents = async () => {
+  const fetchSteps = async () => {
     try {
       const token = localStorage.getItem('access_token');
       
@@ -67,22 +67,22 @@ export default function EventsPage() {
       if (response.ok) {
         setEvents(result.data);
       } else {
-        setError(result.message || 'Failed to fetch events');
+        setError(result.message || 'Failed to fetch steps');
       }
     } catch (error) {
-      console.error('Error fetching events:', error);
-      setError('Failed to fetch events');
+      console.error('Error fetching steps:', error);
+      setError('Failed to fetch steps');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleEventClick = (eventId: string) => {
-    router.push(`/event/${eventId}`);
+  const handleStepClick = (stepId: string) => {
+    router.push(`/step/${stepId}`);
   };
 
   useEffect(() => {
-    fetchEvents();
+    fetchSteps();
   }, []);
 
   const formatDate = (dateString: string) => {
@@ -111,7 +111,7 @@ export default function EventsPage() {
         
         <div className="text-center bg-white/5 backdrop-blur-md border border-white/20 shadow-xl rounded-lg p-8 relative z-10">
           <div className="animate-spin rounded-full h-12 w-12 border-2 border-[#E94042] border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-300">Loading events...</p>
+          <p className="text-gray-300">Loading steps...</p>
         </div>
       </div>
     );
@@ -136,7 +136,7 @@ export default function EventsPage() {
           <p className="text-red-400 text-lg font-semibold mb-2">Error</p>
           <p className="text-gray-300 mb-4">{error}</p>
           <Button 
-            onClick={fetchEvents}
+            onClick={fetchSteps}
             className="w-full bg-[#E94042] hover:bg-[#E94042]/90 text-white"
           >
             Try Again
@@ -170,10 +170,10 @@ export default function EventsPage() {
               <div className="w-12 h-12 bg-[#E94042] rounded-full flex items-center justify-center shadow-lg">
                 <Calendar className="w-6 h-6 text-white" />
               </div>
-              <h1 className="text-4xl font-bold text-white">All Events</h1>
+              <h1 className="text-4xl font-bold text-white">All Steps</h1>
             </div>
             <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-              Discover and participate in exciting events from the community
+              Discover and participate in exciting steps from the community
             </p>
           </div>
 
@@ -230,25 +230,25 @@ export default function EventsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {events.map((event) => (
+            {events.map((step) => (
               <Card 
-                key={event.id} 
+                key={step.id} 
                 className="bg-white/5 backdrop-blur-md border border-white/20 shadow-xl hover:bg-white/7 hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden group"
-                onClick={() => handleEventClick(event.id)}
+                onClick={() => handleStepClick(step.id)}
               >
-                {/* Event Image */}
-                {event.thumbnail ? (
+                {/* Step Image */}
+                {step.thumbnail ? (
                   <div className="relative aspect-video w-full overflow-hidden">
                     <img
-                      src={event.thumbnail}
-                      alt={event.title}
+                      src={step.thumbnail}
+                      alt={step.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         (e.target as HTMLImageElement).style.display = 'none';
                       }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    {event.verified && (
+                    {step.verified && (
                       <div className="absolute top-3 right-3">
                         <div className="flex items-center gap-1 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                           <Star className="w-3 h-3 fill-current" />
@@ -258,18 +258,18 @@ export default function EventsPage() {
                     )}
                     <div className="absolute top-3 left-3">
                       <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                        event.isActive 
+                        step.isActive 
                           ? 'bg-green-500 text-white' 
                           : 'bg-gray-500 text-white'
                       }`}>
-                        {event.isActive ? 'Active' : 'Inactive'}
+                        {step.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </div>
                   </div>
                 ) : (
                   <div className="relative aspect-video w-full bg-gradient-to-br from-[#E94042]/20 to-purple-500/20 flex items-center justify-center">
                     <Calendar className="w-12 h-12 text-white/40" />
-                    {event.verified && (
+                    {step.verified && (
                       <div className="absolute top-3 right-3">
                         <div className="flex items-center gap-1 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                           <Star className="w-3 h-3 fill-current" />
@@ -279,11 +279,11 @@ export default function EventsPage() {
                     )}
                     <div className="absolute top-3 left-3">
                       <span className={`px-2 py-1 text-xs rounded-full font-medium ${
-                        event.isActive 
+                        step.isActive 
                           ? 'bg-green-500 text-white' 
                           : 'bg-gray-500 text-white'
                       }`}>
-                        {event.isActive ? 'Active' : 'Inactive'}
+                        {step.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </div>
                   </div>
@@ -291,11 +291,11 @@ export default function EventsPage() {
 
                 <CardHeader className="pb-4">
                   <CardTitle className="text-xl font-bold text-white line-clamp-2 group-hover:text-[#E94042] transition-colors">
-                    {event.title}
+                    {step.title}
                   </CardTitle>
-                  {event.description && (
+                  {step.description && (
                     <p className="text-gray-300 text-sm line-clamp-3 leading-relaxed">
-                      {event.description}
+                      {step.description}
                     </p>
                   )}
                 </CardHeader>
@@ -306,24 +306,24 @@ export default function EventsPage() {
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <Clock className="w-4 h-4 text-[#E94042]" />
                       <span className="font-medium text-gray-300">Start:</span>
-                      <span>{formatDate(event.startDate)}</span>
+                      <span>{formatDate(step.startDate)}</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <Clock className="w-4 h-4 text-[#E94042]" />
                       <span className="font-medium text-gray-300">End:</span>
-                      <span>{formatDate(event.endDate)}</span>
+                      <span>{formatDate(step.endDate)}</span>
                     </div>
-                    {event.prize && (
+                    {step.prize && (
                       <div className="flex items-center gap-2 text-sm">
                         <Trophy className="w-4 h-4 text-yellow-400" />
                         <span className="font-medium text-gray-300">Prize:</span>
-                        <span className="text-yellow-400 font-semibold">{event.prize}</span>
+                        <span className="text-yellow-400 font-semibold">{step.prize}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                       <User className="w-4 h-4 text-[#E94042]" />
                       <span className="font-medium text-gray-300">Creator:</span>
-                      <span>{event.creator.name || event.creator.email}</span>
+                      <span>{step.creator.name || step.creator.email}</span>
                     </div>
                   </div>
 
@@ -335,7 +335,7 @@ export default function EventsPage() {
                           <Users className="w-4 h-4 text-blue-400" />
                         </div>
                         <div>
-                          <div className="font-semibold text-white text-sm">{event._count.participants}</div>
+                          <div className="font-semibold text-white text-sm">{step._count.participants}</div>
                           <div className="text-xs text-gray-400">Participants</div>
                         </div>
                       </div>
@@ -344,7 +344,7 @@ export default function EventsPage() {
                           <MessageSquare className="w-4 h-4 text-green-400" />
                         </div>
                         <div>
-                          <div className="font-semibold text-white text-sm">{event._count.posts}</div>
+                          <div className="font-semibold text-white text-sm">{step._count.posts}</div>
                           <div className="text-xs text-gray-400">Posts</div>
                         </div>
                       </div>
