@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import AuthGuard from "@/components/AuthGuard";
+import CommentComponent from "@/app/step/[id]/components/CommentComponent";
 import {
     ArrowUp,
     MessageCircle,
@@ -66,6 +68,12 @@ export default function ExplorePage() {
     // User interaction state
     const [userUpvotes, setUserUpvotes] = useState<{ [key: string]: boolean }>({});
     const [isUpvoting, setIsUpvoting] = useState<{ [key: string]: boolean }>({});
+
+    // Comment state
+    const [commentContent, setCommentContent] = useState<{ [key: string]: string }>({});
+    const [isCreatingComment, setIsCreatingComment] = useState<{ [key: string]: boolean }>({});
+    const [showCommentForm, setShowCommentForm] = useState<{ [key: string]: boolean }>({});
+    const [showReplyForm, setShowReplyForm] = useState<{ [key: string]: boolean }>({});
 
     // Get current user ID from token
     const getCurrentUserId = () => {
@@ -189,6 +197,109 @@ export default function ExplorePage() {
 
     const handlePostClick = (stepId: string) => {
     router.push(`/step/${stepId}`);
+    };
+
+    const handleCreateComment = async (postId: string) => {
+        const content = commentContent[postId];
+        if (!content || !content.trim()) {
+            alert('Please enter comment content');
+            return;
+        }
+        
+        setIsCreatingComment(prev => ({ ...prev, [postId]: true }));
+        try {
+            const token = localStorage.getItem('access_token');
+            
+            if (!token) {
+                alert('Please login first');
+                return;
+            }
+
+            const response = await fetch(`http://localhost:3000/api/step/post/${postId}/comment`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: content.trim(),
+                }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Comment created successfully!');
+                // Reset form
+                setCommentContent(prev => ({ ...prev, [postId]: '' }));
+                setShowCommentForm(prev => ({ ...prev, [postId]: false }));
+                // Refresh posts to show new comment
+                fetchExplorePosts();
+            } else {
+                alert(`Error: ${result.message || 'Failed to create comment'}`);
+            }
+        } catch (error) {
+            console.error('Error creating comment:', error);
+            alert('Failed to create comment');
+        } finally {
+            setIsCreatingComment(prev => ({ ...prev, [postId]: false }));
+        }
+    };
+
+    const handleCreateReply = async (commentId: string) => {
+        const content = commentContent[commentId];
+        if (!content || !content.trim()) {
+            alert('Please enter reply content');
+            return;
+        }
+        
+        setIsCreatingComment(prev => ({ ...prev, [commentId]: true }));
+        try {
+            const token = localStorage.getItem('access_token');
+            
+            if (!token) {
+                alert('Please login first');
+                return;
+            }
+
+            const response = await fetch(`http://localhost:3000/api/step/comment/${commentId}/reply`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: content.trim(),
+                }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Reply created successfully!');
+                // Reset form
+                setCommentContent(prev => ({ ...prev, [commentId]: '' }));
+                setShowReplyForm(prev => ({ ...prev, [commentId]: false }));
+                // Refresh posts to show new reply
+                fetchExplorePosts();
+            } else {
+                alert(`Error: ${result.message || 'Failed to create reply'}`);
+            }
+        } catch (error) {
+            console.error('Error creating reply:', error);
+            alert('Failed to create reply');
+        } finally {
+            setIsCreatingComment(prev => ({ ...prev, [commentId]: false }));
+        }
+    };
+
+    const handleCancelComment = (id: string, type: 'comment' | 'reply') => {
+        setCommentContent(prev => ({ ...prev, [id]: '' }));
+        if (type === 'comment') {
+            setShowCommentForm(prev => ({ ...prev, [id]: false }));
+        } else {
+            setShowReplyForm(prev => ({ ...prev, [id]: false }));
+        }
     };
 
     const formatDate = (dateString: string) => {
@@ -493,47 +604,75 @@ export default function ExplorePage() {
                                     </div>
                                 </div>
 
-                                {/* Comments Preview */}
+                                {/* Comments Display */}
                                 {post.comments && post.comments.length > 0 && (
                                     <div className="px-6 py-4 border-t border-gray-200 bg-white">
                                         <div className="space-y-4">
-                                            {post.comments && post.comments.slice(0, 2).map((comment) => (
-                                                <div key={comment.id} className="flex items-start gap-3">
-                                                    {comment.author.avatar ? (
-                                                        <img
-                                                            src={comment.author.avatar}
-                                                            alt={comment.author.name || 'User'}
-                                                            className="w-8 h-8 rounded-full flex-shrink-0 border-2 border-gray-200"
-                                                        />
-                                                    ) : (
-                                                        <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center text-white text-xs font-medium flex-shrink-0">
-                                                            {(comment.author.name || comment.author.email || 'U')[0].toUpperCase()}
-                                                        </div>
-                                                    )}
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="flex items-center gap-2 mb-2">
-                                                            <span className="text-sm font-semibold text-gray-900">
-                                                                {comment.author.name || comment.author.email}
-                                                            </span>
-                                                            <span className="text-xs text-gray-500">
-                                                                {formatTimeAgo(comment.createdAt)}
-                                                            </span>
-                                                        </div>
-                                                        <p className="text-sm text-gray-700 leading-relaxed line-clamp-2">{comment.content}</p>
-                                                    </div>
-                                                </div>
+                                            {post.comments.map((comment) => (
+                                                <CommentComponent
+                                                    key={comment.id}
+                                                    comment={comment}
+                                                    formatShortDate={formatTimeAgo}
+                                                    showReplyForm={showReplyForm}
+                                                    setShowReplyForm={setShowReplyForm}
+                                                    commentContent={commentContent}
+                                                    setCommentContent={setCommentContent}
+                                                    handleCreateReply={handleCreateReply}
+                                                    handleCancelComment={handleCancelComment}
+                                                    isCreatingComment={isCreatingComment}
+                                                    canParticipate={true}
+                                                />
                                             ))}
-                                            {post.comments && post.comments.length > 2 && post.step && (
-                                                <Button
-                                                    onClick={() => handlePostClick(post.step!.id)}
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-blue-600 hover:text-blue-700 text-sm p-0 h-auto font-medium"
-                                                >
-                                                    View all {post._count?.comments || 0} comments →
-                                                </Button>
-                                            )}
                                         </div>
+                                    </div>
+                                )}                                {/* Direct Comment Form - Always available for logged-in users */}
+                                {currentUserId && (
+                                    <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                                        {!showCommentForm[post.id] ? (
+                                            <Button
+                                                onClick={() => setShowCommentForm(prev => ({ ...prev, [post.id]: true }))}
+                                                variant="ghost"
+                                                size="sm"
+                                                className="text-gray-600 hover:text-gray-900 text-sm p-0 h-auto font-medium"
+                                            >
+                                                Add a comment...
+                                            </Button>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                <Textarea
+                                                    value={commentContent[post.id] || ''}
+                                                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCommentContent(prev => ({ ...prev, [post.id]: e.target.value }))}
+                                                    placeholder="Write a comment..."
+                                                    className="min-h-[80px] resize-none"
+                                                    disabled={isCreatingComment[post.id]}
+                                                />
+                                                <div className="flex items-center gap-2">
+                                                    <Button
+                                                        onClick={() => handleCreateComment(post.id)}
+                                                        disabled={isCreatingComment[post.id] || !commentContent[post.id]?.trim()}
+                                                        size="sm"
+                                                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                                                    >
+                                                        {isCreatingComment[post.id] ? (
+                                                            <>
+                                                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                                                                Posting...
+                                                            </>
+                                                        ) : (
+                                                            'Post Comment'
+                                                        )}
+                                                    </Button>
+                                                    <Button
+                                                        onClick={() => handleCancelComment(post.id, 'comment')}
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-gray-600 hover:text-gray-900"
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>

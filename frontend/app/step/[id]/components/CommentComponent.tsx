@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Comment {
   id: string;
@@ -72,12 +73,12 @@ export default function CommentComponent({
         {showReplyForm[comment.id] && canParticipate && level < maxLevel && (
           <div className="mt-4 ml-6 border-l-2 border-gray-200 pl-4">
             <div className="flex space-x-2">
-              <textarea
+              <Textarea
                 value={commentContent[comment.id] || ''}
-                onChange={(e) => setCommentContent(prev => ({ ...prev, [comment.id]: e.target.value }))}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCommentContent(prev => ({ ...prev, [comment.id]: e.target.value }))}
                 placeholder="Write a reply..."
-                rows={2}
-                className="flex-1 p-2 bg-gray-50 border border-gray-300 text-gray-900 placeholder:text-gray-500 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="flex-1 min-h-[60px] resize-none text-sm"
+                disabled={isCreatingComment[comment.id]}
               />
               <div className="flex flex-col space-y-2">
                 <Button
