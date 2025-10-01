@@ -525,7 +525,8 @@ export default function ExplorePage() {
                                                 alt="Post image"
                                                 className="max-w-full h-auto rounded-lg border border-gray-200 shadow-sm"
                                                 onError={(e) => {
-                                                    (e.target as HTMLImageElement).style.display = 'none';
+                                                    console.error('Failed to load post image:', post.image);
+                                                    (e.target as HTMLImageElement).src = '/placeholder-image.png';
                                                 }}
                                             />
                                         </div>

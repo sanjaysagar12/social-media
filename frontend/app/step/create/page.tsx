@@ -286,6 +286,10 @@ export default function CreateStepPage() {
                           src={formData.thumbnail}
                           alt="Step thumbnail"
                           className="w-full h-full object-cover"
+                          onError={(e) => {
+                            console.error('Failed to load thumbnail:', formData.thumbnail);
+                            (e.target as HTMLImageElement).src = '/placeholder-image.png';
+                          }}
                         />
                       </div>
                     )}

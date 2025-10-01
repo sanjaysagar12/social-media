@@ -40,9 +40,9 @@ export class S3Service {
 
             await this.s3Client.send(command);
 
-            // Return the public URL
-            const baseUrl = process.env.MINIO_PUBLIC_URL || `http://localhost:9000/${this.bucketName}`;
-            return `${baseUrl}/${key}`;
+            // Return the NestJS API URL instead of direct MinIO URL
+            const baseUrl = process.env.BACKEND_URL || 'http://localhost:3000';
+            return `${baseUrl}/api/images/${fileName}`;
         } catch (error) {
             console.error('File upload error:', error);
             throw new Error('Failed to upload file');

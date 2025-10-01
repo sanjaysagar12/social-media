@@ -111,6 +111,10 @@ export default function CreatePostPage() {
                         src={image}
                         alt="Preview"
                         className="max-w-full h-48 object-cover rounded-lg border border-gray-200"
+                        onError={(e) => {
+                          console.error('Failed to load image:', image);
+                          (e.target as HTMLImageElement).src = '/placeholder-image.png';
+                        }}
                       />
                       <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
                         ✓ Image uploaded successfully
