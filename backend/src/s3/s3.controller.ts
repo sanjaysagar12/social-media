@@ -61,4 +61,45 @@ export class S3Controller {
             return res.status(404).json({ message: 'Image not found' });
         }
     }
+
+    @Get('api/images/:fileName')
+    async serveImage(@Param('fileName') fileName: string, @Res() res: Response) {
+        try {
+            // Get image buffer from S3
+            const imageBuffer = await this.s3Service.getFile('images', fileName);
+            
+            // Determine content type based on file extension
+            const fileExtension = fileName.split('.').pop()?.toLowerCase();
+            let contentType = 'image/jpeg'; // default
+            
+            switch (fileExtension) {
+                case 'png':
+                    contentType = 'image/png';
+                    break;
+                case 'gif':
+                    contentType = 'image/gif';
+                    break;
+                case 'webp':
+                    contentType = 'image/webp';
+                    break;
+                case 'jpg':
+                case 'jpeg':
+                    contentType = 'image/jpeg';
+                    break;
+            }
+
+            // Set appropriate headers
+            res.set({
+                'Content-Type': contentType,
+                'Content-Length': imageBuffer.length,
+                'Cache-Control': 'public, max-age=31536000', // Cache for 1 year
+            });
+
+            // Send the image buffer
+            res.send(imageBuffer);
+        } catch (error) {
+            console.error('Error serving image:', error);
+            return res.status(404).json({ message: 'Image not found' });
+        }
+    }
 }
