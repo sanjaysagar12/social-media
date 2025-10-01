@@ -14,10 +14,30 @@ services:
     networks:
       - app-network
 
+  # MinIO Object Storage Server (S3-compatible)
+  # Web Console: http://localhost:9001
+  # API Endpoint: http://localhost:9000
+  # Default credentials: minioadmin / minioadmin123
+  minio:
+    image: minio/minio:latest
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_REGION_NAME: ${MINIO_REGION_NAME:-us-east-1}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - app-network
+
 
 
 volumes:
   postgres_data:
+  minio_data:
 networks:
   app-network:
     driver: bridge
