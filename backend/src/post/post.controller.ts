@@ -7,19 +7,13 @@ import { GetOptionalUser } from 'src/application/common/decorator/get-optional-u
 import { PostService } from './post.service';
 import { CreateStepDto, CreatePostDto, CreateCommentDto } from './dto';
 
-// Create an optional JWT guard that doesn't throw errors
-class OptionalJwtGuard extends JwtGuard {
-  handleRequest(err, user, info) {
-    // Return user if valid, otherwise return null (don't throw error)
-    return user || null;
-  }
-}
+
 
 @Controller('api')
 export class PostController {
     private readonly logger = new Logger(PostController.name);
-    
-    constructor(private readonly postService: PostService) {}
+
+    constructor(private readonly postService: PostService) { }
 
     @Post('step')
     @UseGuards(JwtGuard, RolesGuard)
@@ -47,7 +41,7 @@ export class PostController {
     }
 
     @Get('step/explore')
-    @UseGuards(OptionalJwtGuard)
+    @UseGuards(JwtGuard, RolesGuard)
     async explorePosts(
         @GetOptionalUser('sub') userId?: string,
     ) {
@@ -59,8 +53,18 @@ export class PostController {
         };
     }
 
+    @Get('step/any/explore')
+    async anyExplorePosts() {
+
+        const data = await this.postService.getExplorePosts();
+        return {
+            status: 'success',
+            data: data,
+        };
+    }
+
     @Get('step/:id')
-    @UseGuards(OptionalJwtGuard)
+    @UseGuards(JwtGuard, RolesGuard)
     async getEventById(
         @Param('id') stepId: string,
         @GetOptionalUser('sub') userId?: string,
@@ -287,13 +291,13 @@ export class PostController {
         @GetUser('sub') currentUserId: string,
     ) {
         this.logger.log(`Fetching hosted events for user ${userId}`);
-        
+
         // Users can only view their own hosted events unless they're admin
         if (userId !== currentUserId) {
             // Check if current user is admin (you might want to add admin role check here)
             this.logger.log(`User ${currentUserId} requesting hosted events for different user ${userId}`);
         }
-        
+
         const data = await this.postService.getHostedEvents(userId);
         return {
             status: 'success',
@@ -309,7 +313,7 @@ export class PostController {
         @GetUser('sub') userId: string,
     ) {
         this.logger.log(`Fetching hosted events for current user ${userId}`);
-        
+
         const data = await this.postService.getHostedEvents(userId);
         return {
             status: 'success',
@@ -349,5 +353,5 @@ export class PostController {
             message: 'Event unverified successfully',
         };
     }
-    
+
 }

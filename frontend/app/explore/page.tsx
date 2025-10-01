@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import AuthGuard from "@/components/AuthGuard";
 import CommentComponent from "@/components/ui/CommentComponent";
 import { API_CONFIG, getApiUrl } from '@/lib/api';
 import {
@@ -106,7 +105,10 @@ export default function ExplorePage() {
                 headers['Authorization'] = `Bearer ${token}`;
             }
 
-            const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.EXPLORE), {
+            // Choose endpoint based on token presence
+            const endpoint = token ? API_CONFIG.ENDPOINTS.EXPLORE : '/api/step/any/explore';
+
+            const response = await fetch(getApiUrl(endpoint), {
                 method: 'GET',
                 headers,
             });
@@ -358,7 +360,6 @@ export default function ExplorePage() {
     }
 
     return (
-        <AuthGuard>
             <div className="min-h-screen bg-gray-50">
             {/* Header */}
             <div className="bg-white shadow-sm border-b">
@@ -525,8 +526,7 @@ export default function ExplorePage() {
                                                 alt="Post image"
                                                 className="max-w-full h-auto rounded-lg border border-gray-200 shadow-sm"
                                                 onError={(e) => {
-                                                    console.error('Failed to load post image:', post.image);
-                                                    (e.target as HTMLImageElement).src = '/placeholder-image.png';
+                                                    (e.target as HTMLImageElement).style.display = 'none';
                                                 }}
                                             />
                                         </div>
@@ -685,6 +685,5 @@ export default function ExplorePage() {
                 </div>
             </div>
         </div>
-        </AuthGuard>
     );
 }
