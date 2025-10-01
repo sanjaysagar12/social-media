@@ -106,7 +106,7 @@ export default function ExplorePage() {
             }
 
             // Choose endpoint based on token presence
-            const endpoint = token ? API_CONFIG.ENDPOINTS.EXPLORE : '/api/step/any/explore';
+            const endpoint = token ? API_CONFIG.ENDPOINTS.EXPLORE : API_CONFIG.ENDPOINTS.ANY_EXPLORE;
 
             const response = await fetch(getApiUrl(endpoint), {
                 method: 'GET',
