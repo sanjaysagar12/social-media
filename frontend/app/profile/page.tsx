@@ -27,6 +27,7 @@ import {
   Send,
   Copy
 } from 'lucide-react';
+import { API_CONFIG, getApiUrl } from '@/lib/api';
 
 interface UserProfile {
   id: string;
@@ -209,7 +210,7 @@ export default function ProfilePage() {
         return;
       }
 
-  const response = await fetch('http://localhost:3000/api/user/me', {
+  const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.USER_PROFILE), {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -290,7 +291,7 @@ export default function ProfilePage() {
     try {
       const token = localStorage.getItem('access_token');
       
-  const response = await fetch('http://localhost:3000/etherlink/distribute-funds', {
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.DISTRIBUTE_FUNDS), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

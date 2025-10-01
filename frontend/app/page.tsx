@@ -20,6 +20,7 @@ import {
   CheckCircle,
   Plus
 } from 'lucide-react';
+import { API_CONFIG, getApiUrl } from '@/lib/api';
 
 interface Step {
   id: string;
@@ -58,7 +59,7 @@ export default function HomePage() {
 
   const fetchFeaturedEvents = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/step', {
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.STEPS), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

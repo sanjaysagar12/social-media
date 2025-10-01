@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Plus } from 'lucide-react';
+import { API_CONFIG, getApiUrl } from '@/lib/api';
 
 // Import components
 import StepHeader from './components/EventHeader';
@@ -116,7 +117,7 @@ export default function StepDetailPage() {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-  const response = await fetch(`http://localhost:3000/api/step/${params.id}`, {
+  const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.STEP_BY_ID(params.id as string)), {
         method: 'GET',
         headers,
       });
@@ -171,7 +172,7 @@ export default function StepDetailPage() {
         return;
       }
 
-            const response = await fetch(`http://localhost:3000/api/step/${event.id}/join`, {
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.JOIN_STEP(event.id)), {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -239,7 +240,7 @@ export default function StepDetailPage() {
         return;
       }
 
-  const response = await fetch(`http://localhost:3000/api/step/${params.id}/post`, {
+  const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.CREATE_STEP_POST(params.id as string)), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -298,7 +299,7 @@ export default function StepDetailPage() {
         return;
       }
 
-  const response = await fetch(`http://localhost:3000/api/step/post/${postId}/comment`, {
+  const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.CREATE_POST_COMMENT(postId)), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -345,7 +346,7 @@ export default function StepDetailPage() {
         return;
       }
 
-  const response = await fetch(`http://localhost:3000/api/step/comment/${commentId}/reply`, {
+  const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.CREATE_COMMENT_REPLY(commentId)), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -400,8 +401,8 @@ export default function StepDetailPage() {
         return;
       }
 
-      const endpoint = isCurrentlyLiked ? 'unlike' : 'like';
-  const response = await fetch(`http://localhost:3000/api/step/${eventId}/${endpoint}`, {
+      const endpoint = isCurrentlyLiked ? API_CONFIG.ENDPOINTS.UNLIKE_STEP(eventId) : API_CONFIG.ENDPOINTS.LIKE_STEP(eventId);
+  const response = await fetch(getApiUrl(endpoint), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -441,8 +442,8 @@ export default function StepDetailPage() {
         return;
       }
 
-      const endpoint = isCurrentlyUpvoted ? 'remove-upvote' : 'upvote';
-  const response = await fetch(`http://localhost:3000/api/step/post/${postId}/${endpoint}`, {
+      const endpoint = isCurrentlyUpvoted ? API_CONFIG.ENDPOINTS.REMOVE_UPVOTE_POST(postId) : API_CONFIG.ENDPOINTS.UPVOTE_POST(postId);
+  const response = await fetch(getApiUrl(endpoint), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

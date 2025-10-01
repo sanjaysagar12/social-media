@@ -11,6 +11,7 @@ import {
   Footprints,
   Sparkles
 } from 'lucide-react';
+import { API_CONFIG, getApiUrl } from '@/lib/api';
 
 interface UserProfile {
   id: string;
@@ -40,7 +41,7 @@ export default function BottomNavigation() {
         setIsAuthenticated(true);
 
         // Fetch user profile
-        const response = await fetch('http://localhost:3000/api/user/me', {
+        const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.USER_PROFILE), {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',

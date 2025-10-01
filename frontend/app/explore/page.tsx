@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import AuthGuard from "@/components/AuthGuard";
 import CommentComponent from "@/components/ui/CommentComponent";
+import { API_CONFIG, getApiUrl } from '@/lib/api';
 import {
     ArrowUp,
     MessageCircle,
@@ -105,7 +106,7 @@ export default function ExplorePage() {
                 headers['Authorization'] = `Bearer ${token}`;
             }
 
-            const response = await fetch('http://localhost:3000/api/step/explore', {
+            const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.EXPLORE), {
                 method: 'GET',
                 headers,
             });
@@ -156,8 +157,10 @@ export default function ExplorePage() {
                 return;
             }
 
-            const endpoint = isCurrentlyUpvoted ? 'remove-upvote' : 'upvote';
-            const response = await fetch(`http://localhost:3000/api/step/post/${postId}/${endpoint}`, {
+            const endpoint = isCurrentlyUpvoted 
+                ? API_CONFIG.ENDPOINTS.REMOVE_UPVOTE_POST(postId)
+                : API_CONFIG.ENDPOINTS.UPVOTE_POST(postId);
+            const response = await fetch(getApiUrl(endpoint), {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -215,7 +218,7 @@ export default function ExplorePage() {
                 return;
             }
 
-            const response = await fetch(`http://localhost:3000/api/step/post/${postId}/comment`, {
+            const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.CREATE_POST_COMMENT(postId)), {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -262,7 +265,7 @@ export default function ExplorePage() {
                 return;
             }
 
-            const response = await fetch(`http://localhost:3000/api/step/comment/${commentId}/reply`, {
+            const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.CREATE_COMMENT_REPLY(commentId)), {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

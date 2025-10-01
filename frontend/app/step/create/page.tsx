@@ -17,6 +17,7 @@ import {
   Sparkles,
   Target
 } from 'lucide-react';
+import { API_CONFIG, getApiUrl } from '@/lib/api';
 
 export default function CreateStepPage() {
   const [formData, setFormData] = useState({
@@ -56,7 +57,7 @@ export default function CreateStepPage() {
         return;
       }
 
-  const response = await fetch('http://localhost:3000/api/step', {
+  const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.STEPS), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

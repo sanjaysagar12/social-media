@@ -20,6 +20,7 @@ import {
   MapPin,
   ExternalLink
 } from 'lucide-react';
+import { API_CONFIG, getApiUrl } from '@/lib/api';
 
 interface UserProfile {
   id: string;
@@ -108,7 +109,7 @@ export default function UserProfilePage() {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/user/username/${username}`, {
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.USER_BY_USERNAME(username)), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

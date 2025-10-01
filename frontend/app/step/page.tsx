@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { API_CONFIG, getApiUrl } from '@/lib/api';
 import { 
   Calendar, 
   Users, 
@@ -47,7 +48,7 @@ export default function StepsPage() {
         return;
       }
 
-  const response = await fetch('http://localhost:3000/api/step', {
+  const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.STEPS), {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

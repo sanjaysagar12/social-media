@@ -1,9 +1,11 @@
 // app/login/page.tsx (Server Component)
+import { API_CONFIG, getApiUrl } from '@/lib/api';
+
 export default function LoginPage() {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <a
-  href="http://localhost:3000/api/auth/google/signin"
+  href={getApiUrl(API_CONFIG.ENDPOINTS.LOGIN)}
         className="flex items-center gap-2 bg-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Users, Mail, Wallet, Calendar, Crown, Trophy, User } from 'lucide-react';
 import Link from 'next/link';
+import { API_CONFIG, getApiUrl } from '@/lib/api';
 
 interface User {
   id: string;
@@ -75,7 +76,7 @@ export default function StepParticipantsPage() {
     try {
       const token = localStorage.getItem('access_token');
       
-  const response = await fetch(`http://localhost:3000/api/step/${params.id}/participants`, {
+  const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.STEP_PARTICIPANTS(params.id as string)), {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -150,7 +151,7 @@ export default function StepParticipantsPage() {
     try {
       const token = localStorage.getItem('access_token');
       
-  const response = await fetch(`http://localhost:3000/api/step/${params.id}/select-winner`, {
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.SELECT_WINNER(params.id as string)), {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,

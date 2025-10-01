@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import UploadImage from '@/components/UploadImage';
 import { ArrowLeft, Plus, ImageIcon, Sparkles } from 'lucide-react';
+import { API_CONFIG, getApiUrl } from '@/lib/api';
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function CreatePostPage() {
         return;
       }
 
-      const response = await fetch('http://localhost:3000/api/post', {
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.POSTS), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
