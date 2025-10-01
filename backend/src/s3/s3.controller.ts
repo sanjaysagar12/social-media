@@ -48,28 +48,15 @@ export class S3Controller {
     @Get('uploads/images/:fileName')
     async getImage(@Param('fileName') fileName: string, @Res() res: Response) {
         try {
-            if (!this.s3Service.fileExists('images', fileName)) {
+            // Check if file exists in MinIO
+            const exists = await this.s3Service.fileExists('images', fileName);
+            if (!exists) {
                 return res.status(404).json({ message: 'Image not found' });
             }
 
-            const filePath = this.s3Service.getFilePath('images', fileName);
-            const fileBuffer = await this.s3Service.getFile('images', fileName);
-            
-            // Set proper content type based on file extension
-            const ext = fileName.split('.').pop()?.toLowerCase();
-            const contentTypes: { [key: string]: string } = {
-                'jpg': 'image/jpeg',
-                'jpeg': 'image/jpeg',
-                'png': 'image/png',
-                'gif': 'image/gif',
-                'webp': 'image/webp'
-            };
-            
-            const contentType = (ext && contentTypes[ext]) || 'application/octet-stream';
-            
-            res.setHeader('Content-Type', contentType);
-            res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 1 day
-            res.send(fileBuffer);
+            // Redirect to MinIO URL
+            const minioUrl = this.s3Service.getFilePath('images', fileName);
+            res.redirect(minioUrl);
         } catch (error) {
             return res.status(404).json({ message: 'Image not found' });
         }
