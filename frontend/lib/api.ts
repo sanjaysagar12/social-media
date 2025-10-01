@@ -35,9 +35,6 @@ export const API_CONFIG = {
 
     // Images
     UPLOAD_IMAGE: '/api/image',
-
-    // Blockchain
-    DISTRIBUTE_FUNDS: '/etherlink/distribute-funds',
   }
 };
 
