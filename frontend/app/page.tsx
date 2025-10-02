@@ -25,15 +25,90 @@ import {
   Play,
   Quote
 } from 'lucide-react';
+import { API_CONFIG, getApiUrl } from '@/lib/api';
+import ImageCarousel from "@/components/ui/ImageCarousel";
+import { Star, ExternalLink } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+// Add Post/Step interfaces (copy from explore page)
+interface User {
+  id: string;
+  name?: string;
+  email: string;
+  avatar?: string;
+}
+interface Step {
+  id: string;
+  title: string;
+  thumbnail?: string;
+  verified: boolean;
+  isActive: boolean;
+  creator: User;
+}
+interface Comment {
+  id: string;
+  content: string;
+  createdAt: string;
+  author: User;
+  replies?: Comment[];
+}
+interface Post {
+  id: string;
+  content: string;
+  images?: string[];
+  upvotes: number;
+  createdAt: string;
+  author: User;
+  step?: Step;
+  comments: Comment[];
+  isUpvotedByUser?: boolean;
+  _count: {
+    comments: number;
+    userUpvotes: number;
+  };
+}
 
 export default function HomePage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [recentPosts, setRecentPosts] = useState<Post[]>([]);
+  const [recentLoading, setRecentLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // Check authentication on mount
+    setIsAuthenticated(!!localStorage.getItem('access_token'));
+  }, []);
+
+  // Fetch recent posts (reuse explore endpoint)
+  useEffect(() => {
+    const fetchRecent = async () => {
+      setRecentLoading(true);
+      try {
+        const token = localStorage.getItem('access_token');
+        const headers: { [key: string]: string } = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const endpoint = token ? API_CONFIG.ENDPOINTS.EXPLORE : API_CONFIG.ENDPOINTS.ANY_EXPLORE;
+        const response = await fetch(getApiUrl(endpoint), { method: 'GET', headers });
+        const result = await response.json();
+        if (response.ok && Array.isArray(result.data)) {
+          setRecentPosts(result.data.slice(0, 6)); // Show only latest 6
+        } else {
+          setRecentPosts([]);
+        }
+      } catch {
+        setRecentPosts([]);
+      } finally {
+        setRecentLoading(false);
+      }
+    };
+    fetchRecent();
   }, []);
 
   const stats = [
@@ -154,6 +229,58 @@ export default function HomePage() {
     'TechCorp', 'GreenEnergy', 'EcoSystems', 'Future Labs', 'CleanTech', 'Sustainable Co'
   ];
 
+  // Mocked recent posts/steps (replace with API data as needed)
+  const recent = [
+    {
+      id: '1',
+      type: 'post',
+      user: {
+        name: 'Alice Green',
+        avatar: 'https://randomuser.me/api/portraits/women/68.jpg'
+      },
+      content: 'Just completed a zero-waste challenge! 🌱',
+      images: ['https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=600'],
+      createdAt: '2h ago'
+    },
+    {
+      id: '2',
+      type: 'step',
+      step: {
+        title: 'Plant 10 Trees',
+        verified: true
+      },
+      user: {
+        name: 'Eco Warriors',
+        avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
+      },
+      content: 'Join our community step to plant trees in your city!',
+      images: ['https://images.unsplash.com/photo-1465101046530-73398c7f28ca?q=80&w=600'],
+      createdAt: '4h ago'
+    },
+    {
+      id: '3',
+      type: 'post',
+      user: {
+        name: 'Lucas Smith',
+        avatar: 'https://randomuser.me/api/portraits/men/44.jpg'
+      },
+      content: 'Bike to work week was a success 🚴‍♂️',
+      images: [],
+      createdAt: '6h ago'
+    }
+  ];
+
+  // Helper for time ago
+  const formatTimeAgo = (dateString: string) => {
+    const now = new Date();
+    const postDate = new Date(dateString);
+    const diffInMinutes = Math.floor((now.getTime() - postDate.getTime()) / (1000 * 60));
+    if (diffInMinutes < 1) return 'just now';
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+    return `${Math.floor(diffInMinutes / 1440)}d ago`;
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation Bar */}
@@ -170,15 +297,38 @@ export default function HomePage() {
               </div>
             </div>
             <div className="hidden lg:flex items-center space-x-8">
-              <a href="#about" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">Platform</a>
+              <a href="/explore" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">Platform</a>
               <a href="#initiatives" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">Solutions</a>
               <a href="#team" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">Team</a>
               <a href="#impact" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">Impact</a>
               <a href="#" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium">Resources</a>
-              <Button variant="outline" className="border-gray-300">Sign In</Button>
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                Get Started
-              </Button>
+              {/* Auth/Explore/Profile Buttons */}
+              {isAuthenticated ? (
+                <>
+                  <Button
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    onClick={() => router.push('/profile')}
+                  >
+                    Profile
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    className="border-gray-300"
+                    onClick={() => router.push('/auth/login')}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    onClick={() => router.push('/auth/login')}
+                  >
+                    Get Started
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -494,9 +644,102 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Recent Posts & Steps Section */}
+      <section className="py-24 bg-gradient-to-br from-emerald-50 via-white to-blue-50" id="recent">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center space-x-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+              <Calendar className="w-4 h-4" />
+              <span>Recent Posts & Steps</span>
+            </div>
+            <h2 className="text-4xl font-bold text-gray-900 mb-3">See What’s New</h2>
+            <p className="text-lg text-gray-600">Latest actions and steps from our community</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {recentLoading ? (
+              <div className="col-span-full flex justify-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              </div>
+            ) : recentPosts.length === 0 ? (
+              <div className="col-span-full text-center text-gray-500 py-12">
+                No recent posts found.
+              </div>
+            ) : (
+              recentPosts.map((post) => (
+                <div key={post.id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all border border-gray-100 group overflow-hidden">
+                  <div className="relative">
+                    {post.images && post.images.length > 0 ? (
+                      <ImageCarousel images={post.images} />
+                    ) : (
+                      <div className="w-full h-56 flex items-center justify-center bg-gray-100 text-gray-400 text-4xl">
+                        <Leaf className="w-10 h-10" />
+                      </div>
+                    )}
+                    {post.step ? (
+                      <div className="absolute top-4 left-4 bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 z-10">
+                        <CheckCircle className="w-4 h-4" /> Step
+                      </div>
+                    ) : (
+                      <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 z-10">
+                        <Users className="w-4 h-4" /> Post
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      {post.author.avatar ? (
+                        <img
+                          src={post.author.avatar}
+                          alt={post.author.name || post.author.email}
+                          className="w-10 h-10 rounded-full object-cover border-2 border-white shadow"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-medium shadow">
+                          {(post.author.name || post.author.email || 'U')[0].toUpperCase()}
+                        </div>
+                      )}
+                      <div>
+                        <div className="font-semibold text-gray-900">{post.author.name || post.author.email}</div>
+                        <div className="text-xs text-gray-500">{formatTimeAgo(post.createdAt)}</div>
+                      </div>
+                    </div>
+                    {post.step && (
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-emerald-700 font-semibold">{post.step.title}</span>
+                        {post.step.verified && <Star className="w-4 h-4 text-emerald-500" />}
+                      </div>
+                    )}
+                    <div className="text-gray-700 mb-2">{post.content}</div>
+                    <Button
+                      variant="outline"
+                      className="w-full mt-3 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 transition-all flex items-center justify-center"
+                      onClick={() =>
+                        post.step
+                          ? window.location.assign(`/step/${post.step.id}`)
+                          : window.location.assign(`/explore`)
+                      }
+                    >
+                      {post.step ? (
+                        <>
+                          View Step <ExternalLink className="w-4 h-4 ml-1" />
+                        </>
+                      ) : (
+                        <>
+                          View Post <ArrowRight className="w-4 h-4 ml-1" />
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjA1IiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9inVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-40"></div>
         
         <div className="relative max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
