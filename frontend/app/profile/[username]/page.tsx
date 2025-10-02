@@ -21,6 +21,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { API_CONFIG, getApiUrl } from '@/lib/api';
+import ImageCarousel from "@/components/ui/ImageCarousel";
 
 interface UserProfile {
   id: string;
@@ -53,7 +54,7 @@ interface StepSummary {
 interface PostSummary {
   id: string;
   content: string;
-  image?: string;
+  images?: string[]; // Changed from image?: string to images?: string[]
   upvotes: number;
   createdAt: string;
   step?: {
@@ -336,9 +337,9 @@ export default function UserProfilePage() {
                       {userData.posts.slice(0, 3).map((post) => (
                         <div key={post.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                           <p className="text-gray-900 text-sm mb-3 line-clamp-2">{post.content}</p>
-                          {post.image && (
+                          {post.images && post.images.length > 0 && (
                             <img
-                              src={post.image}
+                              src={post.images[0]}
                               alt="Post image"
                               className="w-full h-32 object-cover rounded-lg mb-3"
                             />
@@ -470,12 +471,10 @@ export default function UserProfilePage() {
                 {userData.posts.map((post) => (
                   <div key={post.id} className="border rounded-lg p-6 hover:bg-gray-50">
                     <p className="text-gray-900 mb-4">{post.content}</p>
-                    {post.image && (
-                      <img
-                        src={post.image}
-                        alt="Post image"
-                        className="w-full h-64 object-cover rounded-lg mb-4"
-                      />
+                    {post.images && post.images.length > 0 && (
+                      <div className="mb-4">
+                        <ImageCarousel images={post.images} />
+                      </div>
                     )}
                     <div className="flex items-center justify-between text-sm text-gray-500">
                       <div className="flex items-center space-x-4">

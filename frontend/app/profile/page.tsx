@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthGuard from "@/components/AuthGuard";
+import ImageCarousel from "@/components/ui/ImageCarousel";
 import { 
   User,
   Calendar,
@@ -337,19 +338,20 @@ export default function ProfilePage() {
   return (
     <AuthGuard>
       <div className="min-h-screen bg-gray-50">
-        {/* Header */}
+        {/* Mobile-friendly Header */}
         <div className="bg-white shadow-sm border-b">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex items-center space-x-6">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+              {/* Profile Image */}
               <div className="relative">
                 {userData.avatar ? (
                   <img
                     src={userData.avatar}
                     alt={userData.name}
-                    className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                    className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-lg"
                   />
                 ) : (
-                  <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-lg">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold border-4 border-white shadow-lg">
                     {userData.name?.[0]?.toUpperCase() || userData.email[0].toUpperCase()}
                   </div>
                 )}
@@ -357,10 +359,12 @@ export default function ProfilePage() {
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
                 )}
               </div>
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900">{userData.name || userData.email}</h1>
+
+              {/* User Info */}
+              <div className="flex-1 text-center sm:text-left">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{userData.name || userData.email}</h1>
                 <p className="text-gray-600">{userData.email}</p>
-                <div className="flex items-center space-x-4 mt-2">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-2">
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                     userData.role === 'ADMIN' 
                       ? 'bg-purple-100 text-purple-700 border border-purple-200' 
@@ -373,9 +377,11 @@ export default function ProfilePage() {
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                {/* Shareable Link */}
-                <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                {/* Shareable Link - Hidden on mobile */}
+                <div className="hidden sm:flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
                   <span className="text-sm text-gray-600">Share:</span>
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-gray-900 font-mono">
@@ -390,27 +396,31 @@ export default function ProfilePage() {
                     </button>
                   </div>
                 </div>
-                <button
-                  onClick={() => router.push('/')}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-300 transition-colors"
-                >
-                  <Home className="w-4 h-4" />
-                  Home
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Logout
-                </button>
+
+                {/* Mobile Actions */}
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <button
+                    onClick={() => router.push('/')}
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-300 transition-colors"
+                  >
+                    <Home className="w-4 h-4" />
+                    <span className="sm:hidden">Home</span>
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="sm:hidden">Logout</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="bg-white border-b">
+        {/* Mobile-friendly Navigation Tabs */}
+        <div className="bg-white border-b overflow-x-auto">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <nav className="flex space-x-8">
               {[
@@ -423,7 +433,7 @@ export default function ProfilePage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm ${
+                    className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                       activeTab === tab.id
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -438,11 +448,11 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Content */}
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Mobile-friendly Content */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {activeTab === 'overview' && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Stats */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+              {/* Stats - Full width on mobile */}
               <div className="lg:col-span-1">
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Statistics</h3>
@@ -493,11 +503,10 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Recent Activity */}
+              {/* Recent Activity - Full width on mobile */}
               <div className="lg:col-span-2">
                 <div className="space-y-6">
                   
-                    
 
                   {/* Recent Steps */}
                   {userData.createdSteps.length > 0 && (
@@ -543,15 +552,8 @@ export default function ProfilePage() {
                           <div key={post.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                             <p className="text-gray-900 text-sm mb-3 line-clamp-2">{post.content}</p>
                             {post.images && post.images.length > 0 && (
-                              <div className="grid grid-cols-2 gap-2 mb-3">
-                                {post.images.map((image, index) => (
-                                  <img
-                                    key={index}
-                                    src={image}
-                                    alt={`Post image ${index + 1}`}
-                                    className="w-full h-32 object-cover rounded-lg"
-                                  />
-                                ))}
+                              <div className="mb-3">
+                                <ImageCarousel images={post.images} />
                               </div>
                             )}
                             <div className="flex items-center justify-between text-xs text-gray-500">
@@ -588,7 +590,7 @@ export default function ProfilePage() {
               {userData.createdSteps.length > 0 && (
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Steps Created</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {userData.createdSteps.map((step) => (
                       <div key={step.id} className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleStepClick(step.id)}>
                         {step.thumbnail && (
@@ -629,7 +631,7 @@ export default function ProfilePage() {
               {userData.joinedSteps.length > 0 && (
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Steps Joined</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {userData.joinedSteps.map((step) => (
                       <div key={step.id} className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleStepClick(step.id)}>
                         {step.thumbnail && (
@@ -674,49 +676,38 @@ export default function ProfilePage() {
           )}
 
           {activeTab === 'posts' && (
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Posts</h3>
-              {userData.posts.length > 0 ? (
-                <div className="space-y-6">
-                  {userData.posts.map((post) => (
-                    <div key={post.id} className="border rounded-lg p-6 hover:bg-gray-50">
-                      <p className="text-gray-900 mb-4">{post.content}</p>
-                      {post.images && post.images.length > 0 && (
-                        <div className="grid grid-cols-2 gap-2 mb-3">
-                          {post.images.map((image, index) => (
-                            <img
-                              key={index}
-                              src={image}
-                              alt={`Post image ${index + 1}`}
-                              className="w-full h-32 object-cover rounded-lg"
-                            />
-                          ))}
-                        </div>
-                      )}
-                      <div className="flex items-center justify-between text-sm text-gray-500">
-                        <div className="flex items-center space-x-4">
-                          <span className="flex items-center space-x-1">
-                            <Heart className="w-4 h-4" />
-                            <span>{post._count.userUpvotes}</span>
-                          </span>
-                          <span className="flex items-center space-x-1">
-                            <MessageCircle className="w-4 h-4" />
-                            <span>{post._count.comments}</span>
-                          </span>
-                        </div>
-                        <span>{formatDate(post.createdAt)}</span>
+            <div className="space-y-4 sm:space-y-6">
+              {/* Update grid layouts for better mobile display */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {userData.posts.map((post) => (
+                  <div key={post.id} className="border rounded-lg p-6 hover:bg-gray-50">
+                    <p className="text-gray-900 mb-4">{post.content}</p>
+                    {post.images && post.images.length > 0 && (
+                      <div className="mb-4">
+                        <ImageCarousel images={post.images} />
                       </div>
-                      {post.step && (
-                        <div className="mt-3 text-sm text-gray-600">
-                          Posted in step: <span className="font-medium">{post.step.title}</span>
-                        </div>
-                      )}
+                    )}
+                    <div className="flex items-center justify-between text-sm text-gray-500">
+                      <div className="flex items-center space-x-4">
+                        <span className="flex items-center space-x-1">
+                          <Heart className="w-4 h-4" />
+                          <span>{post._count.userUpvotes}</span>
+                        </span>
+                        <span className="flex items-center space-x-1">
+                          <MessageCircle className="w-4 h-4" />
+                          <span>{post._count.comments}</span>
+                        </span>
+                      </div>
+                      <span>{formatDate(post.createdAt)}</span>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-8">No posts yet</p>
-              )}
+                    {post.step && (
+                      <div className="mt-3 text-sm text-gray-600">
+                        Posted in step: <span className="font-medium">{post.step.title}</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
