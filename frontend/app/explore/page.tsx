@@ -46,11 +46,11 @@ interface Comment {
 interface Post {
     id: string;
     content: string;
-    image?: string;
+    images?: string[]; // Changed from image? to images?
     upvotes: number;
     createdAt: string;
     author: User;
-    step?: Step; // Make step optional since standalone posts don't have one
+    step?: Step;
     comments: Comment[];
     isUpvotedByUser?: boolean;
     _count: {
@@ -519,18 +519,33 @@ export default function ExplorePage() {
                                 >
                                     <p className="text-gray-900 mb-4 leading-relaxed text-lg">{post.content}</p>
 
-                                    {post.image && (
-                                        <div className="mb-4">
-                                            <img
-                                                src={post.image}
-                                                alt="Post image"
-                                                className="max-w-full h-auto rounded-lg border border-gray-200 shadow-sm"
-                                                onError={(e) => {
-                                                    (e.target as HTMLImageElement).style.display = 'none';
-                                                }}
-                                            />
-                                        </div>
-                                    )}
+                                    {post.images && post.images.length > 0 && (
+        <div className={`grid ${
+            post.images.length === 1 ? 'grid-cols-1' : 
+            post.images.length === 2 ? 'grid-cols-2' :
+            post.images.length === 3 ? 'grid-cols-2' :
+            'grid-cols-2'
+        } gap-2 mb-4`}>
+            {post.images.map((image: string, index: number) => (
+                <div 
+                    key={index} 
+                    className={`relative ${
+                        post.images && post.images.length === 3 && index === 0 ? 'col-span-2' : ''
+                    }`}
+                >
+                    <img
+                        src={image}
+                        alt={`Post image ${index + 1}`}
+                        className="w-full h-64 object-cover rounded-lg"
+                        onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                    />
+                </div>
+            ))}
+        </div>
+    )}
+
                                 </div>
 
                                 {/* Post Actions */}

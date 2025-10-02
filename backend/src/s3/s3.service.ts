@@ -23,26 +23,24 @@ export class S3Service {
 
     async uploadFile(file: any, folder = 'images'): Promise<string> {
         try {
-            // Generate unique filename
             const timestamp = Date.now();
             const fileExtension = file.originalname.split('.').pop();
             const fileName = `${timestamp}-${Math.random().toString(36).substring(2)}.${fileExtension}`;
             const key = `${folder}/${fileName}`;
 
-            // Upload to MinIO
             const command = new PutObjectCommand({
                 Bucket: this.bucketName,
                 Key: key,
                 Body: file.buffer,
                 ContentType: file.mimetype,
-                ACL: 'public-read', // Make files publicly accessible
+                ACL: 'public-read',
             });
 
             await this.s3Client.send(command);
 
-            // Return the NestJS API URL instead of direct MinIO URL
+            // Return the API endpoint URL format
             const baseUrl = process.env.BACKEND_URL || 'http://localhost:3000';
-            return `${baseUrl}/api/images/${fileName}`;
+            return `${baseUrl}/api/images/${fileName}`; // Updated URL format
         } catch (error) {
             console.error('File upload error:', error);
             throw new Error('Failed to upload file');

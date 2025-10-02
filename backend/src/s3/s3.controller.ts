@@ -4,11 +4,11 @@ import { Response } from 'express';
 import { S3Service } from './s3.service';
 import { JwtGuard } from '../application/common/guards/jwt.guard';
 
-@Controller('')
+@Controller('api')
 export class S3Controller {
     constructor(private readonly s3Service: S3Service) {}
 
-    @Post('api/image')
+    @Post('image')
     @UseInterceptors(FileInterceptor('file'))
     async uploadFile(@UploadedFile() file: any) {
         if (!file) {
@@ -45,7 +45,7 @@ export class S3Controller {
         }
     }
 
-    @Get('uploads/images/:fileName')
+    @Get('images/:fileName')  // Changed from 'uploads/images/:fileName' to 'images/:fileName'
     async getImage(@Param('fileName') fileName: string, @Res() res: Response) {
         try {
             // Check if file exists in MinIO
@@ -54,10 +54,19 @@ export class S3Controller {
                 return res.status(404).json({ message: 'Image not found' });
             }
 
-            // Redirect to MinIO URL
-            const minioUrl = this.s3Service.getFilePath('images', fileName);
-            res.redirect(minioUrl);
+            // Get the file buffer from MinIO
+            const fileBuffer = await this.s3Service.getFile('images', fileName);
+            
+            // Set appropriate headers
+            res.set({
+                'Content-Type': 'image/*',
+                'Content-Disposition': `inline; filename=${fileName}`,
+            });
+
+            // Send the file buffer
+            res.send(fileBuffer);
         } catch (error) {
+            console.error('Error serving image:', error);
             return res.status(404).json({ message: 'Image not found' });
         }
     }

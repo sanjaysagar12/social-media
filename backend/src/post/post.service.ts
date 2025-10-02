@@ -86,7 +86,7 @@ export class PostService {
             select: {
                 id: true,
                 content: true,
-                image: true,
+                images: true,  // Changed from image to images
                 upvotes: true,
                 createdAt: true,
                 author: {
@@ -241,7 +241,7 @@ export class PostService {
                         select: {
                             id: true,
                             content: true,
-                            image: true,
+                            images: true,  // Changed from image to images
                             upvotes: true,
                             createdAt: true,
                             author: { select: { id: true, name: true, email: true, avatar: true } },
@@ -273,7 +273,7 @@ export class PostService {
                         },
                         orderBy: { createdAt: 'desc' },
                     },
-                    userLikes: userId ? { where: { userId }, select: { id: true } } : false,
+                    userLikes: userId ? { where: { userId }, select: { id: true } } : undefined,  // Fixed undefined
                     _count: { select: { participants: true, posts: true, userLikes: true } },
                 },
             });
@@ -402,7 +402,7 @@ export class PostService {
         // Create the post (attach stepId only if provided)
         const data: any = {
             content: createPostDto.content,
-            image: createPostDto.image,
+            images: createPostDto.images || [],
             authorId: userId,
         };
         if (stepId) data.stepId = stepId;
@@ -412,7 +412,7 @@ export class PostService {
             select: {
                 id: true,
                 content: true,
-                image: true,
+                images: true,
                 upvotes: true,
                 createdAt: true,
                 author: { select: { id: true, name: true, email: true, avatar: true } },

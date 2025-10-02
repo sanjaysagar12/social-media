@@ -61,7 +61,7 @@ interface StepSummary {
 interface PostSummary {
   id: string;
   content: string;
-  image?: string;
+  images?: string[]; // Changed from image? to images?
   upvotes: number;
   createdAt: string;
   step: {
@@ -542,12 +542,17 @@ export default function ProfilePage() {
                         {userData.posts.slice(0, 3).map((post) => (
                           <div key={post.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                             <p className="text-gray-900 text-sm mb-3 line-clamp-2">{post.content}</p>
-                            {post.image && (
-                              <img
-                                src={post.image}
-                                alt="Post image"
-                                className="w-full h-32 object-cover rounded-lg mb-3"
-                              />
+                            {post.images && post.images.length > 0 && (
+                              <div className="grid grid-cols-2 gap-2 mb-3">
+                                {post.images.map((image, index) => (
+                                  <img
+                                    key={index}
+                                    src={image}
+                                    alt={`Post image ${index + 1}`}
+                                    className="w-full h-32 object-cover rounded-lg"
+                                  />
+                                ))}
+                              </div>
                             )}
                             <div className="flex items-center justify-between text-xs text-gray-500">
                               <div className="flex items-center space-x-4">
@@ -676,12 +681,17 @@ export default function ProfilePage() {
                   {userData.posts.map((post) => (
                     <div key={post.id} className="border rounded-lg p-6 hover:bg-gray-50">
                       <p className="text-gray-900 mb-4">{post.content}</p>
-                      {post.image && (
-                        <img
-                          src={post.image}
-                          alt="Post image"
-                          className="w-full h-64 object-cover rounded-lg mb-4"
-                        />
+                      {post.images && post.images.length > 0 && (
+                        <div className="grid grid-cols-2 gap-2 mb-3">
+                          {post.images.map((image, index) => (
+                            <img
+                              key={index}
+                              src={image}
+                              alt={`Post image ${index + 1}`}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                          ))}
+                        </div>
                       )}
                       <div className="flex items-center justify-between text-sm text-gray-500">
                         <div className="flex items-center space-x-4">

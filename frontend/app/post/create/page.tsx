@@ -15,11 +15,27 @@ import { API_CONFIG, getApiUrl } from '@/lib/api';
 export default function CreatePostPage() {
   const router = useRouter();
   const [content, setContent] = useState('');
-  const [image, setImage] = useState('');
+  const [files, setFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleImageUploaded = (url: string) => {
-    setImage(url);
+  const handleImageSelected = (file: File) => {
+    if (files.length < 4) {
+      setFiles(prev => [...prev, file]);
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreviews(prev => [...prev, e.target?.result as string]);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Maximum 4 images allowed');
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,23 +53,26 @@ export default function CreatePostPage() {
         return;
       }
 
+      const formData = new FormData();
+      formData.append('content', content.trim());
+      files.forEach((file) => {
+        formData.append('images', file);
+      });
+
       const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.POSTS), {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          content: content.trim(),
-          image: image || undefined,
-        }),
+        body: formData,
       });
 
       const result = await response.json();
       if (response.ok) {
         alert('Post created successfully!');
         setContent('');
-        setImage('');
+        setFiles([]);
+        setImagePreviews([]);
         // Navigate to explore page
         router.push('/explore');
       } else {
@@ -99,31 +118,47 @@ export default function CreatePostPage() {
                   </p>
                 </div>
 
-                {/* Image Section */}
+                {/* Multiple Images Section */}
                 <div className="space-y-3">
                   <Label className="text-gray-700 font-semibold text-lg flex items-center gap-2">
                     <ImageIcon className="w-5 h-5" />
-                    Add an image (optional)
+                    Add images (up to 4)
                   </Label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
-                    <UploadImage onImageUploaded={handleImageUploaded} currentImage={image} />
-                    {image && (
-                      <div className="mt-4">
-                        <img
-                          src={image}
-                          alt="Preview"
-                          className="max-w-full h-48 object-cover rounded-lg border border-gray-200"
-                          onError={(e) => {
-                            console.error('Failed to load image:', image);
-                            (e.target as HTMLImageElement).src = '/placeholder-image.png';
-                          }}
-                        />
-                        <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
-                          ✓ Image uploaded successfully
-                        </p>
-                      </div>
-                    )}
-                  </div>
+                  
+                  {/* Image Grid */}
+                  {imagePreviews.length > 0 && (
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      {imagePreviews.map((img, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={img}
+                            alt={`Upload ${index + 1}`}
+                            className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {imagePreviews.length < 4 && (
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-blue-400 transition-colors">
+                      <UploadImage 
+                        onImageSelected={handleImageSelected} // Changed from onImageUploaded to onImageSelected
+                        className="w-full"
+                      />
+                    </div>
+                  )}
+                  
+                  <p className="text-sm text-gray-500">
+                    {imagePreviews.length}/4 images added
+                  </p>
                 </div>
 
                 {/* Action Buttons */}

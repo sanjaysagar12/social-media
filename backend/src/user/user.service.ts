@@ -61,7 +61,7 @@ export class UserService {
                     select: {
                         id: true,
                         content: true,
-                        image: true,
+                        images: true,
                         upvotes: true,
                         createdAt: true,
                         step: { select: { id: true, title: true, thumbnail: true, verified: true, isActive: true } },
@@ -245,7 +245,7 @@ export class UserService {
                         select: {
                             id: true,
                             content: true,
-                            image: true,
+                            images: true,
                             upvotes: true,
                             createdAt: true,
                             step: { select: { id: true, title: true, thumbnail: true, verified: true, isActive: true } },
@@ -434,7 +434,7 @@ export class UserService {
                         select: {
                             id: true,
                             content: true,
-                            image: true,
+                            images: true,
                             upvotes: true,
                             createdAt: true,
                             step: { select: { id: true, title: true, thumbnail: true, verified: true, isActive: true } },

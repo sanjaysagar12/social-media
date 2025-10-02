@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Logger, Get, Param, Patch, UseInterceptors, Request, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Logger, Get, Param, Patch, UseInterceptors, Request, HttpException, HttpStatus, UploadedFiles } from '@nestjs/common';
 import { Roles, Role } from 'src/application/common/decorator/roles.decorator';
 import { JwtGuard } from '../application/common/guards/jwt.guard';
 import { RolesGuard } from '../application/common/guards/roles.guard';
@@ -6,14 +6,18 @@ import { GetUser } from 'src/application/common/decorator/get-user.decorator';
 import { GetOptionalUser } from 'src/application/common/decorator/get-optional-user.decorator';
 import { PostService } from './post.service';
 import { CreateStepDto, CreatePostDto, CreateCommentDto } from './dto';
-
-
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { S3Service } from '../s3/s3.service';
+import { Express } from 'express';
 
 @Controller('api')
 export class PostController {
     private readonly logger = new Logger(PostController.name);
 
-    constructor(private readonly postService: PostService) { }
+    constructor(
+        private readonly postService: PostService,
+        private readonly s3Service: S3Service,
+    ) { }
 
     @Post('step')
     @UseGuards(JwtGuard, RolesGuard)
@@ -116,40 +120,61 @@ export class PostController {
     @Post('step/:id/post')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
+    @UseInterceptors(FilesInterceptor('images', 10))
     async createPost(
         @Param('id') stepId: string,
         @GetUser('sub') userId: string,
         @Body() createPostDto: CreatePostDto,
+        @UploadedFiles() files: Array<Express.Multer.File>,
     ) {
         this.logger.log(`User ${userId} creating post for step ${stepId}`);
-        try {
-            const data = await this.postService.createPost(stepId, userId, createPostDto);
-            return {
-                status: 'success',
-                data: data,
-                message: 'Post created successfully',
-            };
-        } catch (error) {
-            if (error.message === 'Step not found') {
-                throw new HttpException({
-                    status: 'error',
-                    message: 'Step not found',
-                }, HttpStatus.NOT_FOUND);
+        
+        const imageUrls: string[] = [];
+        if (files && files.length > 0) {
+            for (const file of files) {
+                const imageUrl = await this.s3Service.uploadFile(file, 'images');
+                imageUrls.push(imageUrl);
             }
-            throw error;
         }
+
+        const data = await this.postService.createPost(stepId, userId, {
+            ...createPostDto,
+            images: imageUrls,
+        });
+
+        return {
+            status: 'success',
+            data: data,
+            message: 'Post created successfully',
+        };
     }
 
     // Create a post without attaching it to any Step
     @Post('post')
     @UseGuards(JwtGuard, RolesGuard)
     @Roles(Role.USER, Role.ADMIN)
+    @UseInterceptors(FilesInterceptor('images', 10)) // Allow up to 10 images
     async createStandalonePost(
         @GetUser('sub') userId: string,
         @Body() createPostDto: CreatePostDto,
+        @UploadedFiles() files: Array<Express.Multer.File>,
     ) {
-        this.logger.log(`User ${userId} creating standalone post`);
-        const data = await this.postService.createPost(undefined, userId, createPostDto);
+        this.logger.log(`User ${userId} creating standalone post with ${files?.length || 0} images`);
+
+        // Upload images to S3 if present
+        const imageUrls: string[] = [];
+        if (files && files.length > 0) {
+            for (const file of files) {
+                const imageUrl = await this.s3Service.uploadFile(file, 'images');
+                imageUrls.push(imageUrl);
+            }
+        }
+
+        const data = await this.postService.createPost(undefined, userId, {
+            ...createPostDto,
+            images: imageUrls,
+        });
+
         return {
             status: 'success',
             data: data,
