@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import CommentComponent from "@/components/ui/CommentComponent";
+import ImageCarousel from "@/components/ui/ImageCarousel";
 import { API_CONFIG, getApiUrl } from '@/lib/api';
 import {
     ArrowUp,
@@ -159,7 +160,7 @@ export default function ExplorePage() {
                 return;
             }
 
-            const endpoint = isCurrentlyUpvoted 
+            const endpoint = isCurrentlyUpvoted
                 ? API_CONFIG.ENDPOINTS.REMOVE_UPVOTE_POST(postId)
                 : API_CONFIG.ENDPOINTS.UPVOTE_POST(postId);
             const response = await fetch(getApiUrl(endpoint), {
@@ -201,7 +202,7 @@ export default function ExplorePage() {
     };
 
     const handlePostClick = (stepId: string) => {
-    router.push(`/step/${stepId}`);
+        router.push(`/step/${stepId}`);
     };
 
     const handleCreateComment = async (postId: string) => {
@@ -210,11 +211,11 @@ export default function ExplorePage() {
             alert('Please enter comment content');
             return;
         }
-        
+
         setIsCreatingComment(prev => ({ ...prev, [postId]: true }));
         try {
             const token = localStorage.getItem('access_token');
-            
+
             if (!token) {
                 alert('Please login first');
                 return;
@@ -257,11 +258,11 @@ export default function ExplorePage() {
             alert('Please enter reply content');
             return;
         }
-        
+
         setIsCreatingComment(prev => ({ ...prev, [commentId]: true }));
         try {
             const token = localStorage.getItem('access_token');
-            
+
             if (!token) {
                 alert('Please login first');
                 return;
@@ -360,159 +361,83 @@ export default function ExplorePage() {
     }
 
     return (
-            <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <div className="bg-white shadow-sm border-b">
-                <div className="px-6 py-4">
-                    {/* Top Row - Navigation & Actions */}
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                            <Button
-                                onClick={() => router.push('/')}
-                                variant="ghost"
-                                size="sm"
-                                className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
-                            >
-                                <Home className="w-4 h-4" />
-                                <span>Home</span>
-                            </Button>
-                            
-                            <Button
-                                onClick={() => router.push('/step')}
-                                variant="ghost"
-                                size="sm"
-                                className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
-                            >
-                                <Calendar className="w-4 h-4" />
-                                <span>Steps</span>
-                            </Button>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <div className="text-sm text-gray-500">
-                                {posts.length} posts found
+        <div className="min-h-screen bg-gray-100">
+            {/* Simplified Header */}
+            <div className="sticky top-0 z-50 bg-white border-b border-gray-200 backdrop-blur-sm bg-white/90">
+                <div className="max-w-4xl mx-auto">
+                    <div className="flex items-center justify-between h-16 px-4">
+                        {/* Search Bar */}
+                        <div className="flex-1 max-w-xl">
+                            <div className="relative">
+                                <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                <input
+                                    type="text"
+                                    placeholder="Search posts..."
+                                    className="w-full pl-10 pr-4 py-2 bg-gray-100 border-none rounded-full focus:ring-2 focus:ring-blue-500 focus:bg-white transition-colors"
+                                />
                             </div>
-                            <Button
-                                onClick={fetchExplorePosts}
-                                variant="outline"
-                                size="sm"
-                                className="flex items-center gap-2"
-                            >
-                                <MessageCircle className="w-4 h-4" />
-                                <span>Refresh</span>
-                            </Button>
                         </div>
-                    </div>
 
-                    {/* Title Section */}
-                    <div className="text-center mb-6">
-                        <div className="flex items-center justify-center gap-3 mb-3">
-                            <Compass className="w-8 h-8 text-blue-600" />
-                            <h1 className="text-3xl font-bold text-gray-900">Explore</h1>
-                        </div>
-                        <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
-                            Discover amazing content and connect with the community
-                        </p>
-                    </div>
-
-                    {/* Search Bar */}
-                    <div className="mt-6 max-w-md mx-auto">
-                        <div className="relative">
-                            <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                            <input
-                                type="text"
-                                placeholder="Search posts, steps, or users..."
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            />
-                        </div>
+                        {/* Refresh Button */}
+                        <Button
+                            onClick={fetchExplorePosts}
+                            variant="outline"
+                            size="sm"
+                            className="ml-4 flex items-center gap-2"
+                        >
+                            <MessageCircle className="w-4 h-4" />
+                            <span>Refresh</span>
+                        </Button>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Posts Feed */}
+            {/* Main Content - Full Width Feed */}
+            <div className="max-w-4xl mx-auto px-4 py-6">
                 <div className="space-y-6">
                     {posts.length === 0 ? (
                         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
                             <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                             <p className="text-gray-900 text-lg font-semibold mb-2">No posts found</p>
-                            <p className="text-gray-500 text-sm">Check back later for new content from the community!</p>
+                            <p className="text-gray-500">Check back later for new content!</p>
                         </div>
                     ) : (
                         posts.map((post) => (
-                            <div key={post.id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-                                {/* Post Header */}
-                                <div className="p-4 border-b border-gray-200 bg-gray-50">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            {/* Step Info or Standalone Post Indicator */}
-                                            {post.step ? (
-                                                <>
-                                                    <div className="flex items-center gap-2 text-sm">
-                                                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
-                                                            S
-                                                        </div>
-                                                        <span className="font-semibold text-gray-900">{post.step.title}</span>
-                                                        {post.step.verified && (
-                                                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                                        )}
-                                                    </div>
-                                                </>
+                            <div key={post.id}
+                                className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+                                {/* Enhanced Post Header */}
+                                <div className="p-4 flex items-center justify-between">
+                                    <div className="flex items-center space-x-3">
+                                        <div className="relative">
+                                            {post.author.avatar ? (
+                                                <img
+                                                    src={post.author.avatar}
+                                                    alt={post.author.name || 'User'}
+                                                    className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                                                />
                                             ) : (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <div className="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white text-xs font-bold">
-                                                        P
-                                                    </div>
-                                                    <span className="font-semibold text-gray-900">Standalone Post</span>
+                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-medium shadow-sm">
+                                                    {(post.author.name || post.author.email || 'U')[0].toUpperCase()}
                                                 </div>
                                             )}
-
-                                            <span className="text-gray-400">•</span>
-
-                                            {/* Author Info */}
-                                            <div className="flex items-center gap-2">
-                                                {post.author.avatar ? (
-                                                    <img
-                                                        src={post.author.avatar}
-                                                        alt={post.author.name || 'User'}
-                                                        className="w-7 h-7 rounded-full border-2 border-gray-200"
-                                                    />
-                                                ) : (
-                                                    <div className="w-7 h-7 rounded-full bg-gray-400 flex items-center justify-center text-white text-xs font-medium">
-                                                        {(post.author.name || post.author.email || 'U')[0].toUpperCase()}
-                                                    </div>
-                                                )}
-                                                <span className="text-sm text-gray-700 font-medium">
-                                                    {post.author.name || post.author.email}
-                                                </span>
-                                            </div>
-
-                                            <span className="text-gray-400">•</span>
-                                            <span className="text-sm text-gray-500">{formatTimeAgo(post.createdAt)}</span>
-                                        </div>
-
-                                        {/* Step Status or Standalone Indicator */}
-                                        <div className="flex items-center gap-2">
-                                            {post.step ? (
-                                                post.step.isActive ? (
-                                                    <span className="px-3 py-1 bg-green-500/20 text-green-400 text-xs rounded-full font-medium border border-green-500/30">
-                                                        Active
-                                                    </span>
-                                                ) : (
-                                                    <span className="px-3 py-1 bg-gray-500/20 text-gray-400 text-xs rounded-full font-medium border border-gray-500/30">
-                                                        Inactive
-                                                    </span>
-                                                )
-                                            ) : (
-                                                <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full font-medium border border-blue-500/30">
-                                                    Standalone
-                                                </span>
+                                            {post.step?.verified && (
+                                                <div className="absolute -bottom-1 -right-1 bg-blue-500 rounded-full p-1">
+                                                    <Star className="w-3 h-3 text-white" />
+                                                </div>
                                             )}
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-gray-900">
+                                                {post.author.name || post.author.email}
+                                            </p>
+                                            <p className="text-sm text-gray-500">
+                                                {formatTimeAgo(post.createdAt)}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Post Content */}
+                                {/* Enhanced Post Content */}
                                 <div
                                     className={`p-6 ${post.step ? 'cursor-pointer hover:bg-gray-50' : ''}`}
                                     onClick={post.step ? () => handlePostClick(post.step!.id) : undefined}
@@ -520,38 +445,14 @@ export default function ExplorePage() {
                                     <p className="text-gray-900 mb-4 leading-relaxed text-lg">{post.content}</p>
 
                                     {post.images && post.images.length > 0 && (
-        <div className={`grid ${
-            post.images.length === 1 ? 'grid-cols-1' : 
-            post.images.length === 2 ? 'grid-cols-2' :
-            post.images.length === 3 ? 'grid-cols-2' :
-            'grid-cols-2'
-        } gap-2 mb-4`}>
-            {post.images.map((image: string, index: number) => (
-                <div 
-                    key={index} 
-                    className={`relative ${
-                        post.images && post.images.length === 3 && index === 0 ? 'col-span-2' : ''
-                    }`}
-                >
-                    <img
-                        src={image}
-                        alt={`Post image ${index + 1}`}
-                        className="w-full h-64 object-cover rounded-lg"
-                        onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                    />
-                </div>
-            ))}
-        </div>
-    )}
-
+                                        <ImageCarousel images={post.images} />
+                                    )}
                                 </div>
 
-                                {/* Post Actions */}
-                                <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                                {/* Enhanced Post Actions */}
+                                <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/50">
                                     <div className="flex items-center gap-6">
-                                        {/* Upvote Button */}
+                                        {/* Enhanced Upvote Button */}
                                         {currentUserId ? (
                                             <Button
                                                 onClick={(e) => {
@@ -561,22 +462,13 @@ export default function ExplorePage() {
                                                 disabled={isUpvoting[post.id]}
                                                 variant="ghost"
                                                 size="sm"
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${userUpvotes[post.id]
-                                                        ? 'bg-orange-100 text-orange-600 hover:bg-orange-200 border border-orange-200'
-                                                        : 'text-gray-600 hover:bg-gray-100 border border-gray-200'
+                                                className={`flex items-center gap-2 hover:scale-105 transition-transform ${userUpvotes[post.id]
+                                                        ? 'text-blue-600'
+                                                        : 'text-gray-600'
                                                     }`}
                                             >
-                                                {isUpvoting[post.id] ? (
-                                                    <>
-                                                        <div className="w-4 h-4 border-2 border-orange-600 border-t-transparent rounded-full animate-spin" />
-                                                        <span className="text-sm font-medium">{post._count?.userUpvotes || 0}</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <ArrowUp className={`w-5 h-5 ${userUpvotes[post.id] ? 'fill-current' : ''}`} />
-                                                        <span className="text-sm font-semibold">{post._count?.userUpvotes || 0}</span>
-                                                    </>
-                                                )}
+                                                <ArrowUp className={`w-5 h-5 ${userUpvotes[post.id] ? 'fill-current' : ''}`} />
+                                                <span className="font-medium">{post._count?.userUpvotes || 0}</span>
                                             </Button>
                                         ) : (
                                             <div className="flex items-center gap-2 px-4 py-2 text-gray-500 bg-gray-100 rounded-full border border-gray-200">
@@ -585,7 +477,7 @@ export default function ExplorePage() {
                                             </div>
                                         )}
 
-                                        {/* Comments */}
+                                        {/* Enhanced Comments Section */}
                                         {post.step ? (
                                             <Button
                                                 onClick={() => handlePostClick(post.step!.id)}
