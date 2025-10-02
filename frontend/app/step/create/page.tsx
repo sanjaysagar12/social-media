@@ -38,11 +38,9 @@ export default function CreateStepPage() {
     }));
   };
 
-  const handleImageUploaded = (imageUrl: string) => {
-    setFormData(prev => ({
-      ...prev,
-      thumbnail: imageUrl
-    }));
+  const handleImageSelected = (imageFile: File) => {
+    // Implement your image handling logic here
+    console.log('Selected image file:', imageFile);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -188,15 +186,9 @@ export default function CreateStepPage() {
                     </div>
                     <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-400 transition-colors">
                       <UploadImage
-                        onImageUploaded={handleImageUploaded}
-                        currentImage={formData.thumbnail}
+                        onImageSelected={handleImageSelected}
+                        className="w-full"
                       />
-                      {formData.thumbnail && (
-                        <div className="mt-4 flex items-center gap-2 text-green-600 text-sm bg-green-50 px-3 py-2 rounded-lg">
-                          <Sparkles className="w-4 h-4" />
-                          Image uploaded successfully!
-                        </div>
-                      )}
                     </div>
                   </div>
 

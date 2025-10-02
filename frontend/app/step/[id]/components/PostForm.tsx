@@ -25,6 +25,20 @@ export default function PostForm({
   handleCancelPost, 
   isCreatingPost 
 }: PostFormProps) {
+
+  // Dummy upload function, replace with your actual upload logic
+  async function uploadFileAndGetUrl(file: File): Promise<string> {
+    // Example: upload to server or cloud, then return the image URL
+    // For now, just return a local object URL for preview
+    return URL.createObjectURL(file);
+  }
+
+  // Handler for UploadImage
+  const handleImageSelected = async (file: File) => {
+    const url = await uploadFileAndGetUrl(file);
+    handleImageUploaded(url);
+  };
+
   return (
     <Card className="bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300">
       <CardContent className="p-4">
@@ -44,8 +58,7 @@ export default function PostForm({
             <div className="space-y-2">
               <Label className="text-gray-700">Image (Optional)</Label>
               <UploadImage 
-                onImageUploaded={handleImageUploaded}
-                currentImage={postImage}
+                onImageSelected={handleImageSelected}
                 className="w-full"
               />
             </div>
