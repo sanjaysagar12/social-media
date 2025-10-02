@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateStepDto, CreatePostDto, CreateCommentDto } from './dto';
 
@@ -9,39 +9,51 @@ export class PostService {
     constructor(private prisma: PrismaService) {}
     
     async createEvent(userId: string, createEventDto: CreateStepDto) {
-        return await this.prisma.step.create({
-            data: {
-                title: createEventDto.title,
-                description: createEventDto.description,
-                thumbnail: createEventDto.thumbnail,
-                startDate: new Date(createEventDto.startDate),
-                endDate: new Date(createEventDto.endDate),
-                creatorId: userId,
-            },
-            select: {
-                id: true,
-                title: true,
-                description: true,
-                thumbnail: true,
-                verified: true,
-                startDate: true,
-                endDate: true,
-                isActive: true,
-                createdAt: true,
-                creator: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
+        // Add validation
+        if (!createEventDto) {
+            throw new BadRequestException('No data provided');
+        }
+
+        if (!createEventDto.title || !createEventDto.title.trim()) {
+            throw new BadRequestException('Title is required');
+        }
+
+        if (!createEventDto.startDate || !createEventDto.endDate) {
+            throw new BadRequestException('Start and end dates are required');
+        }
+
+        try {
+            return await this.prisma.step.create({
+                data: {
+                    title: createEventDto.title.trim(),
+                    description: createEventDto.description?.trim() || '',
+                    thumbnail: createEventDto.thumbnail || '',
+                    startDate: new Date(createEventDto.startDate),
+                    endDate: new Date(createEventDto.endDate),
+                    creatorId: userId,
+                },
+                select: {
+                    id: true,
+                    title: true,
+                    description: true,
+                    thumbnail: true,
+                    verified: true,
+                    startDate: true,
+                    endDate: true,
+                    isActive: true,
+                    createdAt: true,
+                    creator: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                        },
                     },
                 },
-            },
-        }).then(event => {
-            return event;
-        }).catch(error => {
-            console.error('Error creating step:', error);
-            throw new Error('Failed to create step');
-        });
+            });
+        } catch (error) {
+            throw new BadRequestException('Failed to create step: ' + error.message);
+        }
     }
 
     async getAllEvents() {

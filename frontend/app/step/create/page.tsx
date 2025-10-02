@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import UploadImage from "@/components/UploadImage";
+import ImageCarousel from "@/components/ui/ImageCarousel";
 import { 
   Calendar, 
   FileText, 
@@ -20,6 +22,7 @@ import {
 import { API_CONFIG, getApiUrl } from '@/lib/api';
 
 export default function CreateStepPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -28,6 +31,8 @@ export default function CreateStepPage() {
     endDate: ''
   });
   
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -38,9 +43,12 @@ export default function CreateStepPage() {
     }));
   };
 
-  const handleImageSelected = (imageFile: File) => {
-    // Implement your image handling logic here
-    console.log('Selected image file:', imageFile);
+  const handleImageSelected = async (file: File) => {
+    setImageFile(file);
+    // Create preview URL for the image
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    setFormData(prev => ({ ...prev, thumbnail: url }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,31 +57,33 @@ export default function CreateStepPage() {
 
     try {
       const token = localStorage.getItem('access_token');
-      
       if (!token) {
         alert('Please login first');
         return;
       }
 
-  const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.STEPS), {
+      const formDataToSend = {
+        title: formData.title.trim(),
+        description: formData.description.trim(),
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        thumbnail: formData.thumbnail
+      };
+
+      const response = await fetch(getApiUrl(API_CONFIG.ENDPOINTS.STEPS), {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          title: formData.title,
-          description: formData.description,
-          thumbnail: formData.thumbnail,
-          startDate: formData.startDate,
-          endDate: formData.endDate,
-        })
+        body: JSON.stringify(formDataToSend)
       });
 
       const result = await response.json();
 
       if (response.ok) {
         alert('Step created successfully!');
+        // Clear form and preview
         setFormData({
           title: '',
           description: '',
@@ -81,12 +91,15 @@ export default function CreateStepPage() {
           startDate: '',
           endDate: ''
         });
+        setImageFile(null);
+        setPreviewUrl('');
+        router.push('/explore');
       } else {
-        alert(`Error: ${result.message || 'Failed to create step'}`);
+        throw new Error(result.message || 'Failed to create step');
       }
     } catch (error) {
       console.error('Error creating step:', error);
-      alert('Failed to create step');
+      alert(error instanceof Error ? error.message : 'Failed to create step');
     } finally {
       setIsLoading(false);
     }
@@ -184,12 +197,33 @@ export default function CreateStepPage() {
                         <p className="text-gray-500 text-sm">Add a visual representation (optional)</p>
                       </div>
                     </div>
-                    <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-400 transition-colors">
-                      <UploadImage
-                        onImageSelected={handleImageSelected}
-                        className="w-full"
-                      />
-                    </div>
+                    
+                    {previewUrl ? (
+                      <div className="relative">
+                        <div className="aspect-video w-full rounded-lg overflow-hidden">
+                          <ImageCarousel images={[previewUrl]} />
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm hover:bg-white"
+                          onClick={() => {
+                            setImageFile(null);
+                            setPreviewUrl('');
+                            setFormData(prev => ({ ...prev, thumbnail: '' }));
+                          }}
+                        >
+                          Remove Image
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-blue-400 transition-colors">
+                        <UploadImage
+                          onImageSelected={handleImageSelected}
+                          className="w-full"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {/* Date & Time */}
